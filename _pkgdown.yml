@@ -1,0 +1,38 @@
+url: https://betwixt.dataobservatory.eu/
+template:
+  bootstrap: 5
+
+home:
+  title: Betwixt
+  description: Scoped semantic claims and human review workflows.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [github]
+
+reference:
+  - title: Claim objects
+    contents:
+      - claim
+      - as_claim_df
+
+  - title: Rendering
+    contents:
+      - betwixt_render
+
+articles:
+  - title: Concepts
+    navbar: Concepts
+    contents:
+      - betwixt
+
+  - title: Implementations
+    navbar: Implementations
+    contents:
+      - r
+      - python
+
+authors:
+  Daniel Antal:
+    href: https://www.dataobservatory.eu/

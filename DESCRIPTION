@@ -9,13 +9,11 @@ Authors@R:
       role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-7513-6760")
     )
-Description: Creates, manages and reviews scoped semantic claims.
-    Betwixt provides a lightweight semantic layer between observations,
-    human review workflows and graph-based representations. Claims are
-    represented as scoped assertions and can be rendered for review,
-    exported to graph formats, or integrated into dataset-oriented
-    workflows.
-URL: https://github.com/dataobservatory-eu/betwixt/
+Description: Betwixt provides a lightweight framework for expressing scoped 
+   semantic claims and rendering them for human review. Claims are represented
+   as simple tabular assertions that can be integrated with existing data, 
+   metadata, and templating workflows.
+URL: https://betwixt.dataobservatory.eu/
 BugReports: https://github.com/dataobservatory-eu/betwixt/issues
 License: GPL (>= 3)
 Encoding: UTF-8
@@ -23,6 +21,9 @@ Language: en-GB
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 8.0.0
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Imports: 
     tibble
+VignetteBuilder: knitr

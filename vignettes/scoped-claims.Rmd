@@ -1,0 +1,343 @@
+---
+title: "Betwixt Implementation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{betwixt}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Betwixt: Scoped Semantic Claims and Human Review
+
+## Abstract
+
+Many interoperability, knowledge graph, metadata harmonisation, and AI-assisted data processing workflows ultimately depend on human judgement. Automated systems can often narrow ambiguity, identify candidate correspondences, and generate plausible semantic assertions, but they frequently cannot determine with sufficient confidence whether a claim should be corroborated, rejected, or referred for further review.
+
+This paper introduces `Betwixt`, a lightweight model for representing and reviewing semantic claims. `Betwixt` reduces the cognitive burden of semantic review by allowing claims to be assessed at the most appropriate level of abstraction. Its pragmatic approach represents a claim as a scoped assertion consisting of four components: scope, subject, predicate, and value. The model is intentionally simple. Rather than defining a new ontology, graph format, or review platform, it provides a minimal semantic representation that can be rendered through existing templating systems and reviewed through existing user interfaces.
+
+At the core of the model is a provenance-preserving review pipeline in which observations give rise to candidate claims, candidate claims are subjected to human review, and review outcomes create reviewed claims together with an explicit stabilisation history. In this way, `Betwixt` separates the provenance of observations from the provenance of review while maintaining both as first-class elements of the semantic workflow.
+
+The objective is to provide a common review layer between observation and semantic object. `Betwixt` is designed to support semantic stabilisation by making candidate claims explicit, reviewable, and reproducible while remaining independent of any specific software environment.
+
+## 1. Introduction
+
+Many contemporary data workflows rely on semantic assumptions that remain invisible until they fail.
+
+A survey harmonisation project may assume that two variables measure the same concept. An authority control workflow may assume that two identifiers refer to the same person. A knowledge graph federation process may assume that two entities occupy equivalent semantic roles. An OCR workflow may assume that a manuscript page is written in Latin.
+
+These assumptions are often too uncertain for fully automated processing and too numerous for unrestricted manual review. The challenge is therefore not merely one of data integration or metadata management, but of human judgement under constrained resources.
+
+`Betwixt` addresses this problem by treating semantic assertions as explicit review objects that move through a reproducible review and provenance pipeline:
+
+```         
+observation provenance
+        ↓ 
+ candidate claim          
+        ↓ 
+ review provenance
+        ↓ 
+  reviewed claim 
+        ↓ 
+     outcome
+```
+
+A _candidate claim_ is derived from one or more observations and inherits their provenance. The claim is then subjected to human _review_, creating a second layer of provenance that records who _reviewed the claim_, under what conditions, and with what _outcome_. The result is not merely an accepted or rejected assertion, but a reviewed claim whose semantic content and stabilisation history are both explicitly represented.
+
+A central premise of `Betwixt` is that semantic review should occur at the most useful level of abstraction. Rather than repeatedly reviewing identical assertions for hundreds of observations, reviewers should be able to assess broader contextual claims and concentrate their effort on exceptions, ambiguities, and conflicting evidence. `Betwixt` therefore treats review not as a workflow-management problem, but as a practical mechanism for allocating scarce human attention where it creates the greatest semantic value.
+
+## 2. The Scoped Claim
+
+The fundamental `Betwixt` object is a scoped claim:
+
+| scope | subject | predicate | value |
+|-------|---------|-----------|-------|
+| box45 | page    | language  | Latin |
+
+The meaning of a claim derives not only from its subject, predicate, and value, but also from the scope within which the claim is made.
+
+At first glance, this may appear unnecessarily indirect. Why not simply record the language of every page individually? The answer is that semantic review often benefits from operating at the highest level where a claim is likely to be true.
+
+Consider an archival box containing 240 scanned page images. An archivist may know from the inventory, provenance, or previous research that the box contains correspondence written almost entirely in Latin. Instead of recording the claim
+
+> page language Latin
+
+240 times, the claim can be attached to the box itself:
+
+|       |         |           |       |
+|-------|---------|-----------|-------|
+| scope | subject | predicate | value |
+| box45 | page    | language  | Latin |
+
+Archivists would recognise this as a statement made at a particular level of description. The box is described as containing Latin-language manuscripts, even though the claim ultimately concerns the individual pages and documents contained within it.
+
+The practical advantage is that the claim can be inherited by the contained objects. Every page in the box may initially inherit the language claim "Latin" without requiring separate manual annotation. Human review can then focus on potential exceptions rather than repeatedly confirming the obvious. The review task becomes:
+
+> Are there any pages that are not Latin?
+
+instead of
+
+> Is page 1 Latin?
+>
+> Is page 2 Latin?
+>
+> Is page 3 Latin?
+>
+> ...
+
+This distinction dramatically reduces cognitive burden. Human effort is concentrated on uncertainty rather than repetition.
+
+The same principle appears in many other domains. A survey harmonisation project may assign a concept to an entire variable before reviewing exceptional response categories. A knowledge graph federation workflow may propose that all entities from a trusted authority file represent persons before examining ambiguous cases. A filesystem reconstruction workflow may infer that all files within a directory belong to the same project and then review only the files that appear inconsistent with that assumption.
+
+In each case, scope acts as a mechanism for contextual inheritance. Claims are made at the most useful level of abstraction and then reviewed through their exceptions. Betwixt therefore treats scope not merely as contextual metadata but as a practical tool for reducing the cost of semantic stabilisation.
+
+Moving from a box to its contents illustrates a top-down stabilisation process. We begin with a broad claim about a record set and allow that claim to be inherited by the records, documents, or pages contained within it. Human review then focuses on exceptions that challenge the inherited claim.
+
+However, semantic stabilisation often proceeds in the opposite direction. Instead of beginning with a broad claim, we may start with a narrowly scoped observation and progressively aggregate it into larger semantic structures.
+
+For example:
+
+| scope                | subject | predicate | value            |
+|----------------------|---------|-----------|------------------|
+| country=AD;year=2023 | country | GDP       | 3.73 billion EUR |
+
+The scope refers to a geopolitical entity (AD = Andorra) and a specific time period (the calendar year 2023). The claim states that the gross domestic product produced within this scope was 3.73 billion EUR.
+
+Additional claims may then be added for Andorra in 2024, San Marino in 2023, Liechtenstein in 2022, and so forth. These individual claims can be combined into a statistical dataset, a multidimensional data cube, or a larger economic knowledge graph.
+
+This illustrates a bottom-up stabilisation process. Rather than inheriting a claim from a broader context, we begin with highly specific observations and progressively aggregate them into larger semantic structures. This is the workflow of official statistics. For example, Eurostat coordinates the collection of data from the member states of the European Union at multiple territorial levels. Statistical observations may be collected at the level of municipalities, districts, counties, regions, and countries, and subsequently aggregated into indicators for the euro area and the European Union as a whole. Each level inherits meaning from the lower levels while simultaneously creating a broader context for interpretation.
+
+A similar process occurs in archives, although archivists use a different vocabulary. An archivist may begin with individual records, letters, photographs, or administrative documents and progressively establish contextual relationships among them. Records become files, files become series, series become collections, and collections become fonds. In archival terminology, the level of description moves upward from the individual record toward increasingly contextualised record sets.
+
+What is notable is that regardless of whether we start from a narrow scope, such as a single statistical observation representing the GDP of Andorra in 2023, or from a broader scope, such as a box of manuscripts, the same semantic structure applies.
+
+| scope                | subject | predicate | value            |
+|----------------------|---------|-----------|------------------|
+| country=AD;year=2023 | country | GDP       | 3.73 billion EUR |
+
+and
+
+|           |             |               |           |
+|-----------|-------------|---------------|-----------|
+| **scope** | **subject** | **predicate** | **value** |
+| box45     | page        | language      | Latin     |
+
+originate from very different domains, yet they can be represented using the same semantic pattern.
+
+In the first example, the scope identifies a highly specific statistical observation. In the second example, the scope identifies a record set whose properties may be inherited by the records it contains. Between these extremes lie many other possibilities: survey variables, filesystem directories, authority files, museum collections, Wikibase entities, or multidimensional statistical cubes.
+
+The introduction of scope therefore serves two complementary purposes. It provides a mechanism for contextual inheritance when moving from broader descriptions to more granular observations, and it provides a mechanism for aggregation when moving from individual observations to larger semantic structures. In both cases, scope allows semantic assertions to remain meaningful without requiring immediate translation into a graph representation.
+
+More importantly, scope allows human review to take place at the most appropriate level of abstraction. Rather than repeatedly reviewing identical claims for hundreds of individual observations, reviewers can assess broader contextual claims and focus their attention on exceptions, ambiguities, and potentially conflicting evidence. In this sense, scope is not merely a modelling device; it is a mechanism for allocating scarce human attention where it creates the greatest semantic value.
+
+## 3. Review as Semantic Stabilisation
+
+`Betwixt` assumes that claims often originate from incomplete observations, automated inference, machine learning systems, or heuristic matching processes.
+
+The purpose of review is not to verify every component of a claim simultaneously. Instead, review focuses on stabilising one or more semantic components.
+
+A reviewer may be asked to evaluate:
+
+- a candidate value;
+- a candidate predicate;
+- a candidate subject;
+- or any combination thereof.
+
+The reference implementation focuses on value review, but the model itself is not restricted to any particular review target.
+
+Review outcomes are intentionally simple:
+
+- corroborated;
+- rejected;
+- referred (to further review).
+
+The objective is not workflow management but semantic stabilisation.
+
+### From Candidate Claims to Reviewed Claims
+
+Betwixt operates on semantic claims in two states: a candidate state and a reviewed state.
+
+A candidate claim represents a semantic assertion that is sufficiently plausible to be reviewed but not yet sufficiently corroborated to be treated as a stable semantic object. Candidate claims may originate from human observation, statistical processing, filesystem reconstruction, metadata extraction, authority control workflows, knowledge graph federation, machine learning systems, or AI-assisted inference.
+
+| scope | subject | predicate | value |
+|-------|---------|-----------|-------|
+| box45 | page    | language  | Latin |
+
+The objective of review is not merely to approve or reject the claim. The objective is to transform a candidate claim into a reviewed claim while making the review process explicit and reproducible.
+
+Betwixt therefore treats review as a transformation of tabular data. Candidate claims are rendered into review interfaces, and the result of the review is a new tabular dataset containing the reviewed semantic elements together with provenance information describing how the review was performed.
+
+The reference implementation uses Mustache templates to render candidate claims into lightweight serverless HTML and CSS documents. These documents are intended to minimise cognitive burden by presenting only the semantic components that require human judgement. In the simplest workflow, the review target is the value component of a claim. More advanced implementations may allow review of the subject, predicate, or any combination of semantic components.
+
+For example, a candidate claim may be represented as:
+
+|       |         |           |                 |
+|-------|---------|-----------|-----------------|
+| scope | subject | predicate | value_candidate |
+| box45 | page    | language  | Latin           |
+
+After review, the resulting dataset may contain:
+
+|       |         |           |                 |                |
+|-------|---------|-----------|-----------------|----------------|
+| scope | subject | predicate | value_candidate | value_reviewed |
+| box45 | page    | language  | Latin           | Latin          |
+
+or
+
+|       |         |           |                 |                |
+|-------|---------|-----------|-----------------|----------------|
+| scope | subject | predicate | value_candidate | value_reviewed |
+| box45 | page    | language  | Latin           | German         |
+
+In `Betwixt`, review is represented as data. The outcome of review is not merely a judgement but a new tabular object that records candidate claims, reviewed claims, review provenance, and review outcomes.
+
+The reviewed dataset remains a tabular representation and can therefore be processed using ordinary data-management tools, exported to CSV, transformed into RDF, integrated into metadata frameworks, or used as input for subsequent review stages.
+
+### Review outcomes
+
+Review outcomes follow a deliberately pragmatic model inspired by the philosophy of science and neopragmatist accounts of knowledge creation. Rather than treating claims as permanently verified or falsified, Betwixt records their current status within an evolving process of semantic stabilisation.
+
+Typical outcomes include:
+
+| candidate | reviewed | status       |
+|-----------|----------|--------------|
+| Latin     | Latin    | corroborated |
+| Latin     | German   | rejected     |
+| Latin     | NA       | referred     |
+
+- corroboratee: the reviewed claim is sufficiently stable for the intended purpose;
+
+- rejected: the candidate claim should not be retained in its current form;
+
+- referred: the claim requires additional evidence, a different review procedure, or a different reviewer.
+
+The reviewed claim, together with its provenance chain, becomes the starting point for the next iteration of semantic stabilisation. Corroborated claims may be published, reused, or subjected to further inference. Rejected claims may be removed, demoted, or revised. Referred claims may enter additional review workflows operating at a different level of abstraction or involving different expertise.
+
+In this way, Betwixt treats review not as a terminal approval process but as a reproducible mechanism for transforming candidate semantic objects into progressively more stable and reusable semantic objects.
+
+## 4. Relation to Existing Approaches
+
+`Betwixt` does not replace metadata frameworks, graph technologies, or data validation systems.
+
+Rather, it occupies a complementary position.
+
+| System       | Primary unit     |
+|--------------|------------------|
+| Tidy data    | Observation      |
+| Frictionless | Data package     |
+| DataSpice    | Dataset metadata |
+| RDF          | Triple           |
+| Betwixt      | Scoped claim     |
+
+`Betwixt` can consume claims derived from datasets, filesystems, authority files, knowledge graphs, AI systems, or metadata catalogues and present them for human review.
+
+The intellectual origins of `Betwixt` are closely related to the tidy data paradigm developed by Hadley Wickham and collaborators. One of the most significant contributions of tidy data was not technical but methodological. It translated concepts from relational algebra, database normalisation, and multidimensional statistical systems into a small number of practical rules that dramatically reduced the cognitive burden of data analysis.
+
+In the deceptively simple tidy data model, each row represents an observation and each column represents a variable. This abstraction allows analysts to focus on analytical questions rather than on the mechanics of data storage, transformation, and integration. During the process of data wrangling, analysts progressively stabilise the identities of observations and the meanings of variables until they become suitable for analysis.
+
+The tidy data model contains a remarkable amount of implicit semantic knowledge. An analyst understands that a variable named `CPI` refers to the Consumer Price Index rather than the Corruption Perceptions Index. Likewise, a country code such as `SM` is interpreted as San Marino rather than Santa Monica because the surrounding analytical context makes that interpretation obvious. Within a single workflow, this implicit understanding is often sufficient.
+
+The situation changes when data leave their original analytical context. Reviewers, auditors, collaborators, future researchers, and automated systems frequently lack access to the assumptions that were obvious to the original analyst. Questions that were previously implicit become explicit:
+
+- What does `CPI` mean?
+
+- What unit of measurement was used?
+
+- What population does the dataset represent?
+
+- Are all observational units sovereign states?
+
+- Who created the dataset?
+
+- What evidence supports a particular classification or correspondence?
+
+At this point, additional semantic information becomes necessary. Provenance, authorship, definitions, identifiers, validity constraints, temporal scope, and contextual assumptions must be made explicit if review is to remain efficient and reproducible.
+
+Many technical solutions already exist for representing such information. Metadata standards, ontologies, knowledge graphs, and linked data technologies all contribute important capabilities. `Betwixt` does not attempt to replace these approaches. Instead, it focuses on a narrower problem: how semantic assumptions can be transformed into reviewable claims and presented at an appropriate level of abstraction for human judgement.
+
+`Betwixt` does not reject graph representations. Rather, it postpones them. The claim model is intentionally tabular because tabular representations remain easier to inspect, transform, review, exchange, and render than graph structures in many practical workflows.
+
+If tidy data can be understood as a practical bridge between relational algebra and statistical analysis, `Betwixt` can be understood as a practical bridge between semantic representations and human review. Its objective is not to maximise semantic expressiveness, but to minimise the cognitive effort required to stabilise semantic claims while preserving sufficient provenance, context, and evidence for reproducible decision-making.
+
+In this sense, `Betwixt` follows the same pragmatic principle that contributed to the success of tidy data: provide enough semantic structure to support reliable work, but not so much structure that the review process becomes more expensive than the problem it seeks to solve.
+
+## 5. Reference Implementation
+
+The reference implementation represents claims as tabular structures and renders them through Mustache templates.
+
+```         
+candidate_claim_df
+        ↓
+   render()
+        ↓
+ HTML / CSS
+        ↓
+   reviewer
+        ↓
+reviewed_claim_df
+```
+
+The essential operation of `Betwixt` is therefore a transformation from one tabular representation into another through human review.
+
+In R, a claim is represented as a one-row tibble:
+
+``` r
+claim(
+  scope = "box45",
+  subject = "page",
+  predicate = "language",
+  value = "Latin"
+)
+```
+
+A review target specifies which semantic component of a claim is subject to stabilisation.
+
+The reference implementation reviews values, but the same mechanism can be applied to subjects, predicates, or any combination thereof. The claim structure itself remains unchanged; only the review target and review workflow differ.
+
+The reference implementation renders candidate claims into lightweight review packets using Mustache templates and standard web technologies. A review packet presents candidate semantic assertions in a form that minimises cognitive burden while preserving the contextual information necessary for reproducible judgement.
+
+candidate_claim_df ↓ render() ↓ HTML / CSS ↓ reviewer ↓ reviewed_claim_df
+
+The reviewed dataset contains both the candidate and reviewed semantic components together with provenance information describing the review process and its outcome. A reviewed claim therefore records not only a semantic assertion but also its stabilisation history.
+
+For example:
+
+| scope | subject | predicate | value_candidate | value_reviewed | outcome |
+|-------|---------|-----------|-----------------|----------------|---------|
+
+|       |      |          |       |       |              |
+|-------|------|----------|-------|-------|--------------|
+| box45 | page | language | Latin | Latin | corroborated |
+
+|       |      |          |       |        |          |
+|-------|------|----------|-------|--------|----------|
+| box45 | page | language | Latin | German | rejected |
+
+|       |      |          |       |     |          |
+|-------|------|----------|-------|-----|----------|
+| box45 | page | language | Latin | NA  | referred |
+
+The resulting reviewed dataset remains a standard tabular object enriched with review metadata, including the provenance of the review process and the identity of the reviewer. The reviewed dataset therefore records both the semantic assertion and the circumstances under which it was stabilised.
+
+Because the reviewed output remains a tabular representation, it can be processed using ordinary data-management tools, exported to CSV, transformed into RDF, integrated into DataSpice or Frictionless workflows, loaded into relational databases, or used as input for subsequent review stages.
+
+This separation between claims and review provenance is intentional. The original claim may have originated from a statistical observation, a filesystem reconstruction process, an archival description, a knowledge graph, or an AI-assisted inference workflow. The reviewed dataset preserves both the provenance of the original claim and the provenance of the review that transformed it into a more stable semantic object.
+
+The reference implementation prioritises portability and minimal infrastructure requirements. A review packet should be distributable, executable, and reviewable using only standard web technologies and a web browser. This design enables review workflows in environments where dedicated servers, databases, or workflow-management systems are unavailable or undesirable.
+
+More dynamic implementations are also possible. For example, an R implementation may render claims through a Shiny application, while a Python implementation may use a web framework or notebook environment. Such interfaces can provide radio buttons, drop-down menus, assisted classification, or AI-generated candidate values. These alternative interfaces do not alter the underlying model; they merely provide different rendering environments for the same review process.
+
+The model deliberately avoids dependence on any specific graph technology, ontology, database system, or software framework. Betwixt is intended as a portable review protocol that can operate wherever scoped claims can be represented in tabular form.
+
+## 6. Conclusion
+
+`Betwixt` proposes a minimal model for representing semantic assertions as reviewable objects. By introducing scope as an explicit component of a claim and separating semantic representation from rendering, it provides a lightweight review layer that can be integrated into a wide range of interoperability, harmonisation, and knowledge management workflows.
+
+The long-term objective is not the creation of a new review platform, but the definition of a portable semantic review model that supports the broader process of semantic stabilisation.

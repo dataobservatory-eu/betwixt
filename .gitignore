@@ -49,3 +49,6 @@ po/*~
 rsconnect/
 .positai
 .Rproj.user
+inst/doc
+review-betwixt.txt
+docs

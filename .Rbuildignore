@@ -4,3 +4,7 @@
 ^\.claude$
 ^LICENSE\.md$
 ^README\.Rmd$
+^review-betwixt.txt$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

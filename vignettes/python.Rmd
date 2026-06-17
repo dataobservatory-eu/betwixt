@@ -1,0 +1,50 @@
+---
+title: "Python Minimal Implementation for Betwixt"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Python Minimal Implementation for Betwixt}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{python, eval=FALSE}
+import pandas as pd
+
+claims = pd.DataFrame(
+    {
+        "scope": ["box45"],
+        "subject": ["page"],
+        "predicate": ["language"],
+        "value": ["Latin"]
+    }
+)
+```
+
+
+```{python, eval=FALSE}
+import pystache
+
+template = """
+<h1>{{ title }}</h1>
+
+<table>
+{{#claims}}
+<tr>
+  <td>{{ scope }}</td>
+  <td>{{ subject }}</td>
+  <td>{{ predicate }}</td>
+  <td>{{ value }}</td>
+</tr>
+{{/claims}}
+</table>
+"""
+```
+

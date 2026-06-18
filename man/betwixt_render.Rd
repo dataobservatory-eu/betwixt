@@ -2,16 +2,37 @@
 % Please edit documentation in R/betwixt_render.R
 \name{betwixt_render}
 \alias{betwixt_render}
-\title{Render a claim for review}
+\title{Render claims as an HTML review packet}
 \usage{
-betwixt_render(claim)
+betwixt_render(claim, con = NULL, title = "Betwixt Review")
 }
 \arguments{
-\item{claim}{A claim.}
+\item{claim}{A \code{claim_df}.}
+
+\item{con}{Optional writable connection. If \code{NULL},
+the rendered HTML is returned as a character vector.}
 }
 \value{
-Character HTML fragment.
+If \code{con = NULL}, a character vector containing rendered
+HTML.
+
+If \code{con} is supplied, the HTML is written to the
+connection and the connection is returned invisibly.
 }
 \description{
-Render a claim for review
+Renders a \code{claim_df} using a Mustache template.
+By default the rendered HTML is returned as a character
+vector. Alternatively, it can be written directly to an
+open connection.
+}
+\examples{
+ad_gdp <- claim(
+  scope = "country=AD;year=2023",
+  subject = "country",
+  predicate = "GDP",
+  value = "3.73 billion EUR"
+)
+
+html <- betwixt_render(ad_gdp)
+
 }

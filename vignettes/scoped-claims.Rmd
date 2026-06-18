@@ -48,7 +48,7 @@ observation provenance
      outcome
 ```
 
-A _candidate claim_ is derived from one or more observations and inherits their provenance. The claim is then subjected to human _review_, creating a second layer of provenance that records who _reviewed the claim_, under what conditions, and with what _outcome_. The result is not merely an accepted or rejected assertion, but a reviewed claim whose semantic content and stabilisation history are both explicitly represented.
+A *candidate claim* is derived from one or more observations and inherits their provenance. The claim is then subjected to human *review*, creating a second layer of provenance that records who *reviewed the claim*, under what conditions, and with what *outcome*. The result is not merely an accepted or rejected assertion, but a reviewed claim whose semantic content and stabilisation history are both explicitly represented.
 
 A central premise of `Betwixt` is that semantic review should occur at the most useful level of abstraction. Rather than repeatedly reviewing identical assertions for hundreds of observations, reviewers should be able to assess broader contextual claims and concentrate their effort on exceptions, ambiguities, and conflicting evidence. `Betwixt` therefore treats review not as a workflow-management problem, but as a practical mechanism for allocating scarce human attention where it creates the greatest semantic value.
 
@@ -302,8 +302,6 @@ A review target specifies which semantic component of a claim is subject to stab
 The reference implementation reviews values, but the same mechanism can be applied to subjects, predicates, or any combination thereof. The claim structure itself remains unchanged; only the review target and review workflow differ.
 
 The reference implementation renders candidate claims into lightweight review packets using Mustache templates and standard web technologies. A review packet presents candidate semantic assertions in a form that minimises cognitive burden while preserving the contextual information necessary for reproducible judgement.
-
-candidate_claim_df ↓ render() ↓ HTML / CSS ↓ reviewer ↓ reviewed_claim_df
 
 The reviewed dataset contains both the candidate and reviewed semantic components together with provenance information describing the review process and its outcome. A reviewed claim therefore records not only a semantic assertion but also its stabilisation history.
 

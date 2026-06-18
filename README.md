@@ -1,0 +1,97 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# betwixt
+
+<!-- badges: start -->
+
+[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Project Status:
+WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![devel-version](https://img.shields.io/badge/devel%20version-0.0.1-blue.svg)](https://github.com/dataobservatory-eu/fscontext)
+[![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
+
+<!-- badges: end -->
+
+Betwixt is a lightweight framework for representing semantic assertions
+as scoped claims and rendering them for human review. It provides a
+pragmatic review layer between observations and semantic objects,
+allowing candidate claims to be stabilised through reproducible review
+workflows.
+
+Betwixt defines a portable tidy claim schema. Implementations reuse
+their native tabular environments, such as tibble, pandas, or SQLite,
+while review is rendered through standard HTML/CSS and returned as tidy
+CSV.
+
+## Installation
+
+You can install the development version of betwixt from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("dataobservatory-eu/betwixt")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(betwixt)
+ad_gdp_2024 <- claim(
+  scope = "country=AD;year=2023",
+  subject = "country",
+  predicate = "GDP",
+  value = "3.73 billion EUR"
+)
+
+print(ad_gdp_2024)
+#> <claim_df>
+#> Claims: 1
+#> Scopes: 1
+#> Scope: country=AD;year=2023
+#> 
+#> # A tibble: 1 × 4
+#>   scope                subject predicate value           
+#>   <chr>                <chr>   <chr>     <chr>           
+#> 1 country=AD;year=2023 country GDP       3.73 billion EUR
+```
+
+What is special about using `README.Rmd` instead of just `README.md`?
+You can include R chunks like so:
+
+``` r
+betwixt_render(ad_gdp_2024)
+#> [1] "Claim: country GDP 3.73 billion EUR within country=AD;year=2023"
+```
+
+## Vignettes
+
+Betwixt implemeents the following workflow:
+
+    observation provenance
+             ↓
+    candidate claim
+             ↓
+    review provenance
+             ↓
+    reviewed claim
+
+It is organised around three complementary vignettes.
+
+### 1. Preparing Data for Human Review
+
+Introduces scoped claims, semantic stabilisation, contextual
+inheritance, and the conceptual foundations of Betwixt.
+
+### 2. R Reference Implementation
+
+Shows how `claim_df` objects are created, manipulated, rendered, and
+integrated with the R ecosystem.
+
+### 3. Python Minimal Implementation
+
+Demonstrates that the Betwixt model is implementation-independent and
+can be realised using pandas and Mustache-compatible tooling.

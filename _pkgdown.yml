@@ -15,6 +15,7 @@ reference:
   - title: Claim objects
     contents:
       - claim
+      - claim_df
       - as_claim_df
 
   - title: Rendering

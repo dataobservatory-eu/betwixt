@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Betwixt: Scoped Semantic Claims and Human Review
+# Betwixt: Preparing Data for Human Review
 
 ## Abstract
 

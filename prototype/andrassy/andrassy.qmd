@@ -1,0 +1,329 @@
+---
+title: "Case Study: Gyula Andrássy Archive"
+editor: visual
+authors:
+  - name: "Daniel Antal"
+    orcid: 0000-0001-7513-6760
+    affiliation: Reprex
+    roles: writing
+    corresponding: true
+
+format: 
+   html: 
+     toc-depth: 3
+   pdf:
+    colorlinks: true
+    toc-depth: 3
+   docx: default
+    
+papersize: A4
+---
+
+## Problem
+
+The Andrássy archive provides an unusually useful test case for semantic stabilisation because the archival hierarchy is only partially observable.
+
+The digital surrogates are organised according to a relatively clean archival structure:
+
+```         
+SK_1561_24672_001_0001_0001
+│  │    │      │    │    │
+│  │    │      │    │    └─ image file
+│  │    │      │    └────── fasciculus
+│  │    │      └─────────── box
+│  │    └────────────────── fonds
+│  └─────────────────────── archive
+└────────────────────────── national archival system
+```
+
+The problem is that the observed units are digital images rather than archival records. A letter may contain multiple pages, and both sides of a page may be scanned separately.
+
+Consequently:
+
+```         
+image ≠ page image ≠ letter 
+```
+
+The relationship between the observed digital objects and the underlying archival entities is therefore incomplete:
+
+```         
+Record Set (fonds)
+    ↓
+Record Set (box)
+    ↓
+Record Set (fasciculus)
+    ↓
+Record (letter)
+    ↓
+Record Part (page)
+    ↓
+Instantiation (digital image)
+```
+
+Depending on the quality and granularity of the original archival description, we may possess reliable descriptions at the level of the fonds, box, or fasciculus, while only directly observing digital instantiations of record parts. The intermediate layers—the record itself and potentially the lowest record-set level—remain unknown.
+
+When observing a file such as:
+
+```         
+SK_1561_24672_001_0001_0001.jpg 
+```
+
+we can derive a chain of candidate claims:
+
+```         
+evidence_id archive fonds box fasciculus filename filepath 
+```
+
+These claims are themselves subject to review. Previous digitisation activities revealed misplaced or misnamed files, and simple inference tools can already identify probable inconsistencies, such as references to non-existent boxes or fasciculi.
+
+The challenge is therefore not only to enrich archival metadata, but also to stabilise the relationship between digital surrogates and the archival structures they are presumed to represent.
+
+## Hypothesis
+
+We hypothesise that semantic stabilisation can proceed effectively even when the record layer is initially unknown.
+
+Instead of beginning with the difficult task of reconstructing individual records from hundreds of scanned images, we begin with claims at a higher level of description and review them through exceptions.
+
+For example, before an OCR workflow, we may wish to establish the language of the documents contained in a fasciculus.
+
+A conventional workflow proceeds as follows:
+
+```         
+identify records
+      ↓ 
+describe language 
+```
+
+This requires reviewers to first determine record boundaries and then repeatedly assign language labels to individual pages.
+
+We propose an alternative workflow:
+
+```         
+identify language      
+       ↓ 
+helps identify records 
+```
+
+A candidate claim may be formulated at the fasciculus level:
+
+| scope    | subject | predicate | value |
+|----------|---------|-----------|-------|
+| fasc0001 | page    | language  | Latin |
+
+This claim can be reviewed through exception detection rather than page-by-page confirmation.
+
+Formally, the scope establishes an inheritance hierarchy:
+
+```         
+fasciculus    
+    ↓ 
+record (unknown)    
+    ↓ 
+record part (unknown)    
+    ↓ 
+instantiation (jpg) 
+```
+
+or:
+
+```         
+fasciculus ⊇ record ⊇ record_part ⊇ instantiation 
+```
+
+The candidate claim is:
+
+```         
+∀x ∈ fasciculus : language(x) = Latin 
+```
+
+The reviewer is then asked to search for counterexamples:
+
+```         
+∃x ∈ fasciculus : language(x) ≠ Latin 
+```
+
+Rather than validating every page individually, the reviewer evaluates the validity of a generalisation.
+
+If no counterexamples are found, the Latin-language claim can be inherited by all records, record parts, and digital instantiations contained within the fasciculus, even before the record boundaries have been fully established.
+
+If counterexamples are discovered, they remain valuable observations. A multilingual fasciculus may contain Latin, German, Slovak, and Hungarian correspondence. These linguistic transitions often provide strong evidence for previously unknown record boundaries.
+
+For example:
+
+```         
+scope = fasc0001
+subject = page
+predicate = language
+value = Latin
+
+For all pages within fasc0001,
+language = Latin
+unless an exception is identified.
+```
+
+Even before individual letters have been identified, the transition between `page003` and `page004` provides evidence for a plausible record boundary.
+
+Language review therefore contributes simultaneously to two stabilisation processes:
+
+```         
+language identification          
+         ↓ 
+record identification 
+```
+
+The central hypothesis of this study is that carefully selected inherited claims can substantially reduce reviewer effort while simultaneously generating evidence for the reconstruction of missing archival structures. Rather than requiring reviewers to repeatedly describe what is already highly probable, semantic stabilisation directs human attention to uncertainty, exceptions, and boundary cases, where expert judgement contributes the greatest value.
+
+In a simple example, reviewing the language of seven page images can generate far more than seven isolated annotations. The review may produce approximately sixty structured claims, including filename-derived structural observations, reviewed language assertions, and a further set of inferred claims concerning language clusters, candidate record boundaries, candidate records, and record-set composition. The precise number depends on the extent to which reviewed claims are propagated through the archival hierarchy.
+
+The significance of this approach lies not only in reducing repetitive work, but also in the cumulative value of review. Each stabilised claim becomes a source of evidence that can support subsequent review tasks. A later review of a box of correspondence, for example, may focus on distinguishing envelopes from their contents. Although cognitively simple, such a task can contribute to the stabilisation of record identity, the reconstruction of record boundaries, and the refinement of archival structure. Human review therefore becomes progressively more informative: each intervention not only resolves a local uncertainty but also strengthens the evidential basis for future interpretation and reconstruction.
+
+Human review is treated not as a sequence of isolated annotations, but as a process of evidence accumulation. Each reviewed claim has the potential to stabilise multiple related claims across different levels of description, allowing a small number of carefully designed review tasks to contribute simultaneously to description, classification, and structural reconstruction.
+
+In our example, the reviewer places only seven labels on a review interface—or, in the simplest case, merely identifies seven counterexamples—yet contributes evidence supporting approximately sixty structured claims. The value of review therefore lies not only in the direct annotations produced, but also in the additional claims that can be inherited, projected, corroborated, or inferred from them.
+
+A broader challenge for information and computational science is to design review workflows that maximise the evidential value of human intervention. One objective is to maximise the number and quality of stabilised claims that can be supported by a minimal amount of human review. The dual objective is to minimise the amount of human effort required to describe, classify, and reconstruct large observational sets to a specified level of quality and confidence.
+
+Semantic stabilisation approaches this challenge by concentrating scarce human attention on uncertainty, ambiguity, and exceptions, while allowing highly probable claims to be inherited through explicit contextual and evidential relationships. The goal is therefore not to maximise the volume of annotations produced, but to maximise the informational value of expert judgement.
+
+
+
+## From Review Events to Semantic Enrichment
+
+The value of semantic stabilisation is not merely that it confirms a single property of a document. A carefully designed review can generate a large number of corroborated claims and new inference candidates.
+
+Consider a fasciculus whose pages are reviewed for language:
+
+```         
+page001  Latin 
+page002  Latin 
+page003  Latin  
+page004  German 
+page005  German  
+page006  Latin 
+page007  Latin 
+```
+
+At first glance, this appears to be a simple language review. In reality, a single review activity contributes evidence to several different semantic structures.
+
+### Provenance Claims
+
+The review creates provenance information about the reviewed objects:
+
+```         
+page001   
+   language = Latin   
+   reviewed_by = Reviewer A   
+   review_date = 2026-07-01  
+   
+page004   
+   language = German   
+   reviewed_by = Reviewer A   
+   review_date = 2026-07-01 
+```
+
+These claims can be attached directly to the digital instantiations represented by the image files.
+
+### Inheritance Claims
+
+The review also corroborates higher-level claims.
+
+For example:
+
+```         
+scope = fasc0001 
+subject = page 
+predicate = language 
+value = Latin 
+```
+
+remains valid for most pages in the fasciculus.
+
+The reviewer has not merely established properties of individual files. The review has generated evidence about the entire record set.
+
+### Record-Boundary Candidates
+
+The language transitions generate candidate record boundaries.
+
+```         
+page003 → Latin page004 → German 
+```
+
+suggests a possible transition between two letters.
+
+Similarly:
+
+```         
+page005 → German page006 → Latin 
+```
+
+suggests another transition.
+
+The language review therefore contributes directly to the reconstruction of missing record identities.
+
+### Grouping Candidates
+
+Once language clusters emerge, pages can be grouped into candidate records:
+
+```         
+candidate_record_01   page001   page002   page003  candidate_record_02   page004   page005  
+candidate_record_03   page006   page007 
+```
+
+These are not yet archival records. They are review-generated hypotheses that can be evaluated in later iterations.
+
+### OCR Workflow Optimisation
+
+Language review also enables the selection of specialised OCR workflows.
+
+For example:
+
+```         
+Latin pages   → Latin OCR model  
+German pages   → German OCR model 
+```
+
+The review therefore contributes directly to downstream processing quality.
+
+### Archival Description Enrichment
+
+Once record boundaries become more stable, inherited language claims can be projected upward:
+
+```         
+record_01   language = Latin  
+record_02   language = German 
+```
+
+and eventually:
+
+```         
+fasciculus   
+   contains Language = Latin   
+   contains Language = German 
+```
+
+These claims enrich the archival description without requiring separate cataloguing activities.
+
+### Ontological Pattern
+
+The important observation is that a single review activity simultaneously affects multiple layers of the archival model:
+
+```         
+instantiation       
+    ↓ 
+record part       
+    ↓ 
+  record       
+    ↓ 
+ record set 
+```
+
+A language review of a digital image is therefore not merely a statement about that image. It creates evidence that can be propagated upward through inheritance and used to stabilise previously unknown semantic structures.
+
+The same pattern can be applied to other properties such as handwriting, script, document type, correspondent, date range, condition, OCR quality, or named entities. Semantic stabilisation is therefore not primarily a metadata creation process. It is a process for generating and corroborating semantic structure from a small number of carefully designed review activities.
+
+## Conclusion
+
+_This is a placeholder_
+
+
+

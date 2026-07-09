@@ -20,6 +20,13 @@ get_template <- function(
     package = "betwixt"
   )
 
+  if (!nzchar(template_file)) {
+    stop(
+      "Unknown template: '", template, "'.",
+      call. = FALSE
+    )
+  }
+
   paste(
     readLines(template_file, warn = FALSE),
     collapse = "\n"

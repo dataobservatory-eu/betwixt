@@ -17,5 +17,6 @@ test_that("default template contains claim placeholders", {
   expect_match(template, "{{subject}}", fixed = TRUE)
   expect_match(template, "{{predicate}}", fixed = TRUE)
   expect_match(template, "{{value}}", fixed = TRUE)
+
 })
 

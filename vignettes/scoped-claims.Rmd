@@ -26,7 +26,7 @@ At the core of the model is a provenance-preserving review pipeline in which obs
 
 The objective is to provide a common review layer between observation and semantic object. `Betwixt` is designed to support semantic stabilisation by making candidate claims explicit, reviewable, and reproducible while remaining independent of any specific software environment.
 
-## 1. Introduction
+## Introduction
 
 Many contemporary data workflows rely on semantic assumptions that remain invisible until they fail.
 
@@ -52,15 +52,15 @@ A *candidate claim* is derived from one or more observations and inherits their 
 
 A central premise of `Betwixt` is that semantic review should occur at the most useful level of abstraction. Rather than repeatedly reviewing identical assertions for hundreds of observations, reviewers should be able to assess broader contextual claims and concentrate their effort on exceptions, ambiguities, and conflicting evidence. `Betwixt` therefore treats review not as a workflow-management problem, but as a practical mechanism for allocating scarce human attention where it creates the greatest semantic value.
 
-## 2. The Scoped Claim
+## The Scoped Claim
 
 The fundamental `Betwixt` object is a scoped claim:
 
 | scope | subject | predicate | value |
-|-------|---------|-----------|-------|
+| ----- | ------- | --------- | ----- |
 | box45 | page    | language  | Latin |
 
-The meaning of a claim derives not only from its subject, predicate, and value, but also from the scope within which the claim is made.
+Scope identifies the context within which the subject–predicate–value assertion is intended to hold. It may identify an individual object, a record set, a collection, a temporal or geographical context, a variable, a directory, or another bounded domain of interpretation. Scope is therefore distinct from the subject of the claim: it determines *where or over what context* the assertion applies, while the subject identifies *what kind of entity or semantic role* participates in the assertion.
 
 At first glance, this may appear unnecessarily indirect. Why not simply record the language of every page individually? The answer is that semantic review often benefits from operating at the highest level where a claim is likely to be true.
 
@@ -71,13 +71,13 @@ Consider an archival box containing 240 scanned page images. An archivist may kn
 240 times, the claim can be attached to the box itself:
 
 |       |         |           |       |
-|-------|---------|-----------|-------|
+| ----- | ------- | --------- | ----- |
 | scope | subject | predicate | value |
 | box45 | page    | language  | Latin |
 
 Archivists would recognise this as a statement made at a particular level of description. The box is described as containing Latin-language manuscripts, even though the claim ultimately concerns the individual pages and documents contained within it.
 
-The practical advantage is that the claim can be inherited by the contained objects. Every page in the box may initially inherit the language claim "Latin" without requiring separate manual annotation. Human review can then focus on potential exceptions rather than repeatedly confirming the obvious. The review task becomes:
+The practical advantage is that the claim can generate inherited candidate claims for the contained objects. Every page in the box may initially inherit "Latin" as a candidate value without requiring separate manual annotation. Human review can then focus on potential exceptions rather than repeatedly confirming the obvious. The review task becomes
 
 > Are there any pages that are not Latin?
 
@@ -95,48 +95,56 @@ This distinction dramatically reduces cognitive burden. Human effort is concentr
 
 The same principle appears in many other domains. A survey harmonisation project may assign a concept to an entire variable before reviewing exceptional response categories. A knowledge graph federation workflow may propose that all entities from a trusted authority file represent persons before examining ambiguous cases. A filesystem reconstruction workflow may infer that all files within a directory belong to the same project and then review only the files that appear inconsistent with that assumption.
 
-In each case, scope acts as a mechanism for contextual inheritance. Claims are made at the most useful level of abstraction and then reviewed through their exceptions. Betwixt therefore treats scope not merely as contextual metadata but as a practical tool for reducing the cost of semantic stabilisation.
+In each case, scope acts as a mechanism for contextual inheritance. Claims are made at the most useful level of abstraction and then reviewed through their exceptions. `Betwixt` therefore treats scope not merely as contextual metadata but as a practical tool for reducing the cost of semantic stabilisation.
 
-Moving from a box to its contents illustrates a top-down stabilisation process. We begin with a broad claim about a record set and allow that claim to be inherited by the records, documents, or pages contained within it. Human review then focuses on exceptions that challenge the inherited claim.
+Moving from a box to its contents illustrates a top-down stabilisation process. We begin with a broad claim about a record set and allow that claim to generate candidate claims for the records, documents, or pages contained within it. Human review then focuses on exceptions that challenge the inherited candidate claim.
 
 However, semantic stabilisation often proceeds in the opposite direction. Instead of beginning with a broad claim, we may start with a narrowly scoped observation and progressively aggregate it into larger semantic structures.
 
 For example:
 
 | scope                | subject | predicate | value            |
-|----------------------|---------|-----------|------------------|
+| -------------------- | ------- | --------- | ---------------- |
 | country=AD;year=2023 | country | GDP       | 3.73 billion EUR |
 
 The scope refers to a geopolitical entity (AD = Andorra) and a specific time period (the calendar year 2023). The claim states that the gross domestic product produced within this scope was 3.73 billion EUR.
 
 Additional claims may then be added for Andorra in 2024, San Marino in 2023, Liechtenstein in 2022, and so forth. These individual claims can be combined into a statistical dataset, a multidimensional data cube, or a larger economic knowledge graph.
 
-This illustrates a bottom-up stabilisation process. Rather than inheriting a claim from a broader context, we begin with highly specific observations and progressively aggregate them into larger semantic structures. This is the workflow of official statistics. For example, Eurostat coordinates the collection of data from the member states of the European Union at multiple territorial levels. Statistical observations may be collected at the level of municipalities, districts, counties, regions, and countries, and subsequently aggregated into indicators for the euro area and the European Union as a whole. Each level inherits meaning from the lower levels while simultaneously creating a broader context for interpretation.
+This illustrates a bottom-up stabilisation process. Rather than inheriting a claim from a broader context, we begin with highly specific observations and progressively aggregate them into larger semantic structures. This is characteristic of official statistics. For example, Eurostat coordinates the collection of data from the member states of the European Union at multiple territorial levels. Statistical observations may be collected at the level of municipalities, districts, counties, regions, and countries, and subsequently aggregated into indicators for the euro area and the European Union as a whole. Each level derives meaning from the more granular observations while simultaneously creating a broader context for interpretation.
 
-A similar process occurs in archives, although archivists use a different vocabulary. An archivist may begin with individual records, letters, photographs, or administrative documents and progressively establish contextual relationships among them. Records become files, files become series, series become collections, and collections become fonds. In archival terminology, the level of description moves upward from the individual record toward increasingly contextualised record sets.
+A similar process occurs in archives, although archivists use a different vocabulary. An archivist may begin with individual records, letters, photographs, or administrative documents and progressively establish contextual relationships among them. Records become files, files become series, series become collections, and collections become fonds. In archival terminology, the level of description moves upward from the individual record towards increasingly contextualised record sets.
 
 What is notable is that regardless of whether we start from a narrow scope, such as a single statistical observation representing the GDP of Andorra in 2023, or from a broader scope, such as a box of manuscripts, the same semantic structure applies.
 
 | scope                | subject | predicate | value            |
-|----------------------|---------|-----------|------------------|
+| -------------------- | ------- | --------- | ---------------- |
 | country=AD;year=2023 | country | GDP       | 3.73 billion EUR |
 
 and
 
 |           |             |               |           |
-|-----------|-------------|---------------|-----------|
+| --------- | ----------- | ------------- | --------- |
 | **scope** | **subject** | **predicate** | **value** |
 | box45     | page        | language      | Latin     |
 
 originate from very different domains, yet they can be represented using the same semantic pattern.
 
-In the first example, the scope identifies a highly specific statistical observation. In the second example, the scope identifies a record set whose properties may be inherited by the records it contains. Between these extremes lie many other possibilities: survey variables, filesystem directories, authority files, museum collections, Wikibase entities, or multidimensional statistical cubes.
+Scope also distinguishes the object made available for inspection from the semantic context in which a claim is reviewed. A digitised photograph, for example, may itself be the subject of review: its creator, date, technique, or identifier may be uncertain. The same photograph may instead be used to review a claim about what it depicts: a building, person, event, or location. Similarly, a sound recording may be reviewed as a digital object, as a recording of a performance, or as a resource for identifying a performer, composition, language, or event.
 
-The introduction of scope therefore serves two complementary purposes. It provides a mechanism for contextual inheritance when moving from broader descriptions to more granular observations, and it provides a mechanism for aggregation when moving from individual observations to larger semantic structures. In both cases, scope allows semantic assertions to remain meaningful without requiring immediate translation into a graph representation.
+The same review resource can therefore participate in review activities operating at different semantic scopes.
+
+`< put here a screenshot of three thumbnails under review >`
+
+In the first example, the scope identifies a highly specific statistical observation. In the second example, the scope identifies a record set whose properties may generate candidate claims for the records it contains. Between these extremes lie many other possibilities: survey variables, filesystem directories, authority files, museum collections, Wikibase entities, or multidimensional statistical cubes.
+
+Scope supports two complementary movements in semantic stabilisation. In top-down workflows, broader contextual claims can generate candidate assertions for more granular objects, allowing review to concentrate on exceptions. In bottom-up workflows, narrowly scoped observations can be composed or aggregated into larger semantic structures. In both directions, scope makes explicit the level at which an assertion is intended to hold.
 
 More importantly, scope allows human review to take place at the most appropriate level of abstraction. Rather than repeatedly reviewing identical claims for hundreds of individual observations, reviewers can assess broader contextual claims and focus their attention on exceptions, ambiguities, and potentially conflicting evidence. In this sense, scope is not merely a modelling device; it is a mechanism for allocating scarce human attention where it creates the greatest semantic value.
 
-## 3. Review as Semantic Stabilisation
+This property is essential to scaling human semantic review. The number of observations or digital objects need not correspond one-to-one with the number of independent human judgements. A scoped claim can generate candidate assertions over many observations, while review concentrates on exceptions and uncertainty.
+
+## Review as Semantic Stabilisation
 
 `Betwixt` assumes that claims often originate from incomplete observations, automated inference, machine learning systems, or heuristic matching processes.
 
@@ -222,7 +230,7 @@ The reviewed claim, together with its provenance chain, becomes the starting poi
 
 In this way, Betwixt treats review not as a terminal approval process but as a reproducible mechanism for transforming candidate semantic objects into progressively more stable and reusable semantic objects.
 
-## 4. Relation to Existing Approaches
+## Relation to Existing Approaches
 
 `Betwixt` does not replace metadata frameworks, graph technologies, or data validation systems.
 
@@ -268,7 +276,7 @@ If tidy data can be understood as a practical bridge between relational algebra 
 
 In this sense, `Betwixt` follows the same pragmatic principle that contributed to the success of tidy data: provide enough semantic structure to support reliable work, but not so much structure that the review process becomes more expensive than the problem it seeks to solve.
 
-## 5. Reference Implementation
+## Reference Implementation
 
 The reference implementation represents claims as tabular structures and renders them through Mustache templates.
 
@@ -334,7 +342,7 @@ More dynamic implementations are also possible. For example, an R implementation
 
 The model deliberately avoids dependence on any specific graph technology, ontology, database system, or software framework. Betwixt is intended as a portable review protocol that can operate wherever scoped claims can be represented in tabular form.
 
-## 6. Conclusion
+## Conclusion
 
 `Betwixt` proposes a minimal model for representing semantic assertions as reviewable objects. By introducing scope as an explicit component of a claim and separating semantic representation from rendering, it provides a lightweight review layer that can be integrated into a wide range of interoperability, harmonisation, and knowledge management workflows.
 

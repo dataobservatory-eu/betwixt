@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Betwixt Review</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      line-height: 1.4;
+    }
+
+    h1 {
+      margin-bottom: 1.5rem;
+    }
+
+    .reviewer {
+      margin-bottom: 1.5rem;
+    }
+
+    .reviewer label {
+      display: inline-block;
+      margin-right: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .reviewer input {
+      margin-left: 0.4rem;
+      padding: 0.35rem;
+    }
+
+    .review-table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-table th,
+    .review-table td {
+      border: 1px solid #bbb;
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .review-table th {
+      background: #f2f2f2;
+    }
+
+    .review-thumbnail {
+      display: block;
+      max-width: 180px;
+      max-height: 140px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .review-table select {
+      min-width: 160px;
+      padding: 0.3rem;
+    }
+
+    button {
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Betwixt Review</h1>
+
+  <div class="reviewer">
+
+    <label>
+      Name
+      <input type="text" id="reviewer-name" name="reviewer_name" value="Curator Name">
+    </label>
+
+    <label>
+      Email
+      <input type="email" id="reviewer-email" name="reviewer_email" value="curator@example.org">
+    </label>
+
+    <!--
+      These timestamps belong to the provenance of the review activity.
+      They are hidden from the reviewer but persisted in the saved HTML.
+    -->
+
+    <input type="hidden" id="review-started-at" name="review_started_at" value="2026-08-08T14:07:03.319Z">
+
+    <input type="hidden" id="review-saved-at" name="review_saved_at" value="2026-08-08T14:07:24.144Z">
+
+  </div>
+
+  <table class="review-table">
+
+    <thead>
+      <tr>
+        <th>Resource</th>
+        <th>URL</th>
+        <th>Subject</th>
+        <th>Predicate</th>
+        <th>Class</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr>
+        <td>
+          <img class="review-thumbnail" src="../media/delini/artefacts/P7101556_thumbnail.jpg" alt="P7101556_thumbnail.jpg">
+        </td>
+
+        <td>
+          <a href="https://example.com/artefact/P7101556_thumbnail.jpg">
+            P7101556_thumbnail.jpg
+          </a>
+        </td>
+
+        <td>artefacts/P7101556_thumbnail.jpg</td>
+
+        <td>instance_of</td>
+
+        <td>
+          <select name="instance_of_P7101556">
+            <option value="">— select —</option>
+            <option value="photograph" selected="">photograph</option>
+            <option value="record_resource">record resource</option>
+            <option value="record_set">record set</option>
+            <option value="record">record</option>
+            <option value="record_part">record part</option>
+            <option value="sash">sash</option>
+            <option value="building">building</option>
+            <option value="bed">bed</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <img class="review-thumbnail" src="../media/delini/artefacts/P7101561_thumbnail.jpg" alt="P7101561_thumbnail.jpg">
+        </td>
+
+        <td>
+          <a href="https://example.com/artefact/P7101561_thumbnail.jpg">
+            P7101561_thumbnail.jpg
+          </a>
+        </td>
+
+        <td>artefacts/P7101561_thumbnail.jpg</td>
+
+        <td>instance_of</td>
+
+        <td>
+          <select name="instance_of_P7101561">
+            <option value="">— select —</option>
+            <option value="photograph" selected="">photograph</option>
+            <option value="record_resource">record resource</option>
+            <option value="record_set">record set</option>
+            <option value="record">record</option>
+            <option value="record_part">record part</option>
+            <option value="sash">sash</option>
+            <option value="building">building</option>
+            <option value="bed">bed</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <img class="review-thumbnail" src="../media/delini/artefacts/P7101565_thumbnail.jpg" alt="P7101565_thumbnail.jpg">
+        </td>
+
+        <td>
+          <a href="https://example.com/artefact/P7101565_thumbnail.jpg">
+            P7101565_thumbnail.jpg
+          </a>
+        </td>
+
+        <td>artefacts/P7101565_thumbnail.jpg</td>
+
+        <td>instance_of</td>
+
+        <td>
+          <select name="instance_of_P7101565">
+            <option value="">— select —</option>
+            <option value="photograph" selected="">photograph</option>
+            <option value="record_resource">record resource</option>
+            <option value="record_set">record set</option>
+            <option value="record">record</option>
+            <option value="record_part">record part</option>
+            <option value="sash">sash</option>
+            <option value="building">building</option>
+            <option value="bed">bed</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <img class="review-thumbnail" src="../media/delini/records/P7101590_thumbnail.jpg" alt="P7101590_thumbnail.jpg">
+        </td>
+
+        <td>
+          <a href="https://example.com/artefact/P7101590_thumbnail.jpg">
+            P7101590_thumbnail.jpg
+          </a>
+        </td>
+
+        <td>records/P7101590_thumbnail.jpg</td>
+
+        <td>instance_of</td>
+
+        <td>
+          <select name="instance_of_P7101590">
+            <option value="">— select —</option>
+            <option value="photograph">photograph</option>
+            <option value="record_resource" selected="">record resource</option>
+            <option value="record_set">record set</option>
+            <option value="record">record</option>
+            <option value="record_part">record part</option>
+            <option value="sash">sash</option>
+            <option value="building">building</option>
+            <option value="bed">bed</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <img class="review-thumbnail" src="../media/delini/records/P7101623_thumbnail.jpg" alt="P7101623_thumbnail.jpg">
+        </td>
+
+        <td>
+          <a href="https://example.com/artefact/P7101623_thumbnail.jpg">
+            P7101623_thumbnail.jpg
+          </a>
+        </td>
+
+        <td>records/P7101623_thumbnail.jpg</td>
+
+        <td>instance_of</td>
+
+        <td>
+          <select name="instance_of_P7101623">
+            <option value="">— select —</option>
+            <option value="photograph">photograph</option>
+            <option value="record_resource" selected="">record resource</option>
+            <option value="record_set">record set</option>
+            <option value="record">record</option>
+            <option value="record_part">record part</option>
+            <option value="sash">sash</option>
+            <option value="building">building</option>
+            <option value="bed">bed</option>
+          </select>
+        </td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+  <button type="button" id="save-review">
+    Save review as HTML
+  </button>
+
+
+  <script>
+    /*
+     * Initialise review provenance.
+     *
+     * A newly rendered review has no review_started_at value.
+     * When first opened, the browser records the start time.
+     *
+     * A saved review already contains its start timestamp, so
+     * reopening it does not overwrite the original value.
+     */
+
+    const startedAt = document.getElementById("review-started-at");
+
+    if (!startedAt.value) {
+      startedAt.value = new Date().toISOString();
+    }
+
+
+    /*
+     * Save the current review as HTML.
+     *
+     * HTML form state normally lives in DOM properties and is not
+     * necessarily reflected in the HTML attributes. Before saving,
+     * we clone the document and explicitly persist the current
+     * values of inputs and select elements into that clone.
+     */
+
+    document
+      .getElementById("save-review")
+      .addEventListener("click", saveReview);
+
+
+    function saveReview() {
+
+      /*
+       * Record when this review artefact was saved.
+       */
+
+      const savedAt = new Date().toISOString();
+
+      document.getElementById("review-saved-at").value = savedAt;
+
+
+      /*
+       * Clone the complete document.
+       */
+
+      const clone = document.documentElement.cloneNode(true);
+
+
+      /*
+       * Persist text, email, and hidden input values.
+       */
+
+      const originalInputs = document.querySelectorAll("input");
+      const clonedInputs = clone.querySelectorAll("input");
+
+      originalInputs.forEach((input, index) => {
+        clonedInputs[index].setAttribute("value", input.value);
+      });
+
+
+      /*
+       * Persist select values by explicitly marking the selected
+       * option in the cloned document.
+       */
+
+      const originalSelects = document.querySelectorAll("select");
+      const clonedSelects = clone.querySelectorAll("select");
+
+      originalSelects.forEach((select, index) => {
+
+        const clonedSelect = clonedSelects[index];
+
+        Array.from(clonedSelect.options).forEach(option => {
+          option.removeAttribute("selected");
+        });
+
+        if (select.selectedIndex >= 0) {
+          clonedSelect.options[
+            select.selectedIndex
+          ].setAttribute("selected", "");
+        }
+
+      });
+
+
+      /*
+       * Serialise the cloned document.
+       */
+
+      const html =
+        "<!DOCTYPE html>\n" +
+        clone.outerHTML;
+
+
+      /*
+       * Create a temporary downloadable HTML file.
+       */
+
+      const blob = new Blob(
+        [html],
+        { type: "text/html;charset=utf-8" }
+      );
+
+      const url = URL.createObjectURL(blob);
+
+      const download = document.createElement("a");
+
+      download.href = url;
+      download.download = "betwixt-review-reviewed.html";
+
+      document.body.appendChild(download);
+
+      download.click();
+
+      document.body.removeChild(download);
+
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+
+
+
+</body></html>

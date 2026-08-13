@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{title}}</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      line-height: 1.4;
+      color: #222;
+    }
+
+    h1 {
+      margin-bottom: 1.5rem;
+    }
+
+    .reviewer {
+      margin-bottom: 1.5rem;
+    }
+
+    .reviewer label {
+      display: inline-block;
+      margin-right: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .reviewer input {
+      margin-left: 0.4rem;
+      padding: 0.35rem;
+    }
+
+    .review-table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-table {
+      border-collapse: collapse;
+      min-width: 100%;
+      width: max-content;
+    }
+
+    .review-table th,
+    .review-table td {
+      border: 1px solid #bbb;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .review-table th {
+      background: #f2f2f2;
+    }
+
+    .row-number {
+     width: 3rem;
+     min-width: 3rem;
+     text-align: right !important;
+     color: #666;
+     white-space: nowrap;
+    }
+
+    .evidence {
+      width: 220px;
+    }
+
+    .review-thumbnail {
+      display: block;
+      max-width: 200px;
+      max-height: 160px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .evidence-title {
+      max-width: 200px;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .view-source {
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+    }
+
+    .review-cell {
+      min-width: 180px;
+    }
+
+    .candidate-select {
+      width: 100%;
+      min-width: 160px;
+      box-sizing: border-box;
+      padding: 0.35rem;
+      margin-bottom: 0.45rem;
+      font-weight: 600;
+    }
+
+    .candidate-control {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .candidate-control .candidate-select {
+      margin-bottom: 0;
+    }
+
+    .range-link {
+      display: none;
+      flex: 0 0 auto;
+      text-decoration: none;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .candidate-select:disabled {
+      color: #222;
+      background: #fff;
+      opacity: 1;
+    }
+
+    .review-actions {
+      white-space: nowrap;
+    }
+
+    .review-actions button {
+      border: 0;
+      background: none;
+      padding: 0;
+      margin-right: 0.6rem;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.9rem;
+    }
+
+    .other-proposal {
+      display: none;
+      margin-top: 0.5rem;
+    }
+
+    .other-proposal input {
+      box-sizing: border-box;
+      width: 100%;
+      min-width: 160px;
+      padding: 0.35rem;
+    }
+
+    .review-cell.is-deferred {
+      background: #faf7ee;
+    }
+
+    .review-cell.is-rejected {
+      background: #fdf0f0;
+    }
+
+    .review-cell.is-modified {
+      background: #f3f7f3;
+    }
+
+    #save-review {
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>{{title}}</h1>
+
+  {{#description}}
+  <p class="review-description">
+    {{description}}
+    <span class="betwixt-id">[betwixt-{{betwixt_id}}]</span>
+  </p>
+  {{/description}}
+
+  <div class="reviewer">
+
+    <label>
+      Name
+      <input type="text"
+             id="reviewer-name"
+             name="reviewer_name">
+    </label>
+
+    <label>
+      Email
+      <input type="email"
+             id="reviewer-email"
+             name="reviewer_email">
+    </label>
+
+    <input type="hidden"
+           id="betwixt-id"
+           name="betwixt_id"
+           value="{{betwixt_id}}">
+
+    <input type="hidden"
+           id="betwixt-generated-at"
+           name="betwixt_generated_at"
+           value="{{betwixt_generated_at}}">
+
+    <input type="hidden"
+           id="review-started-at"
+           name="review_started_at"
+           value="">
+
+    <input type="hidden"
+           id="review-saved-at"
+           name="review_saved_at"
+           value="">
+
+    <input type="hidden"
+           id="review-source-filename"
+           name="review_source_filename"
+           value="">
+
+    <input type="hidden"
+           id="review-saved-filename"
+           name="review_saved_filename"
+           value="">
+
+  </div>
+
+  <div class="review-table-container">
+  <table class="review-table">
+
+    <thead>
+      <tr>
+        <th class="row-number">#</th>
+        <th>Evidence</th>
+        <th>Subject</th>
+        <th>Predicate</th>
+        <th>Value</th>
+
+        {{#context_columns}}
+        <th class="context-column">{{name}}</th>
+        {{/context_columns}}
+      </tr>
+    </thead>
+
+    <tbody>
+
+{{#claims}}
+      <tr data-page-id="{{page_id}}">
+        <td class="row-number">{{row_number}}</td>
+
+        <td class="evidence">
+
+          <img class="review-thumbnail"
+               src="{{thumbnail_url}}"
+               alt="{{title}}"
+               data-url="{{page_url}}">
+
+          <div class="evidence-title">
+            {{title}}
+          </div>
+
+          <button type="button"
+                  class="view-source"
+                  data-url="{{page_url}}">
+            View source
+          </button>
+
+        </td>
+
+        <td class="review-cell">
+
+          <div class="candidate-control">
+            <select class="candidate-select"
+                    name="subject_selected_{{page_id}}">
+              <option value="{{subject}}"
+                      data-url=""
+                      selected>{{subject}}</option>
+
+              {{#subject_range}}
+              {{^is_other}}
+              <option value="{{label}}"
+                      data-url="{{url}}">{{display_label}}</option>
+              {{/is_other}}
+              {{#is_other}}
+              <option value="__other__"
+                      data-url="">Other proposal...</option>
+              {{/is_other}}
+              {{/subject_range}}
+            </select>
+
+            <a class="range-link"
+               target="_blank"
+               rel="noopener noreferrer"
+               title="Open external definition">↗</a>
+          </div>
+
+          <div class="review-actions">
+            <button type="button" class="defer-action">Defer</button>
+            <button type="button" class="reject-action">Reject</button>
+          </div>
+
+          <input type="hidden"
+                 class="review-state"
+                 name="subject_review_{{page_id}}"
+                 value="accept">
+
+          <div class="other-proposal">
+            <input type="text"
+                   name="subject_alternative_{{page_id}}"
+                   placeholder="Alternative subject">
+          </div>
+        </td>
+
+        <td class="review-cell">
+
+          <div class="candidate-control">
+            <select class="candidate-select"
+                    name="predicate_selected_{{page_id}}">
+              <option value="{{predicate}}"
+                      data-url=""
+                      selected>{{predicate}}</option>
+
+              {{#predicate_range}}
+              {{^is_other}}
+              <option value="{{label}}"
+                      data-url="{{url}}">{{display_label}}</option>
+              {{/is_other}}
+              {{#is_other}}
+              <option value="__other__"
+                      data-url="">Other proposal...</option>
+              {{/is_other}}
+              {{/predicate_range}}
+            </select>
+
+            <a class="range-link"
+               target="_blank"
+               rel="noopener noreferrer"
+               title="Open external definition">↗</a>
+          </div>
+
+          <div class="review-actions">
+            <button type="button" class="defer-action">Defer</button>
+            <button type="button" class="reject-action">Reject</button>
+          </div>
+
+          <input type="hidden"
+                 class="review-state"
+                 name="predicate_review_{{page_id}}"
+                 value="accept">
+
+          <div class="other-proposal">
+            <input type="text"
+                   name="predicate_alternative_{{page_id}}"
+                   placeholder="Alternative predicate">
+          </div>
+        </td>
+
+        <td class="review-cell">
+
+          <div class="candidate-control">
+            <select class="candidate-select"
+                    name="value_selected_{{page_id}}">
+              <option value="{{value}}"
+                      data-url=""
+                      selected>{{value}}</option>
+
+              {{#value_range}}
+              {{^is_other}}
+              <option value="{{label}}"
+                      data-url="{{url}}">{{display_label}}</option>
+              {{/is_other}}
+              {{#is_other}}
+              <option value="__other__"
+                      data-url="">Other proposal...</option>
+              {{/is_other}}
+              {{/value_range}}
+            </select>
+
+            <a class="range-link"
+               target="_blank"
+               rel="noopener noreferrer"
+               title="Open external definition">↗</a>
+          </div>
+
+          <div class="review-actions">
+            <button type="button" class="defer-action">Defer</button>
+            <button type="button" class="reject-action">Reject</button>
+          </div>
+
+          <input type="hidden"
+                 class="review-state"
+                 name="value_review_{{page_id}}"
+                 value="accept">
+
+          <div class="other-proposal">
+            <input type="text"
+                   name="value_alternative_{{page_id}}"
+                   placeholder="Alternative value">
+          </div>
+        </td>
+
+        {{#context}}
+        <td class="context-column">
+          {{value}}
+        </td>
+        {{/context}}
+
+      </tr>
+{{/claims}}
+
+    </tbody>
+  </table>
+
+  </div>
+
+  <button type="button" id="save-review">
+    Save review as HTML
+  </button>
+
+
+  <script>
+
+    /*
+     * Review provenance
+     */
+
+    const startedAt =
+      document.getElementById("review-started-at");
+
+    if (!startedAt.value) {
+      startedAt.value = new Date().toISOString();
+    }
+
+    const sourceFilenameField =
+      document.getElementById("review-source-filename");
+
+    if (!sourceFilenameField.value) {
+
+      const pathname = window.location.pathname;
+
+      const sourceFilename =
+        decodeURIComponent(
+          pathname.substring(pathname.lastIndexOf("/") + 1)
+        ) || "review.html";
+
+      sourceFilenameField.value = sourceFilename;
+    }
+
+
+    /*
+     * Review interaction
+     */
+
+    document
+      .querySelectorAll(".review-cell")
+      .forEach(cell => {
+
+        const select = cell.querySelector(".candidate-select");
+        const state = cell.querySelector(".review-state");
+        const otherProposal = cell.querySelector(".other-proposal");
+        const rangeLink = cell.querySelector(".range-link");
+        const defer = cell.querySelector(".defer-action");
+        const reject = cell.querySelector(".reject-action");
+
+        function clearStateClasses() {
+          cell.classList.remove(
+            "is-modified",
+            "is-deferred",
+            "is-rejected"
+          );
+        }
+
+        function updateRangeLink() {
+          const option = select.options[select.selectedIndex];
+          const url = option ? option.dataset.url : "";
+
+          if (url) {
+            rangeLink.href = url;
+            rangeLink.style.display = "inline-block";
+          } else {
+            rangeLink.removeAttribute("href");
+            rangeLink.style.display = "none";
+          }
+        }
+
+        function updateOtherProposal() {
+          if (select.value === "__other__") {
+            otherProposal.style.display = "block";
+          } else {
+            otherProposal.style.display = "none";
+          }
+        }
+
+        defer.addEventListener("click", function () {
+          clearStateClasses();
+          state.value = "defer";
+          cell.classList.add("is-deferred");
+        });
+
+        reject.addEventListener("click", function () {
+          clearStateClasses();
+          state.value = "reject";
+          cell.classList.add("is-rejected");
+        });
+
+        select.addEventListener("change", function () {
+          state.value = "accept";
+          clearStateClasses();
+          cell.classList.add("is-modified");
+          updateOtherProposal();
+          updateRangeLink();
+
+          if (this.value === "__other__") {
+            const input = otherProposal.querySelector("input");
+            if (input) input.focus();
+          }
+        });
+
+        updateOtherProposal();
+        updateRangeLink();
+
+      });
+
+
+    /*
+     * Open original evidence source
+     */
+
+    function openSource(url) {
+
+      window.open(
+        url,
+        "betwixt-source",
+        "width=1100,height=800,resizable=yes,scrollbars=yes"
+      );
+    }
+
+
+    document
+      .querySelectorAll(".view-source")
+      .forEach(button => {
+
+        button.addEventListener("click", function () {
+          openSource(this.dataset.url);
+        });
+
+      });
+
+
+    document
+      .querySelectorAll(".review-thumbnail")
+      .forEach(image => {
+
+        image.addEventListener("click", function () {
+          openSource(this.dataset.url);
+        });
+
+      });
+
+    /*
+     * Save reviewed HTML
+     */
+
+    function reviewedFilename(sourceFilename) {
+
+      if (sourceFilename.toLowerCase().endsWith(".html")) {
+        return sourceFilename.slice(0, -5) +
+          "-betwixt-reviewed.html";
+      }
+
+      if (sourceFilename.toLowerCase().endsWith(".htm")) {
+        return sourceFilename.slice(0, -4) +
+          "-betwixt-reviewed.html";
+      }
+
+      return sourceFilename + "-betwixt-reviewed.html";
+    }
+
+
+    document
+      .getElementById("save-review")
+      .addEventListener("click", saveReview);
+
+
+    function saveReview() {
+
+      document
+        .getElementById("review-saved-at")
+        .value = new Date().toISOString();
+
+      const sourceFilename =
+        document
+          .getElementById("review-source-filename")
+          .value;
+
+      const outputFilename =
+        reviewedFilename(sourceFilename);
+
+      document
+        .getElementById("review-saved-filename")
+        .value = outputFilename;
+
+      const clone =
+        document.documentElement.cloneNode(true);
+
+      const originalInputs =
+        document.querySelectorAll("input");
+
+      const clonedInputs =
+        clone.querySelectorAll("input");
+
+      originalInputs.forEach((input, index) => {
+
+        const clonedInput = clonedInputs[index];
+
+        clonedInput.setAttribute("value", input.value);
+
+        if (input.type === "radio") {
+
+          if (input.checked) {
+            clonedInput.setAttribute("checked", "");
+          } else {
+            clonedInput.removeAttribute("checked");
+          }
+        }
+
+      });
+
+
+      const originalSelects =
+        document.querySelectorAll("select");
+
+      const clonedSelects =
+        clone.querySelectorAll("select");
+
+      originalSelects.forEach((select, index) => {
+
+        const clonedSelect = clonedSelects[index];
+
+        Array.from(clonedSelect.options)
+          .forEach(option => {
+
+            if (option.value === select.value) {
+              option.setAttribute("selected", "");
+            } else {
+              option.removeAttribute("selected");
+            }
+
+          });
+
+        if (select.disabled) {
+          clonedSelect.setAttribute("disabled", "");
+        } else {
+          clonedSelect.removeAttribute("disabled");
+        }
+
+      });
+
+
+      /*
+       * Persist review-cell state and proposal visibility.
+       */
+
+      const originalCells =
+        document.querySelectorAll(".review-cell");
+
+      const clonedCells =
+        clone.querySelectorAll(".review-cell");
+
+      originalCells.forEach((cell, index) => {
+        clonedCells[index].className = cell.className;
+      });
+
+      const originalProposals =
+        document.querySelectorAll(".other-proposal");
+
+      const clonedProposals =
+        clone.querySelectorAll(".other-proposal");
+
+      originalProposals.forEach((proposal, index) => {
+        clonedProposals[index].style.display =
+          proposal.style.display;
+      });
+
+
+      const originalRangeLinks =
+        document.querySelectorAll(".range-link");
+
+      const clonedRangeLinks =
+        clone.querySelectorAll(".range-link");
+
+      originalRangeLinks.forEach((link, index) => {
+
+        clonedRangeLinks[index].style.display =
+          link.style.display;
+
+        if (link.getAttribute("href")) {
+          clonedRangeLinks[index].setAttribute(
+            "href",
+            link.getAttribute("href")
+          );
+        } else {
+          clonedRangeLinks[index].removeAttribute("href");
+        }
+
+      });
+
+
+      const html =
+        "<!DOCTYPE html>\n" +
+        clone.outerHTML;
+
+      const blob =
+        new Blob(
+          [html],
+          { type: "text/html;charset=utf-8" }
+        );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const download =
+        document.createElement("a");
+
+      download.href = url;
+      download.download = outputFilename;
+
+      document.body.appendChild(download);
+      download.click();
+      document.body.removeChild(download);
+
+      URL.revokeObjectURL(url);
+    }
+
+  </script>
+
+</body>
+</html>

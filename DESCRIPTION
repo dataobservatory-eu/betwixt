@@ -9,18 +9,20 @@ Authors@R:
       role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-7513-6760")
     )
-Description: Betwixt provides a lightweight framework for expressing scoped 
-   semantic claims and rendering them for human review. Claims are represented
-   as simple tabular assertions that can be integrated with existing data, 
-   metadata, and templating workflows.
+Description: Provides a lightweight framework for expressing, reviewing, and
+   documenting semantic claims in tabular data. Claims can be associated with
+   review states and provenance and presented through configurable human review
+   interfaces. The framework supports long and wide review projections while
+   remaining compatible with existing data, metadata, and templating workflows.
 URL: https://betwixt.dataobservatory.eu/
 BugReports: https://github.com/dataobservatory-eu/betwixt/issues
-License: GPL (>= 3)
+License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr,
+    reticulate,
     rmarkdown,
     testthat (>= 3.0.0)
 Imports: 

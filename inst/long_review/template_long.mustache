@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{{title}}</title>
+
+  <style>
+{{{betwixt_css}}}
+  </style>
+</head>
+
+<body>
+  <main class="review">
+    <header class="review-header">
+      <h1>{{title}}</h1>
+
+      {{#description}}
+      <p class="review-description">{{description}}</p>
+      {{/description}}
+    </header>
+
+    <form id="betwixt-review">
+      <input type="hidden" name="betwixt_id" value="{{betwixt_id}}">
+      <input type="hidden"
+             name="betwixt_generated_at"
+             value="{{betwixt_generated_at}}">
+
+      <div class="table-scroll-top" aria-hidden="true">
+        <div class="table-scroll-top-content"></div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="review-table">
+          <thead>
+            <tr>
+              <th class="row-number">#</th>
+
+              {{#has_evidence}}
+              <th class="evidence-column">Evidence</th>
+              {{/has_evidence}}
+
+              {{#description_columns}}
+              <th class="description-column">{{heading}}</th>
+              {{/description_columns}}
+
+              {{#assertion_columns}}
+              <th class="assertion-column">{{heading}}</th>
+              {{/assertion_columns}}
+
+              {{#context_columns}}
+              <th class="context-column">{{name}}</th>
+              {{/context_columns}}
+            </tr>
+          </thead>
+
+          <tbody>
+{{#claims}}
+            <tr data-row-number="{{row_number}}">
+              <td class="row-number">{{row_number}}</td>
+
+              {{#has_evidence}}
+              <td class="evidence-cell">
+                {{#has_evidence_media}}
+                <img
+                  class="evidence-media{{#has_evidence_url}} evidence-linked{{/has_evidence_url}}"
+                  src="{{evidence_media_file}}"
+                  alt="Evidence for row {{row_number}}"
+                  {{#has_evidence_url}}data-url="{{evidence_url}}"{{/has_evidence_url}}
+                >
+                {{/has_evidence_media}}
+
+                {{#has_evidence_url}}
+                <button
+                  type="button"
+                  class="view-source"
+                  data-url="{{evidence_url}}"
+                >
+                  View source
+                </button>
+                {{/has_evidence_url}}
+              </td>
+              {{/has_evidence}}
+
+              {{#descriptions}}
+              <td class="description-cell">
+                {{#is_description}}
+                <textarea
+                  name="{{name}}_{{row_number}}"
+                >{{value}}</textarea>
+                {{/is_description}}
+
+                {{^is_description}}
+                <input
+                  type="text"
+                  name="{{name}}_{{row_number}}"
+                  value="{{value}}"
+                >
+                {{/is_description}}
+              </td>
+              {{/descriptions}}
+
+              {{#assertions}}
+              <td class="review-cell">
+                {{#has_range}}
+                <div class="candidate-control">
+                  <select
+                    class="candidate-select"
+                    name="{{name}}_selected_{{row_number}}"
+                    data-original-value="{{value}}"
+                  >
+                    <option
+                      value="{{value}}"
+                      data-url=""
+                      selected
+                    >
+                      {{value}}
+                    </option>
+
+                    {{#range}}
+                    {{^is_other}}
+                    <option
+                      value="{{label}}"
+                      data-url="{{url}}"
+                    >
+                      {{display_label}}
+                    </option>
+                    {{/is_other}}
+
+                    {{#is_other}}
+                    <option value="__other__" data-url="">
+                      Other proposal...
+                    </option>
+                    {{/is_other}}
+                    {{/range}}
+                  </select>
+
+                  <a
+                    class="range-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open external definition"
+                    hidden
+                  >↗</a>
+                </div>
+                {{/has_range}}
+
+                {{^has_range}}
+                <div class="candidate-control">
+                  <input
+                    type="text"
+                    class="candidate-input"
+                    name="{{name}}_selected_{{row_number}}"
+                    value="{{value}}"
+                    data-original-value="{{value}}"
+                  >
+                </div>
+                {{/has_range}}
+
+                <div class="other-proposal" hidden>
+                  <input
+                    type="text"
+                    class="other-proposal-input"
+                    name="{{name}}_alternative_{{row_number}}"
+                    placeholder="Alternative {{heading}}"
+                  >
+                </div>
+
+                <div class="review-actions">
+                  <button
+                    type="button"
+                    class="defer-action"
+                  >
+                    Defer
+                  </button>
+
+                  <button
+                    type="button"
+                    class="reject-action"
+                  >
+                    Reject
+                  </button>
+                </div>
+
+                <input
+                  type="hidden"
+                  class="review-state"
+                  name="{{name}}_review_{{row_number}}"
+                  value="accept"
+                >
+              </td>
+              {{/assertions}}
+
+              {{#context}}
+              <td class="context-cell">{{value}}</td>
+              {{/context}}
+            </tr>
+{{/claims}}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="review-footer">
+        <button type="submit" class="save-review">
+          Save review
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+{{{betwixt_js}}}
+  </script>
+</body>
+</html>

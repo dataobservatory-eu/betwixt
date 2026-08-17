@@ -1,0 +1,193 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 2rem;
+  line-height: 1.4;
+  color: #222;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+}
+
+.reviewer {
+  margin-bottom: 1.5rem;
+}
+
+.reviewer label {
+  display: inline-block;
+  margin-right: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.reviewer input {
+  margin-left: 0.4rem;
+  padding: 0.35rem;
+}
+
+.review-table-scroll-top {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.review-table-scroll-top-content {
+  height: 1px;
+}
+
+.review-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.review-table {
+  border-collapse: collapse;
+  min-width: 100%;
+  width: max-content;
+}
+
+.review-table th,
+.review-table td {
+  border: 1px solid #bbb;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.review-table th {
+  background: #f2f2f2;
+}
+
+.row-number {
+  width: 3rem;
+  min-width: 3rem;
+  text-align: right !important;
+  color: #666;
+  white-space: nowrap;
+}
+
+.evidence {
+  width: 220px;
+}
+
+.review-thumbnail {
+  display: block;
+  max-width: 200px;
+  max-height: 160px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.review-thumbnail-linked {
+  cursor: pointer;
+}
+
+.view-source {
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.description-cell {
+  min-width: 180px;
+}
+
+.description-cell input,
+.description-cell textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+}
+
+.description-cell textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.review-cell {
+  min-width: 180px;
+}
+
+.candidate-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+  font-weight: 600;
+}
+
+.candidate-select {
+  width: 100%;
+  min-width: 160px;
+  box-sizing: border-box;
+  padding: 0.35rem;
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+
+.candidate-control {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.45rem;
+}
+
+.candidate-control .candidate-select,
+.candidate-control .candidate-input {
+  margin-bottom: 0;
+}
+
+.range-link {
+  display: none;
+  flex: 0 0 auto;
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.review-actions {
+  white-space: nowrap;
+}
+
+.review-actions button {
+  border: 0;
+  background: none;
+  padding: 0;
+  margin-right: 0.6rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.other-proposal {
+  display: none;
+  margin-top: 0.5rem;
+}
+
+.other-proposal input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+}
+
+.review-cell.is-deferred {
+  background: #faf7ee;
+}
+
+.review-cell.is-rejected {
+  background: #fdf0f0;
+}
+
+.review-cell.is-modified {
+  background: #f3f7f3;
+}
+
+#save-review {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}

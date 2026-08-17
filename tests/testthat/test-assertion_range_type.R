@@ -1,91 +1,84 @@
-# Wide projection ---------------------------------------------------------
-
-test_that("wide assertion columns use value ranges", {
-  expect_identical(
-    assertion_range_type(
-      column = "instance_of",
-      template = "wide_review"
-    ),
-    "value"
+test_that("wide assertion uses value range", {
+  result <- assertion_range_type(
+    column = "instance_of",
+    template = "wide_review"
   )
 
+  # Wide assertion columns contain predicate values.
   expect_identical(
-    assertion_range_type(
-      column = "inventory_number",
-      template = "wide_review"
-    ),
+    result,
     "value"
   )
 })
 
+test_that("long subject uses subject range", {
+  result <- assertion_range_type(
+    column = "subject",
+    template = "long_review"
+  )
 
-# Long projection ---------------------------------------------------------
-
-test_that("long subject column uses subject range", {
+  # The explicit subject component uses the subject range.
   expect_identical(
-    assertion_range_type(
-      column = "subject",
-      template = "long_review"
-    ),
+    result,
     "subject"
   )
 })
 
+test_that("long predicate uses predicate range", {
+  result <- assertion_range_type(
+    column = "predicate",
+    template = "long_review"
+  )
 
-test_that("long predicate column uses predicate range", {
+  # The explicit predicate component uses the predicate range.
   expect_identical(
-    assertion_range_type(
-      column = "predicate",
-      template = "long_review"
-    ),
+    result,
     "predicate"
   )
 })
 
+test_that("long value uses value range", {
+  result <- assertion_range_type(
+    column = "value",
+    template = "long_review"
+  )
 
-test_that("long value column uses value range", {
+  # The elementary value component uses the value range.
   expect_identical(
-    assertion_range_type(
-      column = "value",
-      template = "long_review"
-    ),
+    result,
     "value"
   )
 })
 
+test_that("long numbered values use value range", {
+  result1 <- assertion_range_type(
+    column = "value1",
+    template = "long_review"
+  )
 
-test_that("long numbered value columns use value range", {
+  result2 <- assertion_range_type(
+    column = "value2",
+    template = "long_review"
+  )
+
+  # Numbered value columns retain value semantics.
   expect_identical(
-    assertion_range_type(
-      column = "value1",
-      template = "long_review"
-    ),
+    result1,
     "value"
   )
 
   expect_identical(
-    assertion_range_type(
-      column = "value2",
-      template = "long_review"
-    ),
-    "value"
-  )
-
-  expect_identical(
-    assertion_range_type(
-      column = "value10",
-      template = "long_review"
-    ),
+    result2,
     "value"
   )
 })
 
-
-test_that("long unrelated assertion column has no range type", {
-  expect_null(
-    assertion_range_type(
-      column = "certainty",
-      template = "long_review"
-    )
+test_that("unknown long assertion has no range type", {
+  result <- assertion_range_type(
+    column = "certainty",
+    template = "long_review"
   )
+
+  # Arbitrary column names are not assigned assertion semantics.
+  expect_null(result)
 })

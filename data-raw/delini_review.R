@@ -55,7 +55,7 @@ delini_review <- tibble::tribble(
 
   "P7101590",
   "record",
-  "media/delini/records/P7101590_thumbnail.jpg",
+  "https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101590_thumbnail.jpg",
   "[image shown]",
   "Delini farmhouse photographs",
   "a record containing two photographs of the Delini farmhouse",
@@ -67,7 +67,7 @@ delini_review <- tibble::tribble(
 
   "P7101623",
   "record",
-  "media/delini/records/P7101623_thumbnail.jpg",
+  "https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101623_thumbnail.jpg",
   "[image shown]",
   "Delini farmhouse floor plan",
   "a floor plan of the Delini farmhouse prepared for its reconstruction",

@@ -4,11 +4,14 @@
 \alias{delini_range}
 \title{Candidate ranges for the Delini Farmstead review}
 \format{
-A tibble with 14 rows and 5 columns:
+A tibble with 13 rows and 6 columns:
 \describe{
 \item{type}{Component of an elementary semantic assertion to which the
 range entry applies: \code{subject}, \code{predicate}, or \code{value}.}
-\item{rank}{Display order of the candidate within its type.}
+\item{field}{Optional predicate field to which a value range applies.
+\code{NA_character_} indicates that the range is not restricted to a
+particular wide-review field.}
+\item{rank}{Display order of the candidate within its applicable range.}
 \item{label}{Human-readable candidate value.}
 \item{namespace}{Vocabulary namespace, where a controlled vocabulary
 term is supplied.}
@@ -24,6 +27,16 @@ The table includes alternative interpretations of the review subject,
 candidate predicates, selected vocabulary-backed values, and the reserved
 \code{other} value used to permit an open proposal.
 
+Range entries are identified by the component of an elementary assertion
+to which they apply. Value ranges may additionally identify a \code{field},
+allowing a wide review to associate a range with a particular predicate
+column.
+
+Subject and predicate ranges are general components of an elementary
+assertion and therefore do not require a \code{field}. The example value range
+is associated with \code{instance_of}, allowing it to be used as the controlled
+range for that predicate column in a wide review.
+
 The dataset intentionally contains both vocabulary-backed and local
 candidate values. Missing namespaces or URLs therefore do not indicate
 missing data requiring correction.
@@ -31,15 +44,14 @@ missing data requiring correction.
 The value \code{other} is reserved for an open-range review control that allows
 the curator to propose a value not otherwise listed.
 
-The current range is suitable for demonstrating the long review layout.
-Wide review layouts may associate ranges with individual predicate
-columns, for example using a controlled range for \code{instance_of} while
-treating \code{inventory_number} as an open textual value.
+When a current assertion value also occurs in its applicable range,
+Betwixt may exclude that entry from the alternatives because the current
+value is rendered separately as the initially selected value.
 }
 \examples{
 delini_range
 
 }
 \seealso{
-\link{delini_review}
+\link{delini_review}, \code{\link[=betwixt_render]{betwixt_render()}}
 }

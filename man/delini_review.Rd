@@ -4,13 +4,12 @@
 \alias{delini_review}
 \title{Delini Farmstead review data}
 \format{
-A tibble with 5 rows and 11 columns:
+A tibble with 5 rows and 12 columns:
 \describe{
 \item{evidence_id}{Identifier of the media object used as evidence.}
-\item{evidence_type}{Role of the media object as evidence, such as
-\verb{artefact photograph} or \code{record}.}
-\item{thumbnail_url}{Package-relative path to the thumbnail used in the
-review interface.}
+\item{thumbnail_url}{URL of the thumbnail presented as visual evidence
+in the review interface.}
+\item{evidence_url}{URL of the supporting source, where available.}
 \item{subject}{Human-readable placeholder identifying the subject of
 the candidate assertion.}
 \item{label_en}{English label for the depicted or documented object.}
@@ -18,8 +17,10 @@ the candidate assertion.}
 object.}
 \item{label_hu}{Hungarian label for the depicted or documented object.}
 \item{description_hu}{Hungarian description, where available.}
+\item{inventory_number}{Inventory number, where available.}
 \item{instance_of}{Candidate value for an \verb{instance of} assertion.}
-\item{inventory_number}{Candidate inventory number, where available.}
+\item{evidence_type}{Role of the media object as evidence, such as
+\verb{artefact photograph} or \code{record}.}
 \item{held_by}{Holding institution supplied as contextual information
 for the review.}
 }
@@ -37,15 +38,20 @@ photographs show the Delini farmhouse, a tablet-woven sash, and a bed.
 The records show photographs of the farmhouse and a floor plan used in
 its reconstruction.
 
-The dataset is designed to support both long and wide review layouts.
-In a wide review layout, \code{instance_of} and \code{inventory_number} can be
-treated as reviewable predicate columns, while labels and descriptions
-are editable descriptive metadata and \code{held_by} provides review context.
+The dataset is designed to support both long and wide review projections.
+In a wide review, \code{instance_of} can be treated as a reviewable predicate
+column, labels and descriptions can be presented as editable descriptive
+metadata, and \code{evidence_type} and \code{held_by} can provide review context.
+Evidence may be represented by a thumbnail and, where available, a URL
+to the source inspected by the reviewer.
+
+The semantic role of a column is not fixed by this dataset. The renderer
+determines explicitly which columns are presented as evidence, descriptive
+metadata, reviewable assertions, or contextual information.
 
 Missing descriptive values are represented by \code{NA_character_} and may be
-completed by a curator. A missing candidate assertion, such as an
-inventory number, should not by itself be interpreted as a request to
-supply a value.
+completed by a curator. A missing value in another column should not by
+itself be interpreted as a request to supply a value.
 
 \code{delini_review} is a compact demonstrator rather than a complete
 representation of the Delini Farmstead or its documentation.
@@ -55,5 +61,5 @@ delini_review
 
 }
 \seealso{
-\link{delini_range}
+\link{delini_range}, \code{\link[=betwixt_render]{betwixt_render()}}
 }

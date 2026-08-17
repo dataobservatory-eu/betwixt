@@ -11,18 +11,19 @@
 #' The records show photographs of the farmhouse and a floor plan used in
 #' its reconstruction.
 #'
-#' The dataset is designed to support both long and wide review layouts.
-#' In a wide review layout, `instance_of` and `inventory_number` can be
-#' treated as reviewable predicate columns, while labels and descriptions
-#' are editable descriptive metadata and `held_by` provides review context.
+#' The dataset is designed to support both long and wide review projections.
+#' In a wide review, `instance_of` can be treated as a reviewable predicate
+#' column, labels and descriptions can be presented as editable descriptive
+#' metadata, and `evidence_type` and `held_by` can provide review context.
+#' Evidence may be represented by a thumbnail and, where available, a URL
+#' to the source inspected by the reviewer.
 #'
-#' @format A tibble with 5 rows and 11 columns:
+#' @format A tibble with 5 rows and 12 columns:
 #' \describe{
 #'   \item{evidence_id}{Identifier of the media object used as evidence.}
-#'   \item{evidence_type}{Role of the media object as evidence, such as
-#'     `artefact photograph` or `record`.}
-#'   \item{thumbnail_url}{Package-relative path to the thumbnail used in the
-#'     review interface.}
+#'   \item{thumbnail_url}{URL of the thumbnail presented as visual evidence
+#'     in the review interface.}
+#'   \item{evidence_url}{URL of the supporting source, where available.}
 #'   \item{subject}{Human-readable placeholder identifying the subject of
 #'     the candidate assertion.}
 #'   \item{label_en}{English label for the depicted or documented object.}
@@ -30,22 +31,27 @@
 #'     object.}
 #'   \item{label_hu}{Hungarian label for the depicted or documented object.}
 #'   \item{description_hu}{Hungarian description, where available.}
+#'   \item{inventory_number}{Inventory number, where available.}
 #'   \item{instance_of}{Candidate value for an `instance of` assertion.}
-#'   \item{inventory_number}{Candidate inventory number, where available.}
+#'   \item{evidence_type}{Role of the media object as evidence, such as
+#'     `artefact photograph` or `record`.}
 #'   \item{held_by}{Holding institution supplied as contextual information
 #'     for the review.}
 #' }
 #'
 #' @details
+#' The semantic role of a column is not fixed by this dataset. The renderer
+#' determines explicitly which columns are presented as evidence, descriptive
+#' metadata, reviewable assertions, or contextual information.
+#'
 #' Missing descriptive values are represented by `NA_character_` and may be
-#' completed by a curator. A missing candidate assertion, such as an
-#' inventory number, should not by itself be interpreted as a request to
-#' supply a value.
+#' completed by a curator. A missing value in another column should not by
+#' itself be interpreted as a request to supply a value.
 #'
 #' `delini_review` is a compact demonstrator rather than a complete
 #' representation of the Delini Farmstead or its documentation.
 #'
-#' @seealso [delini_range]
+#' @seealso [delini_range], [betwixt_render()]
 #'
 #' @examples
 #' delini_review
@@ -63,11 +69,19 @@ NULL
 #' candidate predicates, selected vocabulary-backed values, and the reserved
 #' `other` value used to permit an open proposal.
 #'
-#' @format A tibble with 14 rows and 5 columns:
+#' Range entries are identified by the component of an elementary assertion
+#' to which they apply. Value ranges may additionally identify a `field`,
+#' allowing a wide review to associate a range with a particular predicate
+#' column.
+#'
+#' @format A tibble with 13 rows and 6 columns:
 #' \describe{
 #'   \item{type}{Component of an elementary semantic assertion to which the
 #'     range entry applies: `subject`, `predicate`, or `value`.}
-#'   \item{rank}{Display order of the candidate within its type.}
+#'   \item{field}{Optional predicate field to which a value range applies.
+#'     `NA_character_` indicates that the range is not restricted to a
+#'     particular wide-review field.}
+#'   \item{rank}{Display order of the candidate within its applicable range.}
 #'   \item{label}{Human-readable candidate value.}
 #'   \item{namespace}{Vocabulary namespace, where a controlled vocabulary
 #'     term is supplied.}
@@ -75,6 +89,11 @@ NULL
 #' }
 #'
 #' @details
+#' Subject and predicate ranges are general components of an elementary
+#' assertion and therefore do not require a `field`. The example value range
+#' is associated with `instance_of`, allowing it to be used as the controlled
+#' range for that predicate column in a wide review.
+#'
 #' The dataset intentionally contains both vocabulary-backed and local
 #' candidate values. Missing namespaces or URLs therefore do not indicate
 #' missing data requiring correction.
@@ -82,12 +101,11 @@ NULL
 #' The value `other` is reserved for an open-range review control that allows
 #' the curator to propose a value not otherwise listed.
 #'
-#' The current range is suitable for demonstrating the long review layout.
-#' Wide review layouts may associate ranges with individual predicate
-#' columns, for example using a controlled range for `instance_of` while
-#' treating `inventory_number` as an open textual value.
+#' When a current assertion value also occurs in its applicable range,
+#' Betwixt may exclude that entry from the alternatives because the current
+#' value is rendered separately as the initially selected value.
 #'
-#' @seealso [delini_review]
+#' @seealso [delini_review], [betwixt_render()]
 #'
 #' @examples
 #' delini_range

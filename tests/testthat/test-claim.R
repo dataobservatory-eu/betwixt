@@ -1,5 +1,4 @@
 test_that("claim creates a one-row claim_df", {
-
   ad_gdp <- claim(
     scope = "country=AD;year=2023",
     subject = "country",
@@ -22,7 +21,7 @@ test_that("claim creates a one-row claim_df", {
     )
   )
 
-  expect_equal(ad_gdp$scope,"country=AD;year=2023")
+  expect_equal(ad_gdp$scope, "country=AD;year=2023")
 
   expect_equal(ad_gdp$subject, "country")
 

@@ -62,12 +62,11 @@
 #'
 #' @export
 claim <- function(
-    scope,
-    subject,
-    predicate,
-    value
+  scope,
+  subject,
+  predicate,
+  value
 ) {
-
   x <- tibble::tibble(
     scope = scope,
     subject = subject,
@@ -83,7 +82,6 @@ claim <- function(
 #' @noRd
 #' @keywords internal
 new_claim_df <- function(x) {
-
   stopifnot(
     is.data.frame(x),
     all(c(
@@ -105,7 +103,6 @@ new_claim_df <- function(x) {
 #' @noRd
 #' @keywords internal
 validate_claim_df <- function(x) {
-
   required <- c(
     "scope",
     "subject",
@@ -128,7 +125,6 @@ validate_claim_df <- function(x) {
 #' @rdname claim_df
 #' @export
 print.claim_df <- function(x, ...) {
-
   n_claims <- nrow(x)
 
   scopes <- unique(x$scope)

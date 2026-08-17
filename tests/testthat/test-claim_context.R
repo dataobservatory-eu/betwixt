@@ -1,5 +1,4 @@
 test_that("claim_context returns a list", {
-
   x <- claim(
     scope = "country=AD;year=2023",
     subject = "country",
@@ -14,7 +13,6 @@ test_that("claim_context returns a list", {
 })
 
 test_that("claim_context contains one claim", {
-
   x <- claim(
     scope = "country=AD;year=2023",
     subject = "country",
@@ -28,7 +26,6 @@ test_that("claim_context contains one claim", {
 })
 
 test_that("claim_context preserves claim values", {
-
   x <- claim(
     scope = "country=AD;year=2023",
     subject = "country",
@@ -60,7 +57,6 @@ test_that("claim_context preserves claim values", {
 })
 
 test_that("claim_context rejects non claim_df objects", {
-
   expect_error(
     claim_context(data.frame(x = 1)),
     "claim_df"

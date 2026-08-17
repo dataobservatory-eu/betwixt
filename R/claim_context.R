@@ -1,7 +1,6 @@
 #' @keywords internal
 #' @noRd
 claim_context <- function(x) {
-
   if (!inherits(x, "claim_df")) {
     stop("x must inherit from claim_df", call. = FALSE)
   }

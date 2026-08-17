@@ -61,7 +61,6 @@ as_claim_df <- function(x) {
 #' @rdname as_claim_df
 #' @export
 as_claim_df.data.frame <- function(x) {
-
   validate_claim_df(x)
 
   new_claim_df(x)
@@ -73,4 +72,3 @@ as_claim_df.data.frame <- function(x) {
 is.claim_df <- function(x) {
   inherits(x, "claim_df")
 }
-

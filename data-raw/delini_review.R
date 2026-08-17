@@ -19,7 +19,7 @@ delini_review <- tibble::tribble(
 
   "P7101556",
   "artefact photograph",
-  "media/delini/artefacts/P7101556_thumbnail.jpg",
+  "https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101556_thumbnail.jpg",
   "[image shown]",
   "farmhouse (LEBM)",
   "the farmhouse of the Delini farmstead",
@@ -31,7 +31,7 @@ delini_review <- tibble::tribble(
 
   "P7101565",
   "artefact photograph",
-  "media/delini/artefacts/P7101565_thumbnail.jpg",
+  "https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101565_thumbnail.jpg",
   "[image shown]",
   "sash (LEBM)",
   "a tablet-woven sash in the master bedroom of the Delini farmhouse",
@@ -43,7 +43,7 @@ delini_review <- tibble::tribble(
 
   "P7101561",
   "artefact photograph",
-  "media/delini/artefacts/P7101561_thumbnail.jpg",
+  "https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101561_thumbnail.jpg",
   "[image shown]",
   "bed (LEBM)",
   "a bed in the master bedroom of the Delini farmhouse",

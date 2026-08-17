@@ -62,15 +62,9 @@ test_that("long numbered values use value range", {
   )
 
   # Numbered value columns retain value semantics.
-  expect_identical(
-    result1,
-    "value"
-  )
+  expect_identical(result1, "value")
 
-  expect_identical(
-    result2,
-    "value"
-  )
+  expect_identical(result2, "value")
 })
 
 test_that("unknown long assertion has no range type", {

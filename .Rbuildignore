@@ -10,3 +10,7 @@
 ^pkgdown$
 ^prototype$
 ^data-raw$
+^CONTRIBUTING\.md$
+^CODING-GUIDELINES\.md$
+^date.sh$
+^list.sh$

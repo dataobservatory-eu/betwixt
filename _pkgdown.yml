@@ -21,12 +21,19 @@ reference:
   - title: Rendering
     contents:
       - betwixt_render
+      - betwixt_first_render
+
+  - title: Datasets
+    contents:
+      - delini_review
+      - delini_range
 
 articles:
   - title: Concepts
     navbar: Concepts
     contents:
-      - betwixt
+      - scoped-claims
+      - layout
 
   - title: Implementations
     navbar: Implementations

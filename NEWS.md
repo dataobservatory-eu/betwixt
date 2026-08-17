@@ -1,3 +1,5 @@
 # betwixt (development version)
 
-- Initial CRAN submission.
+* Added long and wide review interfaces.
+* Added controlled and open review ranges.
+* Added the Delini Farmstead review example.

@@ -3,8 +3,6 @@
 S3method(as_claim_df,data.frame)
 S3method(print,claim_df)
 export(as_claim_df)
-export(betwixt_first_render)
 export(betwixt_render)
 export(claim)
 export(is.claim_df)
-importFrom(whisker,whisker.render)

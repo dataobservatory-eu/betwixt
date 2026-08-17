@@ -21,7 +21,6 @@ reference:
   - title: Rendering
     contents:
       - betwixt_render
-      - betwixt_first_render
 
   - title: Datasets
     contents:

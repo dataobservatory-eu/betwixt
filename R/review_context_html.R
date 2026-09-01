@@ -1,18 +1,25 @@
-#' Prepare candidate data for review rendering
+#' Generate a Betwixt review table
 #'
-#' Converts a Betwixt candidate dataset into a renderer-neutral list describing
-#' its reviewable assertions, evidence, descriptive information, contextual
-#' columns, candidate ranges, and optional evidence relations.
+#' @description
+#' Converts a prepared Betwixt review context into an HTML table containing
+#' evidence, descriptive information, reviewable assertions, finalisation
+#' controls, and display-only contextual information.
 #'
-#' This function defines the internal boundary between the candidate data model
-#' and presentation-specific renderers. It contains no HTML or template logic,
-#' allowing the rendering implementation to change without changing how
-#' candidate data are interpreted.
+#' Presentation labels and subheadings may be supplied independently of the
+#' candidate data model. Candidate ranges are rendered as selection controls,
+#' resolved entities as links, and unresolved entities as editable values.
 #'
-#' @param candidate A Betwixt candidate dataset.
+#' This is an internal HTML generation step. Candidate data should first be
+#' converted with `prepare_review_context()`.
 #'
-#' @return A renderer-neutral list containing candidate and context column
-#'   definitions and row-wise review information.
+#' @param context A renderer-neutral review context produced by
+#'   `prepare_review_context()`.
+#' @param cols An optional named character vector containing presentation
+#'   labels for candidate and context columns.
+#' @param subheadings An optional named character vector containing
+#'   presentation subheadings for candidate columns.
+#'
+#' @return A character string containing the generated HTML review table.
 #'
 #' @keywords internal
 #' @noRd
@@ -36,6 +43,7 @@ review_context_html <- function(
     if (is.null(labels) || !x %in% names(labels)) {
       return(x)
     }
+
     labels[[x]]
   }
 
@@ -56,7 +64,7 @@ review_context_html <- function(
       nzchar(assertion$definition)
 
     if (length(assertion$range) == 0) {
-      # Link an existing entity or allow creation of an unresolved one.
+      # Link a resolved entity or allow creation of an unresolved one.
       if (has_definition) {
         control <- paste0(
           '<a class="entity-link" href="',
@@ -133,7 +141,7 @@ review_context_html <- function(
     )
   }
 
-  # Render headings for the reviewable candidate columns.
+  # Render headings for reviewable candidate columns.
   assertion_headers <- vapply(context$candidate_columns, function(x) {
     heading <- column_label(x, cols)
     subheading <- column_label(x, subheadings)
@@ -157,7 +165,8 @@ review_context_html <- function(
     paste0(
       '<th class="context-head">',
       escape_html(heading),
-      "<small>Context — not reviewed</small></th>"
+      "<small>Context — not reviewed</small>",
+      "</th>"
     )
   }, character(1))
 
@@ -176,11 +185,15 @@ review_context_html <- function(
   # Render each prepared review row.
   rows <- vapply(context$rows, function(row) {
     assertions <- vapply(
-      row$assertions, assertion_html, character(1)
+      row$assertions,
+      assertion_html,
+      character(1)
     )
 
     context_values <- vapply(
-      row$context, context_html, character(1)
+      row$context,
+      context_html,
+      character(1)
     )
 
     evidence <- paste0(
@@ -192,7 +205,8 @@ review_context_html <- function(
       "</a>",
       '<div class="media-id">',
       escape_html(row$evidence_text),
-      "</div></td>"
+      "</div>",
+      "</td>"
     )
 
     paste0(
@@ -200,16 +214,20 @@ review_context_html <- function(
       '" data-finalised="false" data-outcome="accept">',
       '<td class="num">', row$row_number, "</td>",
       evidence,
-      '<td class="label"><input class="text-input" value="',
-      escape_html(row$label), '"></td>',
+      '<td class="label">',
+      '<input class="text-input" value="',
+      escape_html(row$label), '">',
+      "</td>",
       '<td class="description"><textarea>',
-      escape_html(row$description), "</textarea></td>",
+      escape_html(row$description),
+      "</textarea></td>",
       paste(assertions, collapse = ""),
       '<td class="finalise-cell">',
       '<label class="finalise-control">',
       '<input type="checkbox" class="finalise-check">',
       '<span class="finalise-mark"></span>',
-      "</label></td>",
+      "</label>",
+      "</td>",
       paste(context_values, collapse = ""),
       "</tr>"
     )
@@ -221,6 +239,7 @@ review_context_html <- function(
     header,
     "<tbody>",
     paste(rows, collapse = "\n"),
-    "</tbody></table>"
+    "</tbody>",
+    "</table>"
   )
 }

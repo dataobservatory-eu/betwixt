@@ -30,21 +30,21 @@
 #'
 #' @export
 betwixt_render <- function(
-    candidate,
-    cols = NULL,
-    subheadings = NULL,
-    title = "Betwixt Review",
-    description = "Please review the following claims.",
-    filename_stem = "betwixt-review",
-    project_id = "",
-    sequence = 0L,
-    path = NULL
+  candidate,
+  cols = NULL,
+  subheadings = NULL,
+  title = "Betwixt Review",
+  description = "Please review the following claims.",
+  filename_stem = "betwixt-review",
+  project_id = "",
+  sequence = 0L,
+  path = NULL
 ) {
   # Validate the review sequence.
   if (length(sequence) != 1L ||
-      is.na(sequence) ||
-      sequence < 0 ||
-      sequence != as.integer(sequence)) {
+    is.na(sequence) ||
+    sequence < 0 ||
+    sequence != as.integer(sequence)) {
     stop(
       "sequence must be a single non-negative integer.",
       call. = FALSE
@@ -157,7 +157,6 @@ betwixt_render <- function(
     # Store the filename stem as non-editable process metadata.
     '<input id="filename-stem" type="hidden" value="',
     escape_html(filename_stem), '">\n',
-
     '<div class="save-actions">\n',
     '<button id="save-draft" type="button">',
     "Save draft",

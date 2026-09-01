@@ -65,17 +65,32 @@ test_that("betwixt_render() writes an initial Delini review", {
   )
   expect_match(
     html,
-    '`${filenameStem}_${sequence}`',
+    "if (sequence === 0)",
     fixed = TRUE
   )
   expect_match(
     html,
-    '"-betwixt-draft.html"',
+    "sequence = 1",
     fixed = TRUE
   )
   expect_match(
     html,
-    '"-betwixt-finalised.html"',
+    "sequenceInput.value = sequence",
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    "const stem = `${filenameStem}_${sequence}`",
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    'const suffix = finaliseReview ? "-finalised" : "-draft"',
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    "const filename = `${stem}${suffix}.html`",
     fixed = TRUE
   )
 

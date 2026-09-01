@@ -23,7 +23,7 @@ delini <- tibble::tribble(
   "the farmhouse of the Delini farmstead",
   "fuds:Q7328",
   NA_character_,
-  NA_character_,
+  "https://reprexbase.eu/fu/Item:Q7328",
   "farmhouse",
   "farmhouse | tablet-woven sash | bed | record | Other…",
   "https://www.wikidata.org/wiki/Property:P31",

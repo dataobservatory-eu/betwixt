@@ -60,12 +60,11 @@
 #'
 #' @export
 add_candidate_column <- function(
-    x,
-    value,
-    range = NA_character_,
-    definition = NA_character_
+  x,
+  value,
+  range = NA_character_,
+  definition = NA_character_
 ) {
-
   existing <- names(x)[grepl("^col_[0-9]+$", names(x))]
 
   n <- if (length(existing) == 0L) {

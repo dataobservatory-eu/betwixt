@@ -19,7 +19,6 @@
 #'
 #' @export
 candidate_range <- function(...) {
-
   values <- unlist(list(...), use.names = FALSE)
 
   if (length(values) == 0L || all(is.na(values))) {

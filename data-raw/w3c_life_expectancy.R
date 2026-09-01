@@ -6,7 +6,6 @@ w3c_life_expectancy <- tibble::tribble(
   ~period,
   ~sex,
   ~life_expectancy,
-
   "eg:o11", "Newport",         "2004-2006", "Male", 76.7,
   "eg:o12", "Cardiff",         "2004-2006", "Male", 78.7,
   "eg:o13", "Monmouthshire",   "2004-2006", "Male", 76.6,

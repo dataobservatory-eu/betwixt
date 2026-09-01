@@ -16,7 +16,6 @@ delini <- tibble::tribble(
   ~col_3_range,
   ~col_3_definition,
   ~context_1,
-
   1,
   "https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101565_thumbnail.jpg",
   "P7101565",
@@ -32,7 +31,6 @@ delini <- tibble::tribble(
   "Livonians | Latvians | Other… | Do not know | None of these",
   NA_character_,
   "The Ethnographic Open-Air Museum of Latvia",
-
   2,
   "https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101561_thumbnail.jpg",
   "P7101561",
@@ -48,7 +46,6 @@ delini <- tibble::tribble(
   "Livonians | Latvians | Other… | Do not know | None of these",
   NA_character_,
   "The Ethnographic Open-Air Museum of Latvia",
-
   3,
   "https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101556_thumbnail.jpg",
   "P7101556",
@@ -64,7 +61,6 @@ delini <- tibble::tribble(
   "Livonians | Latvians | Other… | Do not know | None of these",
   NA_character_,
   "The Ethnographic Open-Air Museum of Latvia",
-
   4,
   "https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101590_thumbnail.jpg",
   "P7101590",
@@ -80,7 +76,6 @@ delini <- tibble::tribble(
   "Livonians | Latvians | Other… | Do not know | None of these",
   NA_character_,
   "The Ethnographic Open-Air Museum of Latvia",
-
   5,
   "https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101623_thumbnail.jpg",
   "P7101623",

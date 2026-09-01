@@ -15,7 +15,6 @@
 #'
 #' @keywords internal
 prepare_review_context <- function(candidate) {
-
   # Validate the candidate dataset.
   if (!is.data.frame(candidate)) {
     stop("candidate must be a data frame.", call. = FALSE)
@@ -23,7 +22,9 @@ prepare_review_context <- function(candidate) {
 
   # Convert a canonical or legacy candidate range to a character vector.
   parse_range <- function(x) {
-    if (is.na(x)) return(character())
+    if (is.na(x)) {
+      return(character())
+    }
     trimws(strsplit(x, "|", fixed = TRUE)[[1]])
   }
 
@@ -50,7 +51,6 @@ prepare_review_context <- function(candidate) {
 
   # Prepare each candidate row for rendering.
   rows <- lapply(seq_len(nrow(candidate)), function(i) {
-
     # Prepare the reviewable candidate assertions.
     assertions <- lapply(candidate_cols, function(col) {
       list(

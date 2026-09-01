@@ -1,5 +1,4 @@
 test_that("prepare_review_context() prepares delini", {
-
   context <- prepare_review_context(delini)
 
   # Check the discovered candidate and context columns.
@@ -24,7 +23,6 @@ test_that("prepare_review_context() prepares delini", {
 
 
 test_that("prepare_review_context() prepares candidate assertions", {
-
   context <- prepare_review_context(delini)
   assertions <- context$rows[[1]]$assertions
 
@@ -47,7 +45,6 @@ test_that("prepare_review_context() prepares candidate assertions", {
 
 
 test_that("prepare_review_context() prepares context columns", {
-
   context <- prepare_review_context(delini)
   row_context <- context$rows[[1]]$context
 
@@ -59,7 +56,6 @@ test_that("prepare_review_context() prepares context columns", {
 
 
 test_that("prepare_review_context() supports evidence relations", {
-
   # Add an optional evidence relation to the Delini candidate dataset.
   dual_delini <- delini %>%
     dplyr::mutate(

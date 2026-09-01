@@ -17,10 +17,10 @@
 #' @keywords internal
 #' @noRd
 review_context_html <- function(
-    context,
-    cols = NULL,
-    subheadings = NULL) {
-
+  context,
+  cols = NULL,
+  subheadings = NULL
+) {
   # Escape text before inserting it into HTML.
   escape_html <- function(x) {
     x <- as.character(x)
@@ -33,7 +33,9 @@ review_context_html <- function(
 
   # Return a presentation label or fall back to the column name.
   column_label <- function(x, labels) {
-    if (is.null(labels) || !x %in% names(labels)) return(x)
+    if (is.null(labels) || !x %in% names(labels)) {
+      return(x)
+    }
     labels[[x]]
   }
 
@@ -54,7 +56,6 @@ review_context_html <- function(
       nzchar(assertion$definition)
 
     if (length(assertion$range) == 0) {
-
       # Link an existing entity or allow creation of an unresolved one.
       if (has_definition) {
         control <- paste0(
@@ -74,7 +75,6 @@ review_context_html <- function(
           "</button>"
         )
       }
-
     } else {
       options <- vapply(assertion$range, function(option) {
         selected <- if (identical(option, assertion$value)) {
@@ -224,21 +224,3 @@ review_context_html <- function(
     "</tbody></table>"
   )
 }
-
-context <- prepare_review_context(delini)
-
-table_html <- review_context_html(
-  context,
-  cols = c(
-    col_1 = "Subject",
-    col_2 = "instance of",
-    col_3 = "heritage of",
-    context_1 = "held by"
-  ),
-  subheadings = c(
-    col_2 = "wdt:P31",
-    col_3 = "controlled range"
-  )
-)
-
-writeLines(table_html, "delini_generated_table.html")

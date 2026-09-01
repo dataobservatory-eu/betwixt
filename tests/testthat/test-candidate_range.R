@@ -1,5 +1,4 @@
 test_that("candidate_range() creates a canonical range", {
-
   expect_equal(
     candidate_range("depicts", "documents"),
     "depicts|documents"
@@ -13,7 +12,6 @@ test_that("candidate_range() creates a canonical range", {
 
 
 test_that("candidate_range() accepts pipe-delimited input", {
-
   expect_equal(
     candidate_range("depicts|documents"),
     "depicts|documents"
@@ -32,7 +30,6 @@ test_that("candidate_range() accepts pipe-delimited input", {
 
 
 test_that("candidate_range() preserves spaces within values", {
-
   expect_equal(
     candidate_range(
       "depicts",
@@ -45,7 +42,6 @@ test_that("candidate_range() preserves spaces within values", {
 
 
 test_that("candidate_range() accepts mixed input", {
-
   expect_equal(
     candidate_range(
       "depicts | documents",
@@ -58,7 +54,6 @@ test_that("candidate_range() accepts mixed input", {
 
 
 test_that("candidate_range() handles missing values", {
-
   expect_equal(
     candidate_range(),
     NA_character_
@@ -77,7 +72,6 @@ test_that("candidate_range() handles missing values", {
 
 
 test_that("candidate_range() ignores empty values", {
-
   expect_equal(
     candidate_range("", "depicts", "", "documents"),
     "depicts|documents"

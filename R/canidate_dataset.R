@@ -142,19 +142,18 @@
 #' @importFrom tibble tibble
 #' @export
 candidate_dataset <- function(
-    evidence_url,
-    evidence_text,
-    label,
-    description,
-    subject,
-    evidence_relation = NULL,
-    evidence_relation_range = NA_character_,
-    subject_range = NA_character_,
-    subject_definition = NA_character_
+  evidence_url,
+  evidence_text,
+  label,
+  description,
+  subject,
+  evidence_relation = NULL,
+  evidence_relation_range = NA_character_,
+  subject_range = NA_character_,
+  subject_definition = NA_character_
 ) {
-
   if (is.null(evidence_relation) &&
-      !all(is.na(evidence_relation_range))) {
+    !all(is.na(evidence_relation_range))) {
     stop(
       "evidence_relation_range requires evidence_relation.",
       call. = FALSE

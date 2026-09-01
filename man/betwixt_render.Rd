@@ -4,11 +4,46 @@
 \alias{betwixt_render}
 \title{Render a Betwixt review}
 \usage{
-betwixt_render()
+betwixt_render(
+  candidate,
+  cols = NULL,
+  subheadings = NULL,
+  title = "Betwixt Review",
+  description = "Please review the following claims.",
+  project_id = "",
+  sequence = 0L,
+  con = NULL
+)
+}
+\arguments{
+\item{candidate}{A Betwixt candidate dataset.}
+
+\item{cols}{An optional named character vector containing presentation
+labels for candidate and context columns.}
+
+\item{subheadings}{An optional named character vector containing
+presentation subheadings for candidate columns.}
+
+\item{title}{Character string used as the review title.}
+
+\item{description}{Character string containing review instructions.}
+
+\item{project_id}{Character string identifying the review project.}
+
+\item{sequence}{A single non-negative integer identifying the review
+sequence. The initial candidate review has sequence \code{0}.}
+
+\item{con}{Optional output file. If \code{NULL}, the rendered HTML is returned.}
 }
 \value{
-\code{NULL}.
+Invisibly returns the rendered HTML when \code{con} is supplied;
+otherwise returns the HTML as a character string.
 }
 \description{
-Prototype renderer for Betwixt review datasets.
+Renders a Betwixt candidate dataset as a standalone HTML review.
+
+A review belongs to a project and has a non-negative sequence number.
+Sequence \code{0} represents the initial candidate review. Subsequent review
+states may use sequence \code{1}, \code{2}, and so on. Saving a draft or finalising
+a review does not itself change the sequence.
 }

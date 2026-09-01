@@ -2,16 +2,16 @@
 % Please edit documentation in R/canidate_dataset.R
 \name{candidate_dataset}
 \alias{candidate_dataset}
-\title{Construct a Betwixt review dataset}
+\title{Construct a Betwixt candidate dataset}
 \usage{
 candidate_dataset(
   evidence_url,
   evidence_text,
-  evidence_relation,
-  evidence_relation_range = NA_character_,
   label,
   description,
   subject,
+  evidence_relation = NULL,
+  evidence_relation_range = NA_character_,
   subject_range = NA_character_,
   subject_definition = NA_character_
 )
@@ -23,14 +23,6 @@ locations of the evidence presented to the reviewer.}
 \item{evidence_text}{A character vector containing short identifiers or
 labels for the evidence.}
 
-\item{evidence_relation}{A character vector describing the candidate semantic
-relation between the evidence and the subject, for example \code{"depicts"}.}
-
-\item{evidence_relation_range}{A character vector containing the admissible or
-suggested relations between the evidence and the subject. Use
-\code{NA_character_} when no controlled range is supplied. Defaults to
-\code{NA_character_}.}
-
 \item{label}{A character vector containing human-readable labels for the
 subjects presented for review.}
 
@@ -38,53 +30,72 @@ subjects presented for review.}
 descriptions of the subjects presented for review.}
 
 \item{subject}{A vector containing the subject identifiers or values to be
-reviewed. The subject is stored as the first review column, \code{col_1}.}
+reviewed. The subject is stored as the first candidate column, \code{col_1}.}
+
+\item{evidence_relation}{An optional character vector describing a candidate
+semantic relation between the evidence and the subject, for example
+\code{"depicts"}. If \code{NULL}, no evidence relation columns are added. Defaults
+to \code{NULL}.}
+
+\item{evidence_relation_range}{An optional character vector containing the
+admissible or suggested evidence relations. Use \code{\link[=candidate_range]{candidate_range()}} to
+construct controlled ranges. This argument can only be used when
+\code{evidence_relation} is supplied. Defaults to \code{NA_character_}.}
 
 \item{subject_range}{A character vector containing the admissible or
-suggested range of subject values. Use \code{NA_character_} when no controlled
-range is supplied. Defaults to \code{NA_character_}.}
+suggested subject values. Use \code{\link[=candidate_range]{candidate_range()}} to construct controlled
+ranges, or \code{NA_character_} when no controlled range is supplied. Defaults
+to \code{NA_character_}.}
 
-\item{subject_definition}{A character vector containing identifiers or URLs
-defining the subject field. Use \code{NA_character_} when no definition is
-supplied. Defaults to \code{NA_character_}.}
+\item{subject_definition}{A character vector containing resolvable
+identifiers or URLs defining the proposed subject. A supplied definition
+indicates that the subject already exists as an identified entity;
+\code{NA_character_} indicates an unresolved candidate subject. Defaults to
+\code{NA_character_}.}
 }
 \value{
 A tibble with one row per evidence-subject observation and the columns
-\code{row_number}, \code{evidence_url}, \code{evidence_text}, \code{relation},
-\code{relation_range}, \code{label}, \code{description}, \code{col_1}, \code{col_1_range},
-and \code{col_1_definition}.
+\code{row_number}, \code{evidence_url}, \code{evidence_text}, \code{label}, \code{description},
+\code{col_1}, \code{col_1_range}, and \code{col_1_definition}.
+
+If \code{evidence_relation} is supplied, the tibble additionally contains
+\code{evidence_relation} and \code{evidence_relation_range}.
 }
 \description{
-Constructs the initial wide-form data structure used for a Betwixt review.
-Each row associates a piece of evidence with a subject and the descriptive
-information required to present that subject for review.
+Constructs the initial wide-form candidate dataset used for a Betwixt
+review. Each row associates a piece of evidence with a subject and the
+descriptive information required to present that subject for review.
 
-The subject forms the first reviewable column. Additional reviewable
-columns can subsequently be appended with \code{\link[=add_candidate_column]{add_candidate_column()}}.
+The subject forms the first reviewable candidate column. Additional
+reviewable columns can subsequently be appended with
+\code{\link[=add_candidate_column]{add_candidate_column()}}.
+
+An optional evidence relation can describe a reviewable semantic relation
+between the evidence and the subject, for example \code{"depicts"} or
+\code{"documents"}.
 }
 \details{
-\code{candidate_dataset()} establishes the initial structure of a Betwixt review
-dataset. \code{row_number} is generated automatically as an integer sequence in
-input order.
+\code{candidate_dataset()} establishes the initial structure of a Betwixt
+candidate dataset. \code{row_number} is generated automatically as an integer
+sequence in input order.
 
-The subject and its associated range and definition are passed internally
+The subject, its candidate range, and its definition are passed internally
 to \code{\link[=add_candidate_column]{add_candidate_column()}}, thereby establishing the same column contract
-used for subsequent reviewable columns.
+used for subsequent reviewable assertions.
 
 Additional reviewable assertions can be appended with
 \code{\link[=add_candidate_column]{add_candidate_column()}}. Display-only contextual columns can be added with
 ordinary data manipulation functions such as \code{\link[dplyr:mutate]{dplyr::mutate()}}.
+
+The evidence relation is distinct from review provenance. When present, it
+represents a candidate semantic relation between the evidence and the
+subject and is itself available for review.
 }
 \examples{
-# Cultural heritage example
+# Candidate dataset without a reviewable evidence relation
 delini_candidates <- candidate_dataset(
   evidence_url = delini$evidence_url,
   evidence_text = delini$evidence_text,
-  evidence_relation = rep("depicts", nrow(delini)),
-  evidence_relation_range = rep(
-    "depicts | documents | is evidence for | Other...",
-    nrow(delini)
-  ),
   label = delini$label,
   description = delini$description,
   subject = delini$col_1,
@@ -94,6 +105,23 @@ delini_candidates <- candidate_dataset(
 
 delini_candidates
 
+# Candidate dataset with a reviewable evidence relation
+delini_dual_candidates <- candidate_dataset(
+  evidence_url = delini$evidence_url,
+  evidence_text = delini$evidence_text,
+  label = delini$label,
+  description = delini$description,
+  subject = delini$col_1,
+  subject_definition = delini$col_1_definition,
+  evidence_relation = rep("depicts", nrow(delini)),
+  evidence_relation_range = rep(
+    candidate_range("depicts", "documents", "Other…"),
+    nrow(delini)
+  )
+)
+
+delini_dual_candidates
+
 # Statistical example based on the W3C RDF Data Cube Vocabulary
 w3c_candidates <- candidate_dataset(
   evidence_url = rep(
@@ -102,10 +130,6 @@ w3c_candidates <- candidate_dataset(
   ),
   evidence_text = rep(
     "W3C RDF Data Cube Vocabulary",
-    nrow(w3c_life_expectancy)
-  ),
-  evidence_relation = rep(
-    "documents",
     nrow(w3c_life_expectancy)
   ),
   label = w3c_life_expectancy$observation,
@@ -131,4 +155,5 @@ w3c_candidates <- w3c_candidates |>
   )
 
 w3c_candidates
+
 }

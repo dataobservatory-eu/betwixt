@@ -160,17 +160,24 @@ candidate_dataset <- function(
     )
   }
 
-  x <- tibble::tibble(
-    row_number = seq_along(evidence_url),
-    evidence_url = evidence_url,
-    evidence_text = evidence_text,
-    label = label,
-    description = description
-  )
-
-  if (!is.null(evidence_relation)) {
-    x$evidence_relation <- evidence_relation
-    x$evidence_relation_range <- evidence_relation_range
+  if (is.null(evidence_relation)) {
+    x <- tibble::tibble(
+      row_number = seq_along(evidence_url),
+      evidence_url = evidence_url,
+      evidence_text = evidence_text,
+      label = label,
+      description = description
+    )
+  } else {
+    x <- tibble::tibble(
+      row_number = seq_along(evidence_url),
+      evidence_url = evidence_url,
+      evidence_text = evidence_text,
+      evidence_relation = evidence_relation,
+      evidence_relation_range = evidence_relation_range,
+      label = label,
+      description = description
+    )
   }
 
   add_candidate_column(

@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delini Farmstead — Dual Wide Review</title>
+<style>
+* { box-sizing:border-box; }
+:root { --border:#d8d8d8; --muted:#666; --header:#f5f5f5;
+        --green:#dff2df; --yellow:#fff2b8; --red:#ffd6d6; }
+html,body { width:100%; max-width:100%; overflow-x:hidden; }
+body { margin:0; background:#fff; color:#202124; font-family:Roboto,Arial,sans-serif; font-size:14px; }
+main { width:100%; max-width:100%; min-width:0; padding:28px 32px 40px; overflow-x:hidden; }
+h1 { margin:0 0 8px; font-size:24px; font-weight:500; }
+.intro { max-width:1000px; line-height:1.5; color:#444; margin-bottom:20px; }
+.scroll-top,.table-wrap { overflow-x:auto; width:100%; max-width:100%; min-width:0; overscroll-behavior-x:contain; }
+.table-wrap { overflow-anchor:none; }
+.scroll-top { height:17px; overflow-y:hidden; margin-bottom:4px; }
+.scroll-top-inner { height:1px; }
+table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; }
+th,td { border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+        padding:10px; vertical-align:top; text-align:left; background:#fff; }
+th { background:var(--header); font-weight:500; white-space:nowrap; }
+tr:first-child th { border-top:1px solid var(--border); }
+th:first-child,td:first-child { border-left:1px solid var(--border); }
+.num { width:46px; min-width:46px; text-align:right; color:var(--muted); }
+.evidence { width:190px; min-width:190px; }
+.evidence img { display:block; max-width:165px; max-height:130px; object-fit:contain; }
+.media-id { margin-top:6px; font-size:12px; color:var(--muted); }
+.evidence-description{width:285px;min-width:285px}.relation{width:175px;min-width:175px}
+.label { width:230px; min-width:230px; }
+.description { width:300px; min-width:300px; }
+.subject { width:245px; min-width:245px; }
+.predicate-cell,.heritage-cell { width:230px; min-width:230px; }
+.finalise-cell,.finalise-head { width:78px; min-width:78px; text-align:center; }
+.context,.context-head { width:260px; min-width:260px; }
+.context { background:#fafafa; color:#444; line-height:1.4; }
+.context-head small { display:block; font-weight:400; color:var(--muted); margin-top:3px; }
+.text-input,.subject-input,select,.write-in,textarea {
+  width:100%; padding:7px; border:1px solid #c9c9c9; border-radius:3px;
+  background:#fff; font:inherit;
+}
+textarea { min-height:78px; resize:vertical; line-height:1.4; }
+.other{display:none;margin-top:7px;width:100%;padding:7px;border:1px solid #c9c9c9;border-radius:3px;font:inherit}.write-in { display:none; margin-top:7px; }
+.entity-link { display:inline-block; padding:7px 8px; border:1px solid #c9c9c9; border-radius:3px;
+               color:#174ea6; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+.create-item { margin-top:7px; padding:5px 8px; border:1px solid #999; border-radius:3px;
+               background:#fff; cursor:pointer; font:inherit; }
+.definition-link { display:inline-block; margin-top:8px; color:#3c4043; font-size:12px; }
+.definition-link::after { content:" ↗"; }
+.qualify { display:flex; gap:10px; margin-top:8px; }
+.qualify button { border:0; background:transparent; padding:0; color:#555;
+                  text-decoration:underline; cursor:pointer; font:inherit; }
+.semantic-cell[data-qualification="defer"] { background:var(--yellow); }
+.semantic-cell[data-qualification="reject"] { background:var(--red); }
+tr[data-finalised="true"] .semantic-cell[data-qualification="none"] { background:var(--green); }
+.finalise-button { border:0; padding:0; background:transparent; cursor:pointer; }
+.finalise-mark { width:28px; height:28px; border:1px solid #aaa; border-radius:4px;
+                 display:inline-flex; align-items:center; justify-content:center;
+                 background:#fff; font-size:19px; font-weight:700; cursor:pointer; }
+tr[data-finalised="true"][data-outcome="accept"] .finalise-mark {
+  background:var(--green); border-color:#6e9d6e; color:#276427;
+}
+tr[data-finalised="true"][data-outcome="defer"] .finalise-mark {
+  background:var(--yellow); border-color:#c6a33a; color:#7a6200;
+}
+tr[data-finalised="true"][data-outcome="reject"] .finalise-mark {
+  background:var(--red); border-color:#c66; color:#9a2020;
+}
+.predicate-heading { display:flex; flex-direction:column; gap:3px; }
+.predicate-heading small { font-weight:400; color:var(--muted); }
+.footer { margin-top:18px; display:flex; gap:14px; align-items:center; }
+.footer button { padding:8px 14px; border:1px solid #999; border-radius:3px; background:#fff; cursor:pointer; }
+#summary { color:var(--muted); }
+
+.review-header{max-width:920px;margin:0 0 22px}.instructions{margin:0 0 8px;line-height:1.5;color:#444}
+.review-about{margin:0;font-size:13px}.review-about a{color:#174ea6;text-underline-offset:2px}
+.review-meta{max-width:920px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.review-meta h2{margin:0 0 10px;font-size:15px;font-weight:500}.reviewer-bottom{display:flex;flex-wrap:wrap;gap:14px 20px}
+.reviewer-bottom label{display:grid;gap:4px;color:var(--muted);font-size:12px}.reviewer-bottom input{min-width:240px;padding:7px;border:1px solid var(--border);border-radius:3px;font:inherit}
+.save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
+#save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:var(--muted);font-size:12px}
+.site-footer{max-width:920px;margin-top:20px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+
+</style>
+</head>
+<body>
+<main>
+<h1>Delini Farmstead Review — Dual Wide Projection</h1>
+<div class="review-header">
+    <p class="instructions">
+      Review each proposed statement. Use <strong>Defer</strong> when judgement should
+      be postponed, <strong>Reject</strong> when a component is not acceptable, and
+      <strong>Finalise</strong> when the statement is ready for inclusion.
+    </p>
+    <p class="review-about">
+      <a href="https://betwixt.dataobservatory.eu/" target="_blank"
+         rel="noopener noreferrer">Review description and documentation ↗</a>
+    </p>
+  </div>
+<div class="scroll-top"><div class="scroll-top-inner"></div></div>
+<div class="table-wrap">
+<table id="review-table">
+<thead><tr>
+  <th class="num">#</th>
+  <th>Evidence</th>
+  <th>Evidence description</th>
+  <th>Relation</th>
+  <th>Label</th>
+  <th>Description</th>
+  <th>Subject</th>
+  <th><div class="predicate-heading">instance of<small>wdt:P31</small></div></th>
+  <th><div class="predicate-heading">heritage of<small>controlled range</small></div></th>
+  <th class="finalise-head">Finalise</th>
+  <th class="context-head">held by<small>Context — not reviewed</small></th>
+</tr></thead>
+<tbody>
+
+<tr data-row="1" data-finalised="false" data-outcome="accept">
+  <td class="num">1</td>
+  <td class="evidence">
+    <a href="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101565_thumbnail.jpg" target="_blank" rel="noopener">
+      <img src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101565_thumbnail.jpg" alt="Delini evidence P7101565">
+    </a>
+    <div class="media-id">P7101565</div>
+  </td>
+  <td class="evidence-description"><textarea aria-label="Evidence description row 1">a JPG file depicting the Delini farmstead</textarea></td>
+  <td class="semantic-cell relation" data-qualification="none">
+    <select class="relation-select" aria-label="Evidence relation row 1">
+      <option value="depicts" selected>depicts</option>
+      <option value="documents">documents</option>
+      <option value="represents">represents</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="other relation-other" type="text" placeholder="Enter another relation">
+    <div class="qualify"><button type="button" data-qualify="defer">Defer</button><button type="button" data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="label"><input class="text-input" value="Delini farmstead"></td>
+  <td class="description"><textarea>the farmhouse of the Delini farmstead</textarea></td>
+  <td class="semantic-cell subject" data-qualification="none">
+    <a class="entity-link" href="https://reprexbase.eu/fu/Item:Q7328" target="_blank"
+                    rel="noopener">fuds:Q7328</a>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell predicate-cell" data-qualification="none">
+    <select class="instance-select">
+      <option selected>farmhouse</option>
+      <option>tablet-woven sash</option>
+      <option>bed</option>
+      <option>record</option>
+      <option value="__other__">Other…</option>
+    </select>
+    <input class="write-in" placeholder="Enter another value">
+    <a class="definition-link" href="https://www.wikidata.org/wiki/Property:P31"
+       target="_blank" rel="noopener">Definition</a>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell heritage-cell" data-qualification="none">
+    <select class="heritage-select">
+      <option value="Livonians" selected>Livonians</option>
+      <option value="Latvians">Latvians</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="write-in heritage-write-in" placeholder="Enter another heritage community">
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="finalise-cell">
+    <label class="finalise-control">
+      <input type="checkbox" class="finalise-check">
+      <span class="finalise-mark"></span>
+    </label>
+  </td>
+  <td class="context">The Ethnographic Open-Air Museum of Latvia</td>
+</tr>
+<tr data-row="2" data-finalised="false" data-outcome="accept">
+  <td class="num">2</td>
+  <td class="evidence">
+    <a href="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101561_thumbnail.jpg" target="_blank" rel="noopener">
+      <img src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101561_thumbnail.jpg" alt="Delini evidence P7101561">
+    </a>
+    <div class="media-id">P7101561</div>
+  </td>
+  <td class="evidence-description"><textarea aria-label="Evidence description row 2">a JPG file depicting a tablet-woven sash in the Delini farmhouse</textarea></td>
+  <td class="semantic-cell relation" data-qualification="none">
+    <select class="relation-select" aria-label="Evidence relation row 2">
+      <option value="depicts" selected>depicts</option>
+      <option value="documents">documents</option>
+      <option value="represents">represents</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="other relation-other" type="text" placeholder="Enter another relation">
+    <div class="qualify"><button type="button" data-qualify="defer">Defer</button><button type="button" data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="label"><input class="text-input" value="tablet-woven sash (PLM 1234)"></td>
+  <td class="description"><textarea>a tablet-woven sash in the master bedroom of the Delini farmhouse</textarea></td>
+  <td class="semantic-cell subject" data-qualification="none">
+    <input class="subject-input" type="text" value="tablet-woven sash (PLM 1234)">
+               <button type="button" class="create-item">Create new item</button>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell predicate-cell" data-qualification="none">
+    <select class="instance-select">
+      <option>farmhouse</option>
+      <option selected>tablet-woven sash</option>
+      <option>bed</option>
+      <option>record</option>
+      <option value="__other__">Other…</option>
+    </select>
+    <input class="write-in" placeholder="Enter another value">
+    <a class="definition-link" href="https://www.wikidata.org/wiki/Property:P31"
+       target="_blank" rel="noopener">Definition</a>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell heritage-cell" data-qualification="none">
+    <select class="heritage-select">
+      <option value="Livonians" selected>Livonians</option>
+      <option value="Latvians">Latvians</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="write-in heritage-write-in" placeholder="Enter another heritage community">
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="finalise-cell">
+    <label class="finalise-control">
+      <input type="checkbox" class="finalise-check">
+      <span class="finalise-mark"></span>
+    </label>
+  </td>
+  <td class="context">The Ethnographic Open-Air Museum of Latvia</td>
+</tr>
+<tr data-row="3" data-finalised="false" data-outcome="accept">
+  <td class="num">3</td>
+  <td class="evidence">
+    <a href="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101556_thumbnail.jpg" target="_blank" rel="noopener">
+      <img src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101556_thumbnail.jpg" alt="Delini evidence P7101556">
+    </a>
+    <div class="media-id">P7101556</div>
+  </td>
+  <td class="evidence-description"><textarea aria-label="Evidence description row 3">a JPG file depicting a bed in the Delini farmhouse</textarea></td>
+  <td class="semantic-cell relation" data-qualification="none">
+    <select class="relation-select" aria-label="Evidence relation row 3">
+      <option value="depicts" selected>depicts</option>
+      <option value="documents">documents</option>
+      <option value="represents">represents</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="other relation-other" type="text" placeholder="Enter another relation">
+    <div class="qualify"><button type="button" data-qualify="defer">Defer</button><button type="button" data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="label"><input class="text-input" value="bed (PLM 7201)"></td>
+  <td class="description"><textarea>a bed in the master bedroom of the Delini farmhouse</textarea></td>
+  <td class="semantic-cell subject" data-qualification="none">
+    <input class="subject-input" type="text" value="bed (PLM 7201)">
+               <button type="button" class="create-item">Create new item</button>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell predicate-cell" data-qualification="none">
+    <select class="instance-select">
+      <option>farmhouse</option>
+      <option>tablet-woven sash</option>
+      <option selected>bed</option>
+      <option>record</option>
+      <option value="__other__">Other…</option>
+    </select>
+    <input class="write-in" placeholder="Enter another value">
+    <a class="definition-link" href="https://www.wikidata.org/wiki/Property:P31"
+       target="_blank" rel="noopener">Definition</a>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell heritage-cell" data-qualification="none">
+    <select class="heritage-select">
+      <option value="Livonians" selected>Livonians</option>
+      <option value="Latvians">Latvians</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="write-in heritage-write-in" placeholder="Enter another heritage community">
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="finalise-cell">
+    <label class="finalise-control">
+      <input type="checkbox" class="finalise-check">
+      <span class="finalise-mark"></span>
+    </label>
+  </td>
+  <td class="context">The Ethnographic Open-Air Museum of Latvia</td>
+</tr>
+<tr data-row="4" data-finalised="false" data-outcome="accept">
+  <td class="num">4</td>
+  <td class="evidence">
+    <a href="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101590_thumbnail.jpg" target="_blank" rel="noopener">
+      <img src="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101590_thumbnail.jpg" alt="Delini evidence P7101590">
+    </a>
+    <div class="media-id">P7101590</div>
+  </td>
+  <td class="evidence-description"><textarea aria-label="Evidence description row 4">a JPG file depicting an archival record containing photographs of the Delini farmhouse</textarea></td>
+  <td class="semantic-cell relation" data-qualification="none">
+    <select class="relation-select" aria-label="Evidence relation row 4">
+      <option value="depicts" selected>depicts</option>
+      <option value="documents">documents</option>
+      <option value="represents">represents</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="other relation-other" type="text" placeholder="Enter another relation">
+    <div class="qualify"><button type="button" data-qualify="defer">Defer</button><button type="button" data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="label"><input class="text-input" value="record (LOAM/archive/box23/12)"></td>
+  <td class="description"><textarea>a record containing two photographs of the Delini farmhouse</textarea></td>
+  <td class="semantic-cell subject" data-qualification="none">
+    <input class="subject-input" type="text" value="record (LOAM/archive/box23/12)">
+               <button type="button" class="create-item">Create new item</button>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell predicate-cell" data-qualification="none">
+    <select class="instance-select">
+      <option>farmhouse</option>
+      <option>tablet-woven sash</option>
+      <option>bed</option>
+      <option selected>record</option>
+      <option value="__other__">Other…</option>
+    </select>
+    <input class="write-in" placeholder="Enter another value">
+    <a class="definition-link" href="https://www.wikidata.org/wiki/Property:P31"
+       target="_blank" rel="noopener">Definition</a>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell heritage-cell" data-qualification="none">
+    <select class="heritage-select">
+      <option value="Livonians" selected>Livonians</option>
+      <option value="Latvians">Latvians</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="write-in heritage-write-in" placeholder="Enter another heritage community">
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="finalise-cell">
+    <label class="finalise-control">
+      <input type="checkbox" class="finalise-check">
+      <span class="finalise-mark"></span>
+    </label>
+  </td>
+  <td class="context">The Ethnographic Open-Air Museum of Latvia</td>
+</tr>
+<tr data-row="5" data-finalised="false" data-outcome="accept">
+  <td class="num">5</td>
+  <td class="evidence">
+    <a href="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101623_thumbnail.jpg" target="_blank" rel="noopener">
+      <img src="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101623_thumbnail.jpg" alt="Delini evidence P7101623">
+    </a>
+    <div class="media-id">P7101623</div>
+  </td>
+  <td class="evidence-description"><textarea aria-label="Evidence description row 5">a JPG file depicting a floor-plan record of the Delini farmhouse</textarea></td>
+  <td class="semantic-cell relation" data-qualification="none">
+    <select class="relation-select" aria-label="Evidence relation row 5">
+      <option value="depicts" selected>depicts</option>
+      <option value="documents">documents</option>
+      <option value="represents">represents</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="other relation-other" type="text" placeholder="Enter another relation">
+    <div class="qualify"><button type="button" data-qualify="defer">Defer</button><button type="button" data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="label"><input class="text-input" value="record (LOAM/archive/box23/13)"></td>
+  <td class="description"><textarea>a floor plan of the Delini farmhouse prepared for its reconstruction</textarea></td>
+  <td class="semantic-cell subject" data-qualification="none">
+    <input class="subject-input" type="text" value="record (LOAM/archive/box23/13)">
+               <button type="button" class="create-item">Create new item</button>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell predicate-cell" data-qualification="none">
+    <select class="instance-select">
+      <option>farmhouse</option>
+      <option>tablet-woven sash</option>
+      <option>bed</option>
+      <option selected>record</option>
+      <option value="__other__">Other…</option>
+    </select>
+    <input class="write-in" placeholder="Enter another value">
+    <a class="definition-link" href="https://www.wikidata.org/wiki/Property:P31"
+       target="_blank" rel="noopener">Definition</a>
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="semantic-cell heritage-cell" data-qualification="none">
+    <select class="heritage-select">
+      <option value="Livonians" selected>Livonians</option>
+      <option value="Latvians">Latvians</option>
+      <option value="__other__">Other…</option>
+      <option value="__unknown__">Do not know</option>
+      <option value="__none__">None of these</option>
+    </select>
+    <input class="write-in heritage-write-in" placeholder="Enter another heritage community">
+    <div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>
+  </td>
+  <td class="finalise-cell">
+    <label class="finalise-control">
+      <input type="checkbox" class="finalise-check">
+      <span class="finalise-mark"></span>
+    </label>
+  </td>
+  <td class="context">The Ethnographic Open-Air Museum of Latvia</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="footer"><span id="summary">0 finalised · 0 deferred cells · 0 rejected cells</span></div>
+
+  <section class="review-meta">
+    <h2>Reviewer</h2>
+    <div class="reviewer-bottom">
+      <label>Name
+        <input id="reviewer-name" type="text" autocomplete="name">
+      </label>
+      <label>Email
+        <input id="reviewer-email" type="email" autocomplete="email">
+      </label>
+    </div>
+    <div class="save-actions">
+      <button type="button" id="save-draft">Save — come back later</button>
+      <button type="button" id="save-final">Save &amp; finalise review</button>
+    </div>
+    <input type="hidden" id="review-started-at">
+    <input type="hidden" id="review-last-saved-at">
+    <input type="hidden" id="review-ended-at">
+    <input type="hidden" id="review-status" value="in-progress">
+    <div id="save-status" class="save-status" aria-live="polite"></div>
+  </section>
+  <footer class="site-footer">
+    Created with Betwixt · © Daniel Antal · Reprex B.V.
+  </footer>
+
+</main>
+<script>
+(() => {
+  const rows=[...document.querySelectorAll("tbody tr")];
+  const top=document.querySelector(".scroll-top"), wrap=document.querySelector(".table-wrap"),
+        inner=document.querySelector(".scroll-top-inner"), table=document.getElementById("review-table");
+  const size=()=>inner.style.width=table.scrollWidth+"px";
+  size();
+  addEventListener("resize",size,{passive:true});
+  let syncingTop=false, syncingTable=false;
+  top.addEventListener("scroll",()=>{
+    if(syncingTop)return;
+    syncingTable=true;
+    wrap.scrollLeft=top.scrollLeft;
+    requestAnimationFrame(()=>{syncingTable=false;});
+  },{passive:true});
+  wrap.addEventListener("scroll",()=>{
+    if(syncingTable)return;
+    syncingTop=true;
+    top.scrollLeft=wrap.scrollLeft;
+    requestAnimationFrame(()=>{syncingTop=false;});
+  },{passive:true});
+
+  function outcome(row) {
+    const cells=[...row.querySelectorAll(".semantic-cell")];
+    if(cells.some(c=>c.dataset.qualification==="reject")) return "reject";
+    if(cells.some(c=>c.dataset.qualification==="defer")) return "defer";
+    return "accept";
+  }
+  function paint(row) {
+    row.dataset.outcome=outcome(row);
+    const mark=row.querySelector(".finalise-mark");
+    if(row.dataset.finalised!=="true"){mark.textContent="";return;}
+    mark.textContent=row.dataset.outcome==="reject"?"×":row.dataset.outcome==="defer"?"○":"✓";
+  }
+  function summary() {
+    const f=rows.filter(r=>r.dataset.finalised==="true").length;
+    const d=document.querySelectorAll('.semantic-cell[data-qualification="defer"]').length;
+    const x=document.querySelectorAll('.semantic-cell[data-qualification="reject"]').length;
+    document.getElementById("summary").textContent=`${f} finalised · ${d} deferred cells · ${x} rejected cells`;
+  }
+  function qualify(cell,state) {
+    cell.dataset.qualification=state;
+    paint(cell.closest("tr")); summary();
+  }
+
+  rows.forEach(row=>{
+    row.querySelectorAll("[data-qualify]").forEach(b=>b.addEventListener("click",()=>{
+      const cell=b.closest(".semantic-cell"), q=b.dataset.qualify;
+      qualify(cell,cell.dataset.qualification===q?"none":q);
+    }));
+
+    const heritage=row.querySelector(".heritage-select");
+    const hw=row.querySelector(".heritage-write-in");
+    heritage.addEventListener("change",()=>{
+      hw.style.display=heritage.value==="__other__"?"block":"none";
+      if(heritage.value==="__unknown__") qualify(heritage.closest(".semantic-cell"),"defer");
+      else if(heritage.value==="__none__") qualify(heritage.closest(".semantic-cell"),"reject");
+      else qualify(heritage.closest(".semantic-cell"),"none");
+      if(heritage.value==="__other__") hw.focus();
+    });
+
+    const inst=row.querySelector(".instance-select"), iw=inst.parentElement.querySelector(".write-in");
+    inst.addEventListener("change",()=>{
+      iw.style.display=inst.value==="__other__"?"block":"none";
+      if(inst.value==="__other__") iw.focus();
+    });
+
+    const finaliseButton=row.querySelector(".finalise-button");
+    finaliseButton.addEventListener("mousedown",e=>e.preventDefault());
+    finaliseButton.addEventListener("click",e=>{
+      e.preventDefault();
+      const workspaceLeft=wrap.scrollLeft;
+      const pageTop=window.scrollY;
+      const next=row.dataset.finalised!=="true";
+      row.dataset.finalised=next?"true":"false";
+      finaliseButton.setAttribute("aria-pressed",next?"true":"false");
+      paint(row); summary();
+      requestAnimationFrame(()=>{
+        wrap.scrollLeft=workspaceLeft;
+        window.scrollTo(0,pageTop);
+      });
+    });
+
+    const relationSelect = row.querySelector('.relation-select');
+    const relationOther = row.querySelector('.relation-other');
+    if (relationSelect && relationOther) {
+      relationSelect.addEventListener('change', () => {
+        const cell = relationSelect.closest('.semantic-cell');
+        if (relationSelect.value === '__other__') {
+          relationOther.style.display = 'block';
+          relationOther.focus();
+          cell.dataset.qualification = 'none';
+        } else {
+          relationOther.style.display = 'none';
+          relationOther.value = '';
+          if (relationSelect.value === '__unknown__') {
+            cell.dataset.qualification = 'defer';
+          } else if (relationSelect.value === '__none__') {
+            cell.dataset.qualification = 'reject';
+          } else {
+            cell.dataset.qualification = 'none';
+          }
+        }
+        paintOutcome(row);
+        updateSummary();
+      });
+    }
+
+    const create=row.querySelector(".create-item");
+    if(create) create.addEventListener("click",()=>{
+      const cell=create.closest(".subject"), input=cell.querySelector(".subject-input");
+      cell.innerHTML=`<a class="entity-link" href="#">fuds:QNEW${row.dataset.row}</a>`+
+        `<div style="margin-top:6px;font-size:12px;color:#666">Prototype registration for “${input.value}”</div>`+
+        `<div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>`;
+      cell.querySelectorAll("[data-qualify]").forEach(b=>b.addEventListener("click",()=>{
+        const q=b.dataset.qualify; qualify(cell,cell.dataset.qualification===q?"none":q);
+      }));
+    });
+  });
+
+  
+  rows.forEach(paint); summary();
+
+  const startedAt=document.getElementById("review-started-at");
+  if(startedAt && !startedAt.value) startedAt.value=new Date().toISOString();
+
+  function persistStateIntoClone(clone){
+    const si=[...document.querySelectorAll("input")], di=[...clone.querySelectorAll("input")];
+    si.forEach((x,i)=>{const y=di[i];if(!y)return;y.setAttribute("value",x.value);
+      if(x.type==="checkbox"){if(x.checked)y.setAttribute("checked","");else y.removeAttribute("checked");}});
+    const st=[...document.querySelectorAll("textarea")],dt=[...clone.querySelectorAll("textarea")];
+    st.forEach((x,i)=>{if(dt[i])dt[i].textContent=x.value});
+    const ss=[...document.querySelectorAll("select")],ds=[...clone.querySelectorAll("select")];
+    ss.forEach((x,i)=>{if(!ds[i])return;[...ds[i].options].forEach(o=>o.value===x.value?o.setAttribute("selected",""):o.removeAttribute("selected"))});
+    const sc=[...document.querySelectorAll(".semantic-cell")],dc=[...clone.querySelectorAll(".semantic-cell")];
+    sc.forEach((x,i)=>{if(dc[i])dc[i].dataset.qualification=x.dataset.qualification});
+    const sr=[...document.querySelectorAll("tbody tr")],dr=[...clone.querySelectorAll("tbody tr")];
+    sr.forEach((x,i)=>{if(!dr[i])return;dr[i].dataset.finalised=x.dataset.finalised||"false";dr[i].dataset.outcome=x.dataset.outcome||"accept"});
+  }
+  function saveReview(finaliseReview){
+    const now=new Date().toISOString();
+    document.getElementById("review-last-saved-at").value=now;
+    document.getElementById("review-status").value=finaliseReview?"finalised":"in-progress";
+    if(finaliseReview)document.getElementById("review-ended-at").value=now;
+    const clone=document.documentElement.cloneNode(true);persistStateIntoClone(clone);
+    const sourceName=decodeURIComponent(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")+1))||"review.html";
+    const stem=sourceName.replace(/\.html?$/i,"");
+    const outputName=finaliseReview?stem+"-reviewed.html":stem+"-draft.html";
+    const blob=new Blob(["<!doctype html>\n"+clone.outerHTML],{type:"text/html;charset=utf-8"});
+    const url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;a.download=outputName;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    document.getElementById("save-status").textContent=(finaliseReview?"Finalised review saved at ":"Draft saved at ")+now;
+  }
+  document.getElementById("save-draft").addEventListener("click",()=>saveReview(false));
+  document.getElementById("save-final").addEventListener("click",()=>saveReview(true));
+
+})();
+</script>
+</body>
+</html>

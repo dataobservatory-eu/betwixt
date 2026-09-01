@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Delini Farmstead Review</title>
+
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 2rem;
+  line-height: 1.4;
+  color: #222;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+}
+
+.reviewer {
+  margin-bottom: 1.5rem;
+}
+
+.reviewer label {
+  display: inline-block;
+  margin-right: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.reviewer input {
+  margin-left: 0.4rem;
+  padding: 0.35rem;
+}
+
+.review-table-scroll-top {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.review-table-scroll-top-content {
+  height: 1px;
+}
+
+.review-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.review-table {
+  border-collapse: collapse;
+  min-width: 100%;
+  width: max-content;
+}
+
+.review-table th,
+.review-table td {
+  border: 1px solid #bbb;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.review-table th {
+  background: #f2f2f2;
+}
+
+.row-number {
+  width: 3rem;
+  min-width: 3rem;
+  text-align: right !important;
+  color: #666;
+  white-space: nowrap;
+}
+
+.evidence {
+  width: 220px;
+}
+
+.review-thumbnail {
+  display: block;
+  max-width: 200px;
+  max-height: 160px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.review-thumbnail-linked {
+  cursor: pointer;
+}
+
+.view-source {
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.description-cell {
+  min-width: 180px;
+}
+
+.description-cell input,
+.description-cell textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+}
+
+.description-cell textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.review-cell {
+  min-width: 180px;
+}
+
+.candidate-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+  font-weight: 600;
+}
+
+.candidate-select {
+  width: 100%;
+  min-width: 160px;
+  box-sizing: border-box;
+  padding: 0.35rem;
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+
+.candidate-control {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.45rem;
+}
+
+.candidate-control .candidate-select,
+.candidate-control .candidate-input {
+  margin-bottom: 0;
+}
+
+.range-link {
+  display: none;
+  flex: 0 0 auto;
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.review-actions {
+  white-space: nowrap;
+}
+
+.review-actions button {
+  border: 0;
+  background: none;
+  padding: 0;
+  margin-right: 0.6rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.other-proposal {
+  display: none;
+  margin-top: 0.5rem;
+}
+
+.other-proposal input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+}
+
+.review-cell.is-deferred {
+  background: #faf7ee;
+}
+
+.review-cell.is-rejected {
+  background: #fdf0f0;
+}
+
+.review-cell.is-modified {
+  background: #f3f7f3;
+}
+
+#save-review {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+  </style>
+</head>
+
+<body>
+
+  <h1>Delini Farmstead Review</h1>
+
+  <p class="review-description">
+    Review the proposed classification of each item. Use the evidence and contextual information to assess the proposed instance-of value, and correct the English and Hungarian descriptive metadata where necessary.
+    <span class="betwixt-id">[betwixt-delini-wide]</span>
+  </p>
+
+  <div class="reviewer">
+
+    <label>
+      Name
+      <input type="text"
+             id="reviewer-name"
+             name="reviewer_name">
+    </label>
+
+    <label>
+      Email
+      <input type="email"
+             id="reviewer-email"
+             name="reviewer_email">
+    </label>
+
+    <input type="hidden"
+           id="betwixt-id"
+           name="betwixt_id"
+           value="delini-wide">
+
+    <input type="hidden"
+           id="betwixt-generated-at"
+           name="betwixt_generated_at"
+           value="2026-08-17T16:44:44+0200">
+
+    <input type="hidden"
+           id="review-started-at"
+           name="review_started_at"
+           value="">
+
+    <input type="hidden"
+           id="review-saved-at"
+           name="review_saved_at"
+           value="">
+
+    <input type="hidden"
+           id="review-source-filename"
+           name="review_source_filename"
+           value="">
+
+    <input type="hidden"
+           id="review-saved-filename"
+           name="review_saved_filename"
+           value="">
+
+  </div>
+
+  <div class="review-table-scroll-top" aria-hidden="true">
+    <div class="review-table-scroll-top-content"></div>
+  </div>
+
+  <div class="review-table-container">
+    <table class="review-table">
+
+      <thead>
+        <tr>
+          <th class="row-number">#</th>
+
+          <th>Evidence</th>
+
+          <th class="description-column">label_en</th>
+          <th class="description-column">description_en</th>
+          <th class="description-column">label_hu</th>
+          <th class="description-column">description_hu</th>
+          <th class="description-column">inventory_number</th>
+
+          <th class="assertion-column">instance_of</th>
+
+          <th class="context-column">evidence_type</th>
+          <th class="context-column">held_by</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr data-row-number="1">
+          <td class="row-number">1</td>
+
+          <td class="evidence">
+            <img class="review-thumbnail review-thumbnail-linked"
+                 src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101565_thumbnail.jpg"
+                 alt="Evidence for row 1"
+                 data-url="https://example.com/delini.html">
+
+            <button type="button"
+                    class="view-source"
+                    data-url="https://example.com/delini.html">
+              View source
+            </button>
+          </td>
+
+          <td class="description-cell">
+            <input type="text"
+                   name="label_en_1"
+                   value="farmhouse (LEBM)">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_en_1">the farmhouse of the Delini farmstead</textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="label_hu_1"
+                   value="lakóépület (LEBM)">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_hu_1">a Delini tanya lakóépülete</textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="inventory_number_1"
+                   value="delin 13">
+          </td>
+
+          <td class="review-cell">
+
+            <div class="candidate-control">
+              <input type="text"
+                     class="candidate-input"
+                     name="instance_of_selected_1"
+                     value="farmhouse"
+                     data-original-value="farmhouse">
+            </div>
+
+            <div class="review-actions">
+              <button type="button" class="defer-action">Defer</button>
+              <button type="button" class="reject-action">Reject</button>
+            </div>
+
+            <input type="hidden"
+                   class="review-state"
+                   name="instance_of_review_1"
+                   value="accept">
+
+            <div class="other-proposal">
+              <input type="text"
+                     name="instance_of_alternative_1"
+                     placeholder="Alternative instance_of">
+            </div>
+          </td>
+
+          <td class="context-column">
+            artefact photograph
+          </td>
+          <td class="context-column">
+            The Ethnographic Open-Air Museum of Latvia
+          </td>
+        </tr>
+        <tr data-row-number="2">
+          <td class="row-number">2</td>
+
+          <td class="evidence">
+            <img class="review-thumbnail"
+                 src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101561_thumbnail.jpg"
+                 alt="Evidence for row 2"
+                 >
+
+          </td>
+
+          <td class="description-cell">
+            <input type="text"
+                   name="label_en_2"
+                   value="sash (LEBM)">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_en_2">a tablet-woven sash in the master bedroom of the Delini farmhouse</textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="label_hu_2"
+                   value="öv (LEBM)">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_hu_2"></textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="inventory_number_2"
+                   value="pn 8246">
+          </td>
+
+          <td class="review-cell">
+
+            <div class="candidate-control">
+              <input type="text"
+                     class="candidate-input"
+                     name="instance_of_selected_2"
+                     value="tablet-woven sash"
+                     data-original-value="tablet-woven sash">
+            </div>
+
+            <div class="review-actions">
+              <button type="button" class="defer-action">Defer</button>
+              <button type="button" class="reject-action">Reject</button>
+            </div>
+
+            <input type="hidden"
+                   class="review-state"
+                   name="instance_of_review_2"
+                   value="accept">
+
+            <div class="other-proposal">
+              <input type="text"
+                     name="instance_of_alternative_2"
+                     placeholder="Alternative instance_of">
+            </div>
+          </td>
+
+          <td class="context-column">
+            artefact photograph
+          </td>
+          <td class="context-column">
+            The Ethnographic Open-Air Museum of Latvia
+          </td>
+        </tr>
+        <tr data-row-number="3">
+          <td class="row-number">3</td>
+
+          <td class="evidence">
+            <img class="review-thumbnail"
+                 src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101556_thumbnail.jpg"
+                 alt="Evidence for row 3"
+                 >
+
+          </td>
+
+          <td class="description-cell">
+            <input type="text"
+                   name="label_en_3"
+                   value="bed (LEBM)">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_en_3">a bed in the master bedroom of the Delini farmhouse</textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="label_hu_3"
+                   value="ágy (LEBM)">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_hu_3"></textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="inventory_number_3"
+                   value="">
+          </td>
+
+          <td class="review-cell">
+
+            <div class="candidate-control">
+              <input type="text"
+                     class="candidate-input"
+                     name="instance_of_selected_3"
+                     value="bed"
+                     data-original-value="bed">
+            </div>
+
+            <div class="review-actions">
+              <button type="button" class="defer-action">Defer</button>
+              <button type="button" class="reject-action">Reject</button>
+            </div>
+
+            <input type="hidden"
+                   class="review-state"
+                   name="instance_of_review_3"
+                   value="accept">
+
+            <div class="other-proposal">
+              <input type="text"
+                     name="instance_of_alternative_3"
+                     placeholder="Alternative instance_of">
+            </div>
+          </td>
+
+          <td class="context-column">
+            artefact photograph
+          </td>
+          <td class="context-column">
+            The Ethnographic Open-Air Museum of Latvia
+          </td>
+        </tr>
+        <tr data-row-number="4">
+          <td class="row-number">4</td>
+
+          <td class="evidence">
+            <img class="review-thumbnail"
+                 src="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101590_thumbnail.jpg"
+                 alt="Evidence for row 4"
+                 >
+
+          </td>
+
+          <td class="description-cell">
+            <input type="text"
+                   name="label_en_4"
+                   value="Delini farmhouse photographs">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_en_4">a record containing two photographs of the Delini farmhouse</textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="label_hu_4"
+                   value="Delini lakóépület fényképei">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_hu_4"></textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="inventory_number_4"
+                   value="">
+          </td>
+
+          <td class="review-cell">
+
+            <div class="candidate-control">
+              <input type="text"
+                     class="candidate-input"
+                     name="instance_of_selected_4"
+                     value="photographic record"
+                     data-original-value="photographic record">
+            </div>
+
+            <div class="review-actions">
+              <button type="button" class="defer-action">Defer</button>
+              <button type="button" class="reject-action">Reject</button>
+            </div>
+
+            <input type="hidden"
+                   class="review-state"
+                   name="instance_of_review_4"
+                   value="accept">
+
+            <div class="other-proposal">
+              <input type="text"
+                     name="instance_of_alternative_4"
+                     placeholder="Alternative instance_of">
+            </div>
+          </td>
+
+          <td class="context-column">
+            record
+          </td>
+          <td class="context-column">
+            The Ethnographic Open-Air Museum of Latvia
+          </td>
+        </tr>
+        <tr data-row-number="5">
+          <td class="row-number">5</td>
+
+          <td class="evidence">
+            <img class="review-thumbnail"
+                 src="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101623_thumbnail.jpg"
+                 alt="Evidence for row 5"
+                 >
+
+          </td>
+
+          <td class="description-cell">
+            <input type="text"
+                   name="label_en_5"
+                   value="Delini farmhouse floor plan">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_en_5">a floor plan of the Delini farmhouse prepared for its reconstruction</textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="label_hu_5"
+                   value="Delini lakóépület alaprajza">
+          </td>
+          <td class="description-cell">
+            <textarea name="description_hu_5"></textarea>
+          </td>
+          <td class="description-cell">
+            <input type="text"
+                   name="inventory_number_5"
+                   value="">
+          </td>
+
+          <td class="review-cell">
+
+            <div class="candidate-control">
+              <input type="text"
+                     class="candidate-input"
+                     name="instance_of_selected_5"
+                     value="floor plan"
+                     data-original-value="floor plan">
+            </div>
+
+            <div class="review-actions">
+              <button type="button" class="defer-action">Defer</button>
+              <button type="button" class="reject-action">Reject</button>
+            </div>
+
+            <input type="hidden"
+                   class="review-state"
+                   name="instance_of_review_5"
+                   value="accept">
+
+            <div class="other-proposal">
+              <input type="text"
+                     name="instance_of_alternative_5"
+                     placeholder="Alternative instance_of">
+            </div>
+          </td>
+
+          <td class="context-column">
+            record
+          </td>
+          <td class="context-column">
+            The Ethnographic Open-Air Museum of Latvia
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button type="button" id="save-review">
+    Save review as HTML
+  </button>
+
+  <script>
+/*
+ * Review provenance
+ */
+
+const startedAt =
+  document.getElementById("review-started-at");
+
+if (startedAt && !startedAt.value) {
+  startedAt.value = new Date().toISOString();
+}
+
+const sourceFilenameField =
+  document.getElementById("review-source-filename");
+
+if (sourceFilenameField && !sourceFilenameField.value) {
+  const pathname = window.location.pathname;
+
+  const sourceFilename =
+    decodeURIComponent(
+      pathname.substring(pathname.lastIndexOf("/") + 1)
+    ) || "review.html";
+
+  sourceFilenameField.value = sourceFilename;
+}
+
+
+/*
+ * Review interaction
+ */
+
+document
+  .querySelectorAll(".review-cell")
+  .forEach(cell => {
+    const select = cell.querySelector(".candidate-select");
+    const input = cell.querySelector(".candidate-input");
+    const state = cell.querySelector(".review-state");
+    const otherProposal = cell.querySelector(".other-proposal");
+    const rangeLink = cell.querySelector(".range-link");
+    const defer = cell.querySelector(".defer-action");
+    const reject = cell.querySelector(".reject-action");
+
+    function clearStateClasses() {
+      cell.classList.remove(
+        "is-modified",
+        "is-deferred",
+        "is-rejected"
+      );
+    }
+
+    function markModified() {
+      state.value = "accept";
+      clearStateClasses();
+      cell.classList.add("is-modified");
+    }
+
+    function updateRangeLink() {
+      if (!select || !rangeLink) {
+        return;
+      }
+
+      const option = select.options[select.selectedIndex];
+      const url = option ? option.dataset.url : "";
+
+      if (url) {
+        rangeLink.href = url;
+        rangeLink.style.display = "inline-block";
+      } else {
+        rangeLink.removeAttribute("href");
+        rangeLink.style.display = "none";
+      }
+    }
+
+    function updateOtherProposal() {
+      if (!select || !otherProposal) {
+        return;
+      }
+
+      if (select.value === "__other__") {
+        otherProposal.style.display = "block";
+      } else {
+        otherProposal.style.display = "none";
+      }
+    }
+
+    defer.addEventListener("click", function () {
+      clearStateClasses();
+      state.value = "defer";
+      cell.classList.add("is-deferred");
+    });
+
+    reject.addEventListener("click", function () {
+      clearStateClasses();
+      state.value = "reject";
+      cell.classList.add("is-rejected");
+    });
+
+    if (select) {
+      select.addEventListener("change", function () {
+        markModified();
+        updateOtherProposal();
+        updateRangeLink();
+
+        if (this.value === "__other__" && otherProposal) {
+          const otherInput = otherProposal.querySelector("input");
+
+          if (otherInput) {
+            otherInput.focus();
+          }
+        }
+      });
+
+      updateOtherProposal();
+      updateRangeLink();
+    }
+
+    if (input) {
+      input.addEventListener("input", markModified);
+    }
+  });
+
+
+/*
+ * Open original evidence source
+ */
+
+function openSource(url) {
+  if (!url) {
+    return;
+  }
+
+  window.open(
+    url,
+    "betwixt-source",
+    "width=1100,height=800,resizable=yes,scrollbars=yes"
+  );
+}
+
+document
+  .querySelectorAll(".view-source")
+  .forEach(button => {
+    button.addEventListener("click", function () {
+      openSource(this.dataset.url);
+    });
+  });
+
+document
+  .querySelectorAll(".review-thumbnail-linked")
+  .forEach(image => {
+    image.addEventListener("click", function () {
+      openSource(this.dataset.url);
+    });
+  });
+
+
+/*
+ * Synchronise the upper horizontal scrollbar
+ */
+
+const topScroll =
+  document.querySelector(".review-table-scroll-top");
+
+const topScrollContent =
+  document.querySelector(".review-table-scroll-top-content");
+
+const tableContainer =
+  document.querySelector(".review-table-container");
+
+const reviewTable =
+  document.querySelector(".review-table");
+
+function updateTopScrollWidth() {
+  if (!topScrollContent || !reviewTable) {
+    return;
+  }
+
+  topScrollContent.style.width =
+    reviewTable.scrollWidth + "px";
+}
+
+if (topScroll && tableContainer && reviewTable) {
+  let syncingTop = false;
+  let syncingTable = false;
+
+  topScroll.addEventListener("scroll", function () {
+    if (syncingTable) {
+      return;
+    }
+
+    syncingTop = true;
+    tableContainer.scrollLeft = topScroll.scrollLeft;
+    syncingTop = false;
+  });
+
+  tableContainer.addEventListener("scroll", function () {
+    if (syncingTop) {
+      return;
+    }
+
+    syncingTable = true;
+    topScroll.scrollLeft = tableContainer.scrollLeft;
+    syncingTable = false;
+  });
+
+  updateTopScrollWidth();
+  window.addEventListener("resize", updateTopScrollWidth);
+}
+
+
+/*
+ * Save reviewed HTML
+ */
+
+function reviewedFilename(sourceFilename) {
+  if (sourceFilename.toLowerCase().endsWith(".html")) {
+    return sourceFilename.slice(0, -5) +
+      "-betwixt-reviewed.html";
+  }
+
+  if (sourceFilename.toLowerCase().endsWith(".htm")) {
+    return sourceFilename.slice(0, -4) +
+      "-betwixt-reviewed.html";
+  }
+
+  return sourceFilename + "-betwixt-reviewed.html";
+}
+
+function saveReview() {
+  document
+    .getElementById("review-saved-at")
+    .value = new Date().toISOString();
+
+  const sourceFilename =
+    document
+      .getElementById("review-source-filename")
+      .value;
+
+  const outputFilename =
+    reviewedFilename(sourceFilename);
+
+  document
+    .getElementById("review-saved-filename")
+    .value = outputFilename;
+
+  const clone =
+    document.documentElement.cloneNode(true);
+
+  const originalInputs =
+    document.querySelectorAll("input");
+
+  const clonedInputs =
+    clone.querySelectorAll("input");
+
+  originalInputs.forEach((input, index) => {
+    const clonedInput = clonedInputs[index];
+
+    clonedInput.setAttribute("value", input.value);
+
+    if (input.type === "checkbox" || input.type === "radio") {
+      if (input.checked) {
+        clonedInput.setAttribute("checked", "");
+      } else {
+        clonedInput.removeAttribute("checked");
+      }
+    }
+  });
+
+  const originalTextareas =
+    document.querySelectorAll("textarea");
+
+  const clonedTextareas =
+    clone.querySelectorAll("textarea");
+
+  originalTextareas.forEach((textarea, index) => {
+    clonedTextareas[index].textContent = textarea.value;
+  });
+
+  const originalSelects =
+    document.querySelectorAll("select");
+
+  const clonedSelects =
+    clone.querySelectorAll("select");
+
+  originalSelects.forEach((select, index) => {
+    const clonedSelect = clonedSelects[index];
+
+    Array.from(clonedSelect.options)
+      .forEach(option => {
+        if (option.value === select.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+  });
+
+  const originalCells =
+    document.querySelectorAll(".review-cell");
+
+  const clonedCells =
+    clone.querySelectorAll(".review-cell");
+
+  originalCells.forEach((cell, index) => {
+    clonedCells[index].className = cell.className;
+  });
+
+  const originalProposals =
+    document.querySelectorAll(".other-proposal");
+
+  const clonedProposals =
+    clone.querySelectorAll(".other-proposal");
+
+  originalProposals.forEach((proposal, index) => {
+    clonedProposals[index].style.display =
+      proposal.style.display;
+  });
+
+  const originalRangeLinks =
+    document.querySelectorAll(".range-link");
+
+  const clonedRangeLinks =
+    clone.querySelectorAll(".range-link");
+
+  originalRangeLinks.forEach((link, index) => {
+    clonedRangeLinks[index].style.display =
+      link.style.display;
+
+    if (link.getAttribute("href")) {
+      clonedRangeLinks[index].setAttribute(
+        "href",
+        link.getAttribute("href")
+      );
+    } else {
+      clonedRangeLinks[index].removeAttribute("href");
+    }
+  });
+
+  const html =
+    "<!DOCTYPE html>\n" +
+    clone.outerHTML;
+
+  const blob =
+    new Blob(
+      [html],
+      { type: "text/html;charset=utf-8" }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const download =
+    document.createElement("a");
+
+  download.href = url;
+  download.download = outputFilename;
+
+  document.body.appendChild(download);
+  download.click();
+  document.body.removeChild(download);
+
+  URL.revokeObjectURL(url);
+}
+
+document
+  .getElementById("save-review")
+  .addEventListener("click", saveReview);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Delini Multi-predicate Review Mockup</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 2rem;
+  line-height: 1.4;
+  color: #222;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+}
+
+.reviewer {
+  margin-bottom: 1.5rem;
+}
+
+.reviewer label {
+  display: inline-block;
+  margin-right: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.reviewer input {
+  margin-left: 0.4rem;
+  padding: 0.35rem;
+}
+
+.review-table-scroll-top {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.review-table-scroll-top-content {
+  height: 1px;
+}
+
+.review-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.review-table {
+  border-collapse: collapse;
+  min-width: 100%;
+  width: max-content;
+}
+
+.review-table th,
+.review-table td {
+  border: 1px solid #bbb;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.review-table th {
+  background: #f2f2f2;
+}
+
+.row-number {
+  width: 3rem;
+  min-width: 3rem;
+  text-align: right !important;
+  color: #666;
+  white-space: nowrap;
+}
+
+.evidence {
+  width: 220px;
+}
+
+.review-thumbnail {
+  display: block;
+  max-width: 200px;
+  max-height: 160px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.review-thumbnail-linked {
+  cursor: pointer;
+}
+
+.view-source {
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.description-cell {
+  min-width: 180px;
+}
+
+.description-cell input,
+.description-cell textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+}
+
+.description-cell textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.review-cell {
+  min-width: 180px;
+}
+
+.candidate-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+  font-weight: 600;
+}
+
+.candidate-select {
+  width: 100%;
+  min-width: 160px;
+  box-sizing: border-box;
+  padding: 0.35rem;
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+
+.candidate-control {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.45rem;
+}
+
+.candidate-control .candidate-select,
+.candidate-control .candidate-input {
+  margin-bottom: 0;
+}
+
+.range-link {
+  display: none;
+  flex: 0 0 auto;
+  text-decoration: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.review-actions {
+  white-space: nowrap;
+}
+
+.review-actions button {
+  border: 0;
+  background: none;
+  padding: 0;
+  margin-right: 0.6rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.other-proposal {
+  display: none;
+  margin-top: 0.5rem;
+}
+
+.other-proposal input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 160px;
+  padding: 0.35rem;
+}
+
+.review-cell.is-deferred {
+  background: #faf7ee;
+}
+
+.review-cell.is-rejected {
+  background: #fdf0f0;
+}
+
+.review-cell.is-modified {
+  background: #f3f7f3;
+}
+
+#save-review {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+  
+.assertion-column {
+  min-width: 180px;
+}
+
+/* Frozen reference pane: # | Evidence | Description.
+   Review predicates scroll horizontally to the right. */
+.review-table th,
+.review-table td {
+  background-clip: padding-box;
+}
+
+.frozen-number,
+.frozen-evidence,
+.frozen-description {
+  position: sticky;
+  z-index: 3;
+  background: #fff;
+}
+
+.review-table th.frozen-number,
+.review-table th.frozen-evidence,
+.review-table th.frozen-description {
+  z-index: 5;
+  background: #f2f2f2;
+}
+
+.frozen-number {
+  left: 0;
+}
+
+.frozen-evidence {
+  left: 68px;
+  width: 220px;
+  min-width: 220px;
+}
+
+.frozen-description {
+  left: 308px;
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
+  box-shadow: 4px 0 5px -4px rgba(0, 0, 0, 0.45);
+}
+
+.description-cell.frozen-description textarea {
+  min-width: 0;
+}
+
+.assertion-column,
+.review-cell {
+  min-width: 180px;
+}
+
+/* Frozen English label restored:
+   # | Evidence | Label | Description */
+.frozen-label {
+  position: sticky;
+  left: 308px;
+  z-index: 3;
+  background: #fff;
+  width: 190px;
+  min-width: 190px;
+  max-width: 190px;
+}
+
+.review-table th.frozen-label {
+  z-index: 5;
+  background: #f2f2f2;
+}
+
+.frozen-description {
+  left: 518px;
+}
+
+.frozen-label textarea {
+  min-width: 0;
+}
+</style>
+</head>
+<body>
+<h1>Delini Multi-predicate Review Mockup</h1>
+<p class="review-description">Mock-up of the intended multi-predicate layout: one evidence item and its description are followed by several reviewable predicate columns, then context. <span class="betwixt-id">[betwixt-delini-multipredicate-mockup]</span></p>
+<div class="reviewer">
+<label>
+      Name
+      <input id="reviewer-name" name="reviewer_name" type="text"/>
+</label>
+<label>
+      Email
+      <input id="reviewer-email" name="reviewer_email" type="email"/>
+</label>
+<input id="betwixt-id" name="betwixt_id" type="hidden" value="delini-multipredicate-mockup"/>
+<input id="betwixt-generated-at" name="betwixt_generated_at" type="hidden" value="2026-08-17T16:44:44+0200"/>
+<input id="review-started-at" name="review_started_at" type="hidden" value=""/>
+<input id="review-saved-at" name="review_saved_at" type="hidden" value=""/>
+<input id="review-source-filename" name="review_source_filename" type="hidden" value=""/>
+<input id="review-saved-filename" name="review_saved_filename" type="hidden" value=""/>
+</div>
+<div aria-hidden="true" class="review-table-scroll-top">
+<div class="review-table-scroll-top-content"></div>
+</div>
+<div class="review-table-container">
+<table class="review-table">
+<thead>
+<tr>
+<th class="row-number frozen-number">#</th>
+<th class="frozen-evidence">Evidence</th>
+<th class="description-column frozen-label">Label</th><th class="description-column frozen-description frozen-description">Description</th>
+<th class="assertion-column">instance_of</th><th class="assertion-column">heritage_of</th><th class="assertion-column">held_by</th><th class="context-column">Context</th></tr>
+</thead>
+<tbody>
+<tr data-row-number="1">
+<td class="row-number frozen-number">1</td>
+<td class="evidence frozen-evidence">
+<img alt="Evidence for row 1" class="review-thumbnail review-thumbnail-linked" data-url="https://example.com/delini.html" src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101565_thumbnail.jpg"/>
+<button class="view-source" data-url="https://example.com/delini.html" type="button">
+              View source
+            </button>
+</td>
+<td class="description-cell frozen-label"><textarea data-original-value="Farmstead" name="label_en">Farmstead</textarea></td><td class="description-cell frozen-description">
+<textarea name="description_en_1">the farmhouse of the Delini farmstead</textarea>
+</td>
+<td class="review-cell"><div class="candidate-control"><input class="candidate-input" data-original-value="farmhouse" name="instance_of_selected_1" type="text" value="farmhouse"/></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="instance_of_review_1" type="hidden" value="accept"/><div class="other-proposal"><input name="instance_of_alternative_1" placeholder="Alternative instance_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="Livonians" name="heritage_of_selected_1"><option selected="" value="Livonians">Livonians</option><option value="Latvians">Latvians</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="heritage_of_review_1" type="hidden" value="accept"/><div class="other-proposal"><input name="heritage_of_alternative_1" placeholder="Alternative heritage_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="LVOAM" name="held_by_selected_1"><option selected="" value="LVOAM">LVOAM</option><option value="Seaside Museum">Seaside Museum</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="held_by_review_1" type="hidden" value="accept"/><div class="other-proposal"><input name="held_by_alternative_1" placeholder="Alternative held_by" type="text"/></div></td><td class="context-column">artefact photograph</td></tr>
+<tr data-row-number="2">
+<td class="row-number frozen-number">2</td>
+<td class="evidence frozen-evidence">
+<img alt="Evidence for row 2" class="review-thumbnail" src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101561_thumbnail.jpg"/>
+</td>
+<td class="description-cell frozen-label"><textarea data-original-value="Tablet-woven sash" name="label_en">Tablet-woven sash</textarea></td><td class="description-cell frozen-description">
+<textarea name="description_en_2">a tablet-woven sash in the master bedroom of the Delini farmhouse</textarea>
+</td>
+<td class="review-cell"><div class="candidate-control"><input class="candidate-input" data-original-value="tablet-woven sash" name="instance_of_selected_2" type="text" value="tablet-woven sash"/></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="instance_of_review_2" type="hidden" value="accept"/><div class="other-proposal"><input name="instance_of_alternative_2" placeholder="Alternative instance_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="Livonians" name="heritage_of_selected_2"><option selected="" value="Livonians">Livonians</option><option value="Latvians">Latvians</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="heritage_of_review_2" type="hidden" value="accept"/><div class="other-proposal"><input name="heritage_of_alternative_2" placeholder="Alternative heritage_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="LVOAM" name="held_by_selected_2"><option selected="" value="LVOAM">LVOAM</option><option value="Seaside Museum">Seaside Museum</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="held_by_review_2" type="hidden" value="accept"/><div class="other-proposal"><input name="held_by_alternative_2" placeholder="Alternative held_by" type="text"/></div></td><td class="context-column">artefact photograph</td></tr>
+<tr data-row-number="3">
+<td class="row-number frozen-number">3</td>
+<td class="evidence frozen-evidence">
+<img alt="Evidence for row 3" class="review-thumbnail" src="https://betwixt.dataobservatory.eu/articles/images/delini/artefacts/P7101556_thumbnail.jpg"/>
+</td>
+<td class="description-cell frozen-label"><textarea data-original-value="Bed" name="label_en">Bed</textarea></td><td class="description-cell frozen-description">
+<textarea name="description_en_3">a bed in the master bedroom of the Delini farmhouse</textarea>
+</td>
+<td class="review-cell"><div class="candidate-control"><input class="candidate-input" data-original-value="bed" name="instance_of_selected_3" type="text" value="bed"/></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="instance_of_review_3" type="hidden" value="accept"/><div class="other-proposal"><input name="instance_of_alternative_3" placeholder="Alternative instance_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="Livonians" name="heritage_of_selected_3"><option selected="" value="Livonians">Livonians</option><option value="Latvians">Latvians</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="heritage_of_review_3" type="hidden" value="accept"/><div class="other-proposal"><input name="heritage_of_alternative_3" placeholder="Alternative heritage_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="LVOAM" name="held_by_selected_3"><option selected="" value="LVOAM">LVOAM</option><option value="Seaside Museum">Seaside Museum</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="held_by_review_3" type="hidden" value="accept"/><div class="other-proposal"><input name="held_by_alternative_3" placeholder="Alternative held_by" type="text"/></div></td><td class="context-column">artefact photograph</td></tr>
+<tr data-row-number="4">
+<td class="row-number frozen-number">4</td>
+<td class="evidence frozen-evidence">
+<img alt="Evidence for row 4" class="review-thumbnail" src="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101590_thumbnail.jpg"/>
+</td>
+<td class="description-cell frozen-label"><textarea data-original-value="Photographic record" name="label_en">Photographic record</textarea></td><td class="description-cell frozen-description">
+<textarea name="description_en_4">a record containing two photographs of the Delini farmhouse</textarea>
+</td>
+<td class="review-cell"><div class="candidate-control"><input class="candidate-input" data-original-value="photographic record" name="instance_of_selected_4" type="text" value="photographic record"/></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="instance_of_review_4" type="hidden" value="accept"/><div class="other-proposal"><input name="instance_of_alternative_4" placeholder="Alternative instance_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="Latvians" name="heritage_of_selected_4"><option value="Livonians">Livonians</option><option selected="" value="Latvians">Latvians</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="heritage_of_review_4" type="hidden" value="accept"/><div class="other-proposal"><input name="heritage_of_alternative_4" placeholder="Alternative heritage_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="Seaside Museum" name="held_by_selected_4"><option value="LVOAM">LVOAM</option><option selected="" value="Seaside Museum">Seaside Museum</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="held_by_review_4" type="hidden" value="accept"/><div class="other-proposal"><input name="held_by_alternative_4" placeholder="Alternative held_by" type="text"/></div></td><td class="context-column">record</td></tr>
+<tr data-row-number="5">
+<td class="row-number frozen-number">5</td>
+<td class="evidence frozen-evidence">
+<img alt="Evidence for row 5" class="review-thumbnail" src="https://betwixt.dataobservatory.eu/articles/images/delini/records/P7101623_thumbnail.jpg"/>
+</td>
+<td class="description-cell frozen-label"><textarea data-original-value="Floor plan" name="label_en">Floor plan</textarea></td><td class="description-cell frozen-description">
+<textarea name="description_en_5">a floor plan of the Delini farmhouse prepared for its reconstruction</textarea>
+</td>
+<td class="review-cell"><div class="candidate-control"><input class="candidate-input" data-original-value="floor plan" name="instance_of_selected_5" type="text" value="floor plan"/></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="instance_of_review_5" type="hidden" value="accept"/><div class="other-proposal"><input name="instance_of_alternative_5" placeholder="Alternative instance_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="Latvians" name="heritage_of_selected_5"><option value="Livonians">Livonians</option><option selected="" value="Latvians">Latvians</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="heritage_of_review_5" type="hidden" value="accept"/><div class="other-proposal"><input name="heritage_of_alternative_5" placeholder="Alternative heritage_of" type="text"/></div></td><td class="review-cell"><div class="candidate-control"><select class="candidate-select" data-original-value="Seaside Museum" name="held_by_selected_5"><option value="LVOAM">LVOAM</option><option selected="" value="Seaside Museum">Seaside Museum</option></select></div><div class="review-actions"><button class="defer-action" type="button">Defer</button><button class="reject-action" type="button">Reject</button></div><input class="review-state" name="held_by_review_5" type="hidden" value="accept"/><div class="other-proposal"><input name="held_by_alternative_5" placeholder="Alternative held_by" type="text"/></div></td><td class="context-column">record</td></tr>
+</tbody>
+</table>
+</div>
+<button id="save-review" type="button">
+    Save review as HTML
+  </button>
+<script>
+/*
+ * Review provenance
+ */
+
+const startedAt =
+  document.getElementById("review-started-at");
+
+if (startedAt && !startedAt.value) {
+  startedAt.value = new Date().toISOString();
+}
+
+const sourceFilenameField =
+  document.getElementById("review-source-filename");
+
+if (sourceFilenameField && !sourceFilenameField.value) {
+  const pathname = window.location.pathname;
+
+  const sourceFilename =
+    decodeURIComponent(
+      pathname.substring(pathname.lastIndexOf("/") + 1)
+    ) || "review.html";
+
+  sourceFilenameField.value = sourceFilename;
+}
+
+
+/*
+ * Review interaction
+ */
+
+document
+  .querySelectorAll(".review-cell")
+  .forEach(cell => {
+    const select = cell.querySelector(".candidate-select");
+    const input = cell.querySelector(".candidate-input");
+    const state = cell.querySelector(".review-state");
+    const otherProposal = cell.querySelector(".other-proposal");
+    const rangeLink = cell.querySelector(".range-link");
+    const defer = cell.querySelector(".defer-action");
+    const reject = cell.querySelector(".reject-action");
+
+    function clearStateClasses() {
+      cell.classList.remove(
+        "is-modified",
+        "is-deferred",
+        "is-rejected"
+      );
+    }
+
+    function markModified() {
+      state.value = "accept";
+      clearStateClasses();
+      cell.classList.add("is-modified");
+    }
+
+    function updateRangeLink() {
+      if (!select || !rangeLink) {
+        return;
+      }
+
+      const option = select.options[select.selectedIndex];
+      const url = option ? option.dataset.url : "";
+
+      if (url) {
+        rangeLink.href = url;
+        rangeLink.style.display = "inline-block";
+      } else {
+        rangeLink.removeAttribute("href");
+        rangeLink.style.display = "none";
+      }
+    }
+
+    function updateOtherProposal() {
+      if (!select || !otherProposal) {
+        return;
+      }
+
+      if (select.value === "__other__") {
+        otherProposal.style.display = "block";
+      } else {
+        otherProposal.style.display = "none";
+      }
+    }
+
+    defer.addEventListener("click", function () {
+      clearStateClasses();
+      state.value = "defer";
+      cell.classList.add("is-deferred");
+    });
+
+    reject.addEventListener("click", function () {
+      clearStateClasses();
+      state.value = "reject";
+      cell.classList.add("is-rejected");
+    });
+
+    if (select) {
+      select.addEventListener("change", function () {
+        markModified();
+        updateOtherProposal();
+        updateRangeLink();
+
+        if (this.value === "__other__" && otherProposal) {
+          const otherInput = otherProposal.querySelector("input");
+
+          if (otherInput) {
+            otherInput.focus();
+          }
+        }
+      });
+
+      updateOtherProposal();
+      updateRangeLink();
+    }
+
+    if (input) {
+      input.addEventListener("input", markModified);
+    }
+  });
+
+
+/*
+ * Open original evidence source
+ */
+
+function openSource(url) {
+  if (!url) {
+    return;
+  }
+
+  window.open(
+    url,
+    "betwixt-source",
+    "width=1100,height=800,resizable=yes,scrollbars=yes"
+  );
+}
+
+document
+  .querySelectorAll(".view-source")
+  .forEach(button => {
+    button.addEventListener("click", function () {
+      openSource(this.dataset.url);
+    });
+  });
+
+document
+  .querySelectorAll(".review-thumbnail-linked")
+  .forEach(image => {
+    image.addEventListener("click", function () {
+      openSource(this.dataset.url);
+    });
+  });
+
+
+/*
+ * Synchronise the upper horizontal scrollbar
+ */
+
+const topScroll =
+  document.querySelector(".review-table-scroll-top");
+
+const topScrollContent =
+  document.querySelector(".review-table-scroll-top-content");
+
+const tableContainer =
+  document.querySelector(".review-table-container");
+
+const reviewTable =
+  document.querySelector(".review-table");
+
+function updateTopScrollWidth() {
+  if (!topScrollContent || !reviewTable) {
+    return;
+  }
+
+  topScrollContent.style.width =
+    reviewTable.scrollWidth + "px";
+}
+
+if (topScroll && tableContainer && reviewTable) {
+  let syncingTop = false;
+  let syncingTable = false;
+
+  topScroll.addEventListener("scroll", function () {
+    if (syncingTable) {
+      return;
+    }
+
+    syncingTop = true;
+    tableContainer.scrollLeft = topScroll.scrollLeft;
+    syncingTop = false;
+  });
+
+  tableContainer.addEventListener("scroll", function () {
+    if (syncingTop) {
+      return;
+    }
+
+    syncingTable = true;
+    topScroll.scrollLeft = tableContainer.scrollLeft;
+    syncingTable = false;
+  });
+
+  updateTopScrollWidth();
+  window.addEventListener("resize", updateTopScrollWidth);
+}
+
+
+/*
+ * Save reviewed HTML
+ */
+
+function reviewedFilename(sourceFilename) {
+  if (sourceFilename.toLowerCase().endsWith(".html")) {
+    return sourceFilename.slice(0, -5) +
+      "-betwixt-reviewed.html";
+  }
+
+  if (sourceFilename.toLowerCase().endsWith(".htm")) {
+    return sourceFilename.slice(0, -4) +
+      "-betwixt-reviewed.html";
+  }
+
+  return sourceFilename + "-betwixt-reviewed.html";
+}
+
+function saveReview() {
+  document
+    .getElementById("review-saved-at")
+    .value = new Date().toISOString();
+
+  const sourceFilename =
+    document
+      .getElementById("review-source-filename")
+      .value;
+
+  const outputFilename =
+    reviewedFilename(sourceFilename);
+
+  document
+    .getElementById("review-saved-filename")
+    .value = outputFilename;
+
+  const clone =
+    document.documentElement.cloneNode(true);
+
+  const originalInputs =
+    document.querySelectorAll("input");
+
+  const clonedInputs =
+    clone.querySelectorAll("input");
+
+  originalInputs.forEach((input, index) => {
+    const clonedInput = clonedInputs[index];
+
+    clonedInput.setAttribute("value", input.value);
+
+    if (input.type === "checkbox" || input.type === "radio") {
+      if (input.checked) {
+        clonedInput.setAttribute("checked", "");
+      } else {
+        clonedInput.removeAttribute("checked");
+      }
+    }
+  });
+
+  const originalTextareas =
+    document.querySelectorAll("textarea");
+
+  const clonedTextareas =
+    clone.querySelectorAll("textarea");
+
+  originalTextareas.forEach((textarea, index) => {
+    clonedTextareas[index].textContent = textarea.value;
+  });
+
+  const originalSelects =
+    document.querySelectorAll("select");
+
+  const clonedSelects =
+    clone.querySelectorAll("select");
+
+  originalSelects.forEach((select, index) => {
+    const clonedSelect = clonedSelects[index];
+
+    Array.from(clonedSelect.options)
+      .forEach(option => {
+        if (option.value === select.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+  });
+
+  const originalCells =
+    document.querySelectorAll(".review-cell");
+
+  const clonedCells =
+    clone.querySelectorAll(".review-cell");
+
+  originalCells.forEach((cell, index) => {
+    clonedCells[index].className = cell.className;
+  });
+
+  const originalProposals =
+    document.querySelectorAll(".other-proposal");
+
+  const clonedProposals =
+    clone.querySelectorAll(".other-proposal");
+
+  originalProposals.forEach((proposal, index) => {
+    clonedProposals[index].style.display =
+      proposal.style.display;
+  });
+
+  const originalRangeLinks =
+    document.querySelectorAll(".range-link");
+
+  const clonedRangeLinks =
+    clone.querySelectorAll(".range-link");
+
+  originalRangeLinks.forEach((link, index) => {
+    clonedRangeLinks[index].style.display =
+      link.style.display;
+
+    if (link.getAttribute("href")) {
+      clonedRangeLinks[index].setAttribute(
+        "href",
+        link.getAttribute("href")
+      );
+    } else {
+      clonedRangeLinks[index].removeAttribute("href");
+    }
+  });
+
+  const html =
+    "<!DOCTYPE html>\n" +
+    clone.outerHTML;
+
+  const blob =
+    new Blob(
+      [html],
+      { type: "text/html;charset=utf-8" }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const download =
+    document.createElement("a");
+
+  download.href = url;
+  download.download = outputFilename;
+
+  document.body.appendChild(download);
+  download.click();
+  document.body.removeChild(download);
+
+  URL.revokeObjectURL(url);
+}
+
+document
+  .getElementById("save-review")
+  .addEventListener("click", saveReview);
+  </script>
+</body>
+</html>

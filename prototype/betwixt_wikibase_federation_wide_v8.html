@@ -1,0 +1,295 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Betwixt Wikibase Federation Review</title>
+<style>
+:root{--b:#d8d8d8;--h:#f5f5f5;--g:#dff2df;--y:#fff2b8;--r:#ffd6d6;--c:#fafafa}
+*{box-sizing:border-box}body{margin:0;background:white;color:#202124;font:14px Roboto,Arial,sans-serif}main{padding:28px 32px 40px}
+h1{font-size:24px;font-weight:500;margin:0 0 8px}.intro{max-width:1150px;line-height:1.5;color:#444}
+.config{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1100px;margin:18px 0}.box{border:1px solid var(--b);padding:11px;background:#fafafa}
+.box h2{font-size:15px;font-weight:500;margin:0 0 8px}.grid{display:grid;grid-template-columns:100px 1fr;gap:6px;align-items:center}
+input,select{font:inherit;border:1px solid #c8c8c8;border-radius:3px;background:#fff;padding:6px;width:100%}
+.model{max-width:1100px;border:1px solid var(--b);padding:11px;margin-bottom:16px}.model select{width:auto;min-width:450px}
+.legend{display:flex;gap:18px;font-size:12px;color:#555;margin-bottom:12px}.sw{width:12px;height:12px;border:1px solid #bbb;display:inline-block;vertical-align:-2px;margin-right:4px}
+.scrolltop,.wrap{overflow-x:auto;overscroll-behavior-x:contain}.wrap{overflow-anchor:none}.scrolltop{height:17px;overflow-y:hidden}.scrollinner{height:1px}
+table{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%}th,td{border-right:1px solid var(--b);border-bottom:1px solid var(--b);padding:8px;vertical-align:top;background:#fff}
+th{background:var(--h);font-weight:500;text-align:left;white-space:nowrap;border-top:1px solid var(--b)}th:first-child,td:first-child{border-left:1px solid var(--b)}th small{display:block;color:#666;font-weight:400;margin-top:3px}
+.num{width:40px;text-align:right;color:#666}.knowledge{width:235px;min-width:235px}.meta{width:210px;min-width:210px}.target{width:245px;min-width:245px}
+.qid{font-family:ui-monospace,Consolas,monospace;color:#174ea6}.definition{font-size:11px;color:#555;line-height:1.4;margin-top:6px}
+.actions{display:flex;gap:10px;margin-top:7px}.actions button{border:0;background:transparent;padding:0;text-decoration:underline;color:#555;cursor:pointer;font:inherit;font-size:12px}
+.writein{display:none;margin-top:6px}.cell[data-state=redefine]{background:var(--y)}.cell[data-state=skip]{background:var(--r)}.cell[data-state=na]{background:#fff}
+.final{width:72px;text-align:center}.finalise-button{display:inline-flex;width:30px;height:30px;padding:0;border:0;background:transparent;align-items:center;justify-content:center;cursor:pointer}.mark{display:inline-flex;width:28px;height:28px;border:1px solid #aaa;border-radius:4px;align-items:center;justify-content:center;font-size:19px;font-weight:bold;background:#fff}
+tr[data-final=true][data-outcome=federate] .cell[data-state=federate]{background:var(--g)}tr[data-final=true][data-outcome=federate] .mark{background:var(--g);color:#276427}
+tr[data-final=true][data-outcome=redefine] .mark{background:var(--y);color:#765f00}tr[data-final=true][data-outcome=skip] .mark{background:var(--r);color:#982020}
+.context{width:205px;min-width:205px;background:var(--c);color:#444}footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--b);color:#666;font-size:12px;max-width:900px}
+
+.review-meta{max-width:1100px;margin-top:24px;padding-top:16px;border-top:1px solid var(--b)}
+.review-meta h2{margin:0 0 8px;font-size:15px;font-weight:500}
+.review-meta p{margin:0;color:#666;font-size:12px;line-height:1.45}
+.save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
+#save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:#666;font-size:12px}
+</style></head><body><main>
+<h1>Wikibase Federation Review</h1>
+<p class="intro">A bounded wide projection for deciding which claims can be federated between two Wikibase instances. <strong>Not applicable</strong> means that the potential subject–predicate intersection does not constitute an atomic claim and is neutral for finalisation. A selected shared value federates; Other/Redefine is a local semantic deviation; None of these/Skip rejects the candidate exchange.</p>
+<div class="config">
+<div class="box"><h2>Wikibase 1</h2><div class="grid"><span>Name</span><input value="Wikidata"><span>Prefix</span><input value="wd"><span>Username</span><input><span>Password</span><input type="password"></div></div>
+<div class="box"><h2>Wikibase 2</h2><div class="grid"><span>Name</span><input value="Finno-Ugric Data Sharing Space"><span>Prefix</span><input value="fudss"><span>Username</span><input><span>Password</span><input type="password"></div></div>
+</div>
+<div class="model">Federation model &nbsp; <select><option>Local copy on both Wikibase instances</option><option selected>Pointer from Wikidata to local; copy from local to Wikidata</option></select></div>
+<div class="legend"><span><i class="sw" style="background:var(--g)"></i>Federate</span><span>Not applicable — neutral</span><span><i class="sw" style="background:var(--y)"></i>Redefine</span><span><i class="sw" style="background:var(--r)"></i>Skip</span></div>
+<div class="scrolltop"><div class="scrollinner"></div></div><div class="wrap"><table id="t"><thead><tr>
+<th>#</th><th>Knowledge</th><th>label<small>@en</small></th><th>description<small>@en</small></th>
+<th>wd:P31<small>instance of · Wikibase item</small></th><th>wd:P17<small>country · Wikibase item</small></th><th>wd:P19<small>place of birth · Wikibase item</small></th>
+<th>wd:P18<small>image · Commons media</small></th><th>wd:P615<small>expected: Geographic coordinates</small></th><th>Finalise</th>
+<th>wd:P625<small>coordinate location · Context</small></th><th>wd:P2579<small>studied by · Context</small></th>
+</tr></thead><tbody><tr data-final="false">
+<td class="num">1</td>
+<td class="knowledge"><a href="https://www.wikidata.org/wiki/Q5" target="_blank" class="qid">wd:Q5</a>
+<div class="definition"><b>label:</b> human<br><b>description:</b> any single member of Homo sapiens, unique extant species of the genus Homo</div></td>
+<td class="meta"><input value="human"></td><td class="meta"><input value="any single member of Homo sapiens, unique extant species of the genus Homo"></td>
+<td class="target cell" data-state="federate">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972" selected>wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__">Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another Commons image">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another geographic coordinate">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td>
+<td class="final"><button type="button" class="finalise-button" aria-pressed="false" title="Finalise this row"><span class="mark"></span></button></td>
+<td class="context">not applicable</td><td class="context">anthropology</td>
+</tr><tr data-final="false">
+<td class="num">2</td>
+<td class="knowledge"><a href="https://www.wikidata.org/wiki/Q486972" target="_blank" class="qid">wd:Q486972</a>
+<div class="definition"><b>label:</b> human settlement<br><b>description:</b> —</div></td>
+<td class="meta"><input value="human settlement"></td><td class="meta"><input value=""></td>
+<td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another Commons image">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another geographic coordinate">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td>
+<td class="final"><button type="button" class="finalise-button" aria-pressed="false" title="Finalise this row"><span class="mark"></span></button></td>
+<td class="context">not applicable</td><td class="context">not applicable</td>
+</tr><tr data-final="false">
+<td class="num">3</td>
+<td class="knowledge"><a href="https://www.wikidata.org/wiki/Q1781" target="_blank" class="qid">wd:Q1781</a>
+<div class="definition"><b>label:</b> Budapest<br><b>description:</b> capital and largest city of Hungary</div></td>
+<td class="meta"><input value="Budapest"></td><td class="meta"><input value="capital and largest city of Hungary"></td>
+<td class="target cell" data-state="federate">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728" selected>wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__">Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="federate">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28" selected>wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__">Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="federate">
+<select class="fed-select"><option value="current" selected>Budapest,_Hungary_(explored)_(14995308504).jpg</option><option value="__other__">Other…</option><option value="__na__">Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another Commons image">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another geographic coordinate">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td>
+<td class="final"><button type="button" class="finalise-button" aria-pressed="false" title="Finalise this row"><span class="mark"></span></button></td>
+<td class="context">47°29′54″N, 19°2′27″E</td><td class="context">not applicable</td>
+</tr><tr data-final="false">
+<td class="num">4</td>
+<td class="knowledge"><a href="https://www.wikidata.org/wiki/Q28" target="_blank" class="qid">wd:Q28</a>
+<div class="definition"><b>label:</b> Hungary<br><b>description:</b> country in Central Europe</div></td>
+<td class="meta"><input value="Hungary"></td><td class="meta"><input value="country in Central Europe"></td>
+<td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another Commons image">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another geographic coordinate">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td>
+<td class="final"><button type="button" class="finalise-button" aria-pressed="false" title="Finalise this row"><span class="mark"></span></button></td>
+<td class="context">47°N, 19°E</td><td class="context">not applicable</td>
+</tr><tr data-final="false">
+<td class="num">5</td>
+<td class="knowledge"><a href="https://www.wikidata.org/wiki/Q108178728" target="_blank" class="qid">wd:Q108178728</a>
+<div class="definition"><b>label:</b> National capital<br><b>description:</b> —</div></td>
+<td class="meta"><input value="National capital"></td><td class="meta"><input value=""></td>
+<td class="target cell" data-state="federate">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972" selected>wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__">Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another Commons image">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another geographic coordinate">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td>
+<td class="final"><button type="button" class="finalise-button" aria-pressed="false" title="Finalise this row"><span class="mark"></span></button></td>
+<td class="context">not applicable</td><td class="context">not applicable</td>
+</tr><tr data-final="false">
+<td class="num">6</td>
+<td class="knowledge"><a href="#" target="_blank" class="qid">fudss:Q123</a>
+<div class="definition"><b>label:</b> Berger Hugo<br><b>description:</b> a studio photographer active in Budapest around 1900</div></td>
+<td class="meta"><input value="Berger Hugo"></td><td class="meta"><input value="a studio photographer active in Budapest around 1900"></td>
+<td class="target cell" data-state="federate">
+<select class="fed-select"><option value="wd:Q5" selected>wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__">Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781">wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="federate">
+<select class="fed-select"><option value="wd:Q5">wd:Q5 — human</option><option value="wd:Q486972">wd:Q486972 — human settlement</option><option value="wd:Q1781" selected>wd:Q1781 — Budapest</option><option value="wd:Q28">wd:Q28 — Hungary</option><option value="wd:Q108178728">wd:Q108178728 — National capital</option><option value="fudss:Q123">fudss:Q123 — Berger Hugo</option><option value="__other__">Other…</option><option value="__na__">Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another item">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another Commons image">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td><td class="target cell" data-state="na">
+<select class="fed-select"><option value="__other__">Other…</option><option value="__na__" selected>Not applicable</option><option value="__none__">None of these apply</option></select>
+<input class="writein" placeholder="Enter another geographic coordinate">
+<div class="actions"><button data-a="na">Not applicable</button><button data-a="redefine">Redefine</button><button data-a="skip">Skip</button></div>
+</td>
+<td class="final"><button type="button" class="finalise-button" aria-pressed="false" title="Finalise this row"><span class="mark"></span></button></td>
+<td class="context">not applicable</td><td class="context">not applicable</td>
+</tr></tbody></table></div>
+<section class="review-meta">
+<h2>Save federation review</h2>
+<p>The saved HTML contains the current table state, including changed selections, write-ins, cell classifications and row finalisation.</p>
+<div class="save-actions">
+<button type="button" id="save-draft">Save — come back later</button>
+<button type="button" id="save-final">Save &amp; finalise review</button>
+</div>
+<input type="hidden" id="review-started-at"><input type="hidden" id="review-last-saved-at">
+<input type="hidden" id="review-ended-at"><input type="hidden" id="review-status" value="in-progress">
+<div id="save-status" class="save-status" aria-live="polite"></div>
+</section>
+<footer>Created with Betwixt · © Daniel Antal · Reprex B.V.</footer>
+<script>
+(()=>{const rows=[...document.querySelectorAll("tbody tr")],top=document.querySelector(".scrolltop"),wrap=document.querySelector(".wrap"),inner=document.querySelector(".scrollinner"),table=document.querySelector("#t");
+const size=()=>inner.style.width=table.scrollWidth+"px";
+size();
+addEventListener("resize",size,{passive:true});
+let syncingTop=false, syncingTable=false;
+top.addEventListener("scroll",()=>{
+  if(syncingTop)return;
+  syncingTable=true;
+  wrap.scrollLeft=top.scrollLeft;
+  requestAnimationFrame(()=>{syncingTable=false});
+},{passive:true});
+wrap.addEventListener("scroll",()=>{
+  if(syncingTable)return;
+  syncingTop=true;
+  top.scrollLeft=wrap.scrollLeft;
+  requestAnimationFrame(()=>{syncingTop=false});
+},{passive:true});
+function paint(r){const st=[...r.querySelectorAll(".cell")].map(c=>c.dataset.state);r.dataset.outcome=st.includes("skip")?"skip":st.includes("redefine")?"redefine":"federate";const m=r.querySelector(".mark");if(r.dataset.final!=="true"){m.textContent="";return}m.textContent=r.dataset.outcome==="skip"?"×":r.dataset.outcome==="redefine"?"○":"✓"}
+rows.forEach(r=>{r.querySelectorAll(".fed-select").forEach(s=>{const c=s.closest(".cell"),w=c.querySelector(".writein");s.onchange=()=>{if(s.value==="__na__"){c.dataset.state="na";w.style.display="none"}else if(s.value==="__none__"){c.dataset.state="skip";w.style.display="none"}else if(s.value==="__other__"){c.dataset.state="redefine";w.style.display="block";w.focus()}else{c.dataset.state="federate";w.style.display="none"}paint(r)}});
+r.querySelectorAll(".actions button").forEach(b=>b.onclick=()=>{const c=b.closest(".cell"),s=c.querySelector("select"),w=c.querySelector(".writein"),a=b.dataset.a;if(a==="na"){c.dataset.state="na";s.value="__na__";w.style.display="none"}else if(a==="skip"){c.dataset.state="skip";s.value="__none__";w.style.display="none"}else{c.dataset.state="redefine";s.value="__other__";w.style.display="block";w.focus()}paint(r)});
+const fb=r.querySelector(".finalise-button");
+fb.addEventListener("mousedown",e=>e.preventDefault());
+fb.addEventListener("click",e=>{
+  e.preventDefault();
+  const left=wrap.scrollLeft, topY=window.scrollY;
+  const next=r.dataset.final!=="true";
+  r.dataset.final=next?"true":"false";
+  fb.setAttribute("aria-pressed",next?"true":"false");
+  paint(r);
+  requestAnimationFrame(()=>{
+    wrap.scrollLeft=left;
+    window.scrollTo({top:topY,left:window.scrollX,behavior:"instant"});
+  });
+});
+paint(r)});
+
+const startedAt=document.getElementById("review-started-at");
+if(!startedAt.value)startedAt.value=new Date().toISOString();
+
+function persistStateIntoClone(clone){
+  const si=[...document.querySelectorAll("input")],di=[...clone.querySelectorAll("input")];
+  si.forEach((x,i)=>{if(di[i])di[i].setAttribute("value",x.value)});
+  const ss=[...document.querySelectorAll("select")],ds=[...clone.querySelectorAll("select")];
+  ss.forEach((x,i)=>{if(!ds[i])return;[...ds[i].options].forEach(o=>o.value===x.value?o.setAttribute("selected",""):o.removeAttribute("selected"))});
+  const sc=[...document.querySelectorAll(".cell")],dc=[...clone.querySelectorAll(".cell")];
+  sc.forEach((x,i)=>{if(!dc[i])return;dc[i].dataset.state=x.dataset.state||"na";
+    const sw=x.querySelector(".writein"),dw=dc[i].querySelector(".writein");
+    if(sw&&dw){dw.setAttribute("value",sw.value);dw.style.display=sw.style.display}});
+  const sr=[...document.querySelectorAll("tbody tr")],dr=[...clone.querySelectorAll("tbody tr")];
+  sr.forEach((x,i)=>{if(!dr[i])return;dr[i].dataset.final=x.dataset.final||"false";dr[i].dataset.outcome=x.dataset.outcome||"federate";
+    const sb=x.querySelector(".finalise-button"),db=dr[i].querySelector(".finalise-button"),sm=x.querySelector(".mark"),dm=dr[i].querySelector(".mark");
+    if(sb&&db)db.setAttribute("aria-pressed",sb.getAttribute("aria-pressed")||"false");if(sm&&dm)dm.textContent=sm.textContent});
+}
+function saveReview(finaliseReview){
+  const now=new Date().toISOString();
+  document.getElementById("review-last-saved-at").value=now;
+  document.getElementById("review-status").value=finaliseReview?"finalised":"in-progress";
+  if(finaliseReview)document.getElementById("review-ended-at").value=now;
+  const clone=document.documentElement.cloneNode(true);persistStateIntoClone(clone);
+  const outputName=finaliseReview?"betwixt-wikibase-federation-reviewed.html":"betwixt-wikibase-federation-draft.html";
+  const blob=new Blob(["<!doctype html>\n"+clone.outerHTML],{type:"text/html;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=outputName;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),0);
+  document.getElementById("save-status").textContent=(finaliseReview?"Finalised review saved at ":"Draft saved at ")+now;
+}
+document.getElementById("save-draft").addEventListener("click",()=>saveReview(false));
+document.getElementById("save-final").addEventListener("click",()=>saveReview(true));
+
+})();
+</script></main></body></html>

@@ -195,3 +195,46 @@ test_that("candidate_dataset() integrates with add_candidate_column()", {
 
   expect_equal(nrow(result), nrow(w3c_life_expectancy))
 })
+
+
+test_that("candidate_dataset() omits optional evidence relation columns", {
+  result <- candidate_dataset(
+    evidence_url = "https://example.org/evidence/1",
+    evidence_text = "Evidence 1",
+    label = "Example subject",
+    description = "An example subject",
+    subject = "example:Q1"
+  )
+
+  expect_false("evidence_relation" %in% names(result))
+  expect_false("evidence_relation_range" %in% names(result))
+
+  expect_equal(
+    names(result),
+    c(
+      "row_number",
+      "evidence_url",
+      "evidence_text",
+      "label",
+      "description",
+      "col_1",
+      "col_1_range",
+      "col_1_definition"
+    )
+  )
+})
+
+
+test_that("evidence relation range requires an evidence relation", {
+  expect_error(
+    candidate_dataset(
+      evidence_url = "https://example.org/evidence/1",
+      evidence_text = "Evidence 1",
+      label = "Example subject",
+      description = "An example subject",
+      subject = "example:Q1",
+      evidence_relation_range = candidate_range("depicts", "documents")
+    ),
+    "evidence_relation_range requires evidence_relation."
+  )
+})

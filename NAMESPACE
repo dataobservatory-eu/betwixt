@@ -2,7 +2,11 @@
 
 S3method(as_claim_df,data.frame)
 S3method(print,claim_df)
+export(add_candidate_column)
 export(as_claim_df)
 export(betwixt_render)
+export(candidate_dataset)
 export(claim)
 export(is.claim_df)
+importFrom(dplyr,mutate)
+importFrom(tibble,tibble)

@@ -1,106 +1,294 @@
 (() => {
-  const rows=[...document.querySelectorAll("tbody tr")];
+  const rows = [...document.querySelectorAll("tbody tr")];
 
   function outcome(row) {
-    const cells=[...row.querySelectorAll(".semantic-cell")];
-    if(cells.some(c=>c.dataset.qualification==="reject")) return "reject";
-    if(cells.some(c=>c.dataset.qualification==="defer")) return "defer";
+    const cells = [...row.querySelectorAll(".semantic-cell")];
+
+    if (cells.some(cell => cell.dataset.qualification === "reject")) {
+      return "reject";
+    }
+
+    if (cells.some(cell => cell.dataset.qualification === "defer")) {
+      return "defer";
+    }
+
     return "accept";
   }
+
   function paint(row) {
-    row.dataset.outcome=outcome(row);
-    const mark=row.querySelector(".finalise-mark");
-    if(row.dataset.finalised!=="true"){mark.textContent="";return;}
-    mark.textContent=row.dataset.outcome==="reject"?"×":row.dataset.outcome==="defer"?"○":"✓";
+    row.dataset.outcome = outcome(row);
+
+    const mark = row.querySelector(".finalise-mark");
+
+    if (row.dataset.finalised !== "true") {
+      mark.textContent = "";
+      return;
+    }
+
+    if (row.dataset.outcome === "reject") {
+      mark.textContent = "×";
+    } else if (row.dataset.outcome === "defer") {
+      mark.textContent = "○";
+    } else {
+      mark.textContent = "✓";
+    }
   }
+
   function summary() {
-    const f=rows.filter(r=>r.dataset.finalised==="true").length;
-    const d=document.querySelectorAll('.semantic-cell[data-qualification="defer"]').length;
-    const x=document.querySelectorAll('.semantic-cell[data-qualification="reject"]').length;
-    document.getElementById("summary").textContent=`${f} finalised · ${d} deferred cells · ${x} rejected cells`;
+    const finalised = rows.filter(
+      row => row.dataset.finalised === "true"
+    ).length;
+
+    const deferred = document.querySelectorAll(
+      '.semantic-cell[data-qualification="defer"]'
+    ).length;
+
+    const rejected = document.querySelectorAll(
+      '.semantic-cell[data-qualification="reject"]'
+    ).length;
+
+    document.getElementById("summary").textContent =
+      `${finalised} finalised · ${deferred} deferred cells · ` +
+      `${rejected} rejected cells`;
   }
-  function qualify(cell,state) {
-    cell.dataset.qualification=state;
-    paint(cell.closest("tr")); summary();
+
+  function qualify(cell, state) {
+    cell.dataset.qualification = state;
+    paint(cell.closest("tr"));
+    summary();
   }
 
-  rows.forEach(row=>{
-    row.querySelectorAll("[data-qualify]").forEach(b=>b.addEventListener("click",()=>{
-      const cell=b.closest(".semantic-cell"), q=b.dataset.qualify;
-      qualify(cell,cell.dataset.qualification===q?"none":q);
-    }));
+  rows.forEach(row => {
+    row.querySelectorAll("[data-qualify]").forEach(button => {
+      button.addEventListener("click", () => {
+        const cell = button.closest(".semantic-cell");
+        const qualification = button.dataset.qualify;
+        const current = cell.dataset.qualification;
 
-    row.querySelectorAll(".candidate-select").forEach(select=>{
-      const cell=select.closest(".semantic-cell");
-      const writeIn=cell.querySelector(".write-in");
+        qualify(
+          cell,
+          current === qualification ? "none" : qualification
+        );
+      });
+    });
 
-      const updateWriteIn=()=>{
-        const show=select.value==="__other__";
-        writeIn.style.display=show?"block":"none";
-        if(!show) writeIn.value="";
-        if(show) writeIn.focus();
+    row.querySelectorAll(".candidate-select").forEach(select => {
+      const cell = select.closest(".semantic-cell");
+      const writeIn = cell.querySelector(".write-in");
+
+      const updateWriteIn = () => {
+        const show = select.value === "__other__";
+
+        writeIn.style.display = show ? "block" : "none";
+
+        if (!show) {
+          writeIn.value = "";
+        }
+
+        if (show) {
+          writeIn.focus();
+        }
       };
 
-      select.addEventListener("change",updateWriteIn);
+      select.addEventListener("change", updateWriteIn);
       updateWriteIn();
     });
 
-    const check=row.querySelector(".finalise-check");
-    check.addEventListener("change",()=>{row.dataset.finalised=check.checked?"true":"false";paint(row);summary();});
+    const check = row.querySelector(".finalise-check");
 
-    const create=row.querySelector(".create-item");
-    if(create) create.addEventListener("click",()=>{
-      const cell=create.closest(".semantic-cell"), input=cell.querySelector(".subject-input");
-      cell.innerHTML=`<a class="entity-link" href="#">fuds:QNEW${row.dataset.row}</a>`+
-        `<div style="margin-top:6px;font-size:12px;color:#666">Prototype registration for “${input.value}”</div>`+
-        `<div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div>`;
-      cell.querySelectorAll("[data-qualify]").forEach(b=>b.addEventListener("click",()=>{
-        const q=b.dataset.qualify; qualify(cell,cell.dataset.qualification===q?"none":q);
-      }));
+    check.addEventListener("change", () => {
+      row.dataset.finalised = check.checked ? "true" : "false";
+      paint(row);
+      summary();
     });
+
+    const create = row.querySelector(".create-item");
+
+    if (create) {
+      create.addEventListener("click", () => {
+        const cell = create.closest(".semantic-cell");
+        const input = cell.querySelector(".subject-input");
+
+        cell.innerHTML =
+          `<a class="entity-link" href="#">` +
+          `fuds:QNEW${row.dataset.row}</a>` +
+          `<div style="margin-top:6px;font-size:12px;color:#666">` +
+          `Prototype registration for “${input.value}”</div>` +
+          `<div class="qualify">` +
+          `<button data-qualify="defer">Defer</button>` +
+          `<button data-qualify="reject">Reject</button>` +
+          `</div>`;
+
+        cell.querySelectorAll("[data-qualify]").forEach(button => {
+          button.addEventListener("click", () => {
+            const qualification = button.dataset.qualify;
+            const current = cell.dataset.qualification;
+
+            qualify(
+              cell,
+              current === qualification ? "none" : qualification
+            );
+          });
+        });
+      });
+    }
   });
 
+  rows.forEach(paint);
+  summary();
 
-  rows.forEach(paint); summary();
+  const startedAt = document.getElementById("review-started-at");
 
-  const startedAt=document.getElementById("review-started-at");
-  if(startedAt && !startedAt.value) startedAt.value=new Date().toISOString();
-
-  function persistStateIntoClone(clone){
-    const si=[...document.querySelectorAll("input")], di=[...clone.querySelectorAll("input")];
-    si.forEach((x,i)=>{const y=di[i];if(!y)return;y.setAttribute("value",x.value);
-      if(x.type==="checkbox"){if(x.checked)y.setAttribute("checked","");else y.removeAttribute("checked");}});
-    const st=[...document.querySelectorAll("textarea")],dt=[...clone.querySelectorAll("textarea")];
-    st.forEach((x,i)=>{if(dt[i])dt[i].textContent=x.value});
-    const ss=[...document.querySelectorAll("select")],ds=[...clone.querySelectorAll("select")];
-    ss.forEach((x,i)=>{if(!ds[i])return;[...ds[i].options].forEach(o=>o.value===x.value?o.setAttribute("selected",""):o.removeAttribute("selected"))});
-    const sc=[...document.querySelectorAll(".semantic-cell")],dc=[...clone.querySelectorAll(".semantic-cell")];
-    sc.forEach((x,i)=>{if(dc[i])dc[i].dataset.qualification=x.dataset.qualification});
-    const sr=[...document.querySelectorAll("tbody tr")],dr=[...clone.querySelectorAll("tbody tr")];
-    sr.forEach((x,i)=>{if(!dr[i])return;dr[i].dataset.finalised=x.dataset.finalised||"false";dr[i].dataset.outcome=x.dataset.outcome||"accept"});
+  if (startedAt && !startedAt.value) {
+    startedAt.value = new Date().toISOString();
   }
-  function saveReview(finaliseReview){
-  const now=new Date().toISOString();
-  document.getElementById("review-last-saved-at").value=now;
-  document.getElementById("review-status").value=finaliseReview?"finalised":"in-progress";
-  if(finaliseReview)document.getElementById("review-ended-at").value=now;
-  const clone=document.documentElement.cloneNode(true);persistStateIntoClone(clone);
 
-  const filenameStem=document.getElementById("filename-stem").value.trim()||
-    "betwixt-review";
-  const sequence=Number(
-    document.getElementById("review-sequence").value||0
-  );
-  const stem=sequence===0?filenameStem:`${filenameStem}_${sequence}`;
+  function persistStateIntoClone(clone) {
+    const sourceInputs = [...document.querySelectorAll("input")];
+    const clonedInputs = [...clone.querySelectorAll("input")];
 
-  const suffix=finaliseReview?"-betwixt-finalised.html":"-betwixt-draft.html";
-  const blob=new Blob(["<!doctype html>\n"+clone.outerHTML],{type:"text/html;charset=utf-8"});
-  const url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download=stem+suffix;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-  document.getElementById("save-status").textContent=(finaliseReview?"Finalised review saved at ":"Draft saved at ")+now;
+    sourceInputs.forEach((source, index) => {
+      const target = clonedInputs[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.setAttribute("value", source.value);
+
+      if (source.type === "checkbox") {
+        if (source.checked) {
+          target.setAttribute("checked", "");
+        } else {
+          target.removeAttribute("checked");
+        }
+      }
+    });
+
+    const sourceTextareas = [...document.querySelectorAll("textarea")];
+    const clonedTextareas = [...clone.querySelectorAll("textarea")];
+
+    sourceTextareas.forEach((source, index) => {
+      if (clonedTextareas[index]) {
+        clonedTextareas[index].textContent = source.value;
+      }
+    });
+
+    const sourceSelects = [...document.querySelectorAll("select")];
+    const clonedSelects = [...clone.querySelectorAll("select")];
+
+    sourceSelects.forEach((source, index) => {
+      const target = clonedSelects[index];
+
+      if (!target) {
+        return;
+      }
+
+      [...target.options].forEach(option => {
+        if (option.value === source.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+    });
+
+    const sourceCells = [
+      ...document.querySelectorAll(".semantic-cell")
+    ];
+    const clonedCells = [
+      ...clone.querySelectorAll(".semantic-cell")
+    ];
+
+    sourceCells.forEach((source, index) => {
+      if (clonedCells[index]) {
+        clonedCells[index].dataset.qualification =
+          source.dataset.qualification;
+      }
+    });
+
+    const sourceRows = [...document.querySelectorAll("tbody tr")];
+    const clonedRows = [...clone.querySelectorAll("tbody tr")];
+
+    sourceRows.forEach((source, index) => {
+      const target = clonedRows[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.dataset.finalised =
+        source.dataset.finalised || "false";
+
+      target.dataset.outcome =
+        source.dataset.outcome || "accept";
+    });
   }
-  document.getElementById("save-draft").addEventListener("click",()=>saveReview(false));
-  document.getElementById("save-final").addEventListener("click",()=>saveReview(true));
 
+  function saveReview(finaliseReview) {
+    const now = new Date().toISOString();
+    const sequenceInput =
+      document.getElementById("review-sequence");
+
+    const filenameStem =
+      document.getElementById("filename-stem").value.trim() ||
+      "betwixt-review";
+
+    let sequence = Number(sequenceInput.value || 0);
+
+    // The first browser save starts review sequence 1.
+    if (sequence === 0) {
+      sequence = 1;
+      sequenceInput.value = sequence;
+    }
+
+    document.getElementById("review-last-saved-at").value = now;
+
+    document.getElementById("review-status").value =
+      finaliseReview ? "finalised" : "in-progress";
+
+    if (finaliseReview) {
+      document.getElementById("review-ended-at").value = now;
+    }
+
+    // Preserve the updated state in the downloaded HTML.
+    const clone = document.documentElement.cloneNode(true);
+    persistStateIntoClone(clone);
+
+    // Draft and finalised files belong to the same review sequence.
+    const stem = `${filenameStem}_${sequence}`;
+    const suffix = finaliseReview ? "-finalised" : "-draft";
+    const filename = `${stem}${suffix}.html`;
+
+    const blob = new Blob(
+      ["<!doctype html>\n" + clone.outerHTML],
+      { type: "text/html;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    document.getElementById("save-status").textContent =
+      (finaliseReview
+        ? "Finalised review saved at "
+        : "Draft saved at ") + now;
+  }
+
+  document
+    .getElementById("save-draft")
+    .addEventListener("click", () => saveReview(false));
+
+  document
+    .getElementById("save-final")
+    .addEventListener("click", () => saveReview(true));
 })();
 

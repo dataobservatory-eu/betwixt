@@ -13,6 +13,7 @@
 #' @return A list containing the candidate column names, context column names,
 #'   whether an evidence relation is present, and row-wise review data.
 #'
+#' @noRd
 #' @keywords internal
 prepare_review_context <- function(candidate) {
   # Validate the candidate dataset.

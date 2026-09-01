@@ -17,13 +17,13 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![devel-version](https://img.shields.io/badge/devel%20version-0.0.4-blue.svg)](https://github.com/dataobservatory-eu/fscontext) [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
+[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![devel-version](https://img.shields.io/badge/devel%20version-0.0.4-blue.svg)](https://github.com/dataobservatory-eu/betwixt) [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
 
 <!-- badges: end -->
 
-Betwixt is a lightweight framework for representing semantic assertions as scoped claims and rendering them for human review. It provides a pragmatic review layer between observations and semantic objects, allowing candidate claims to be stabilised through reproducible review workflows.
+Betwixt is a lightweight framework for constructing, representing, and reviewing candidate semantic claims in tabular data. It provides a pragmatic review layer in which candidate knowledge can be organised into bounded review tasks and presented for human judgement.
 
-Betwixt defines a portable tidy claim schema. Implementations reuse their native tabular environments, such as tibble, pandas, or SQLite, while review is rendered through standard HTML/CSS and returned as tidy CSV.
+Betwixt keeps candidate semantic structure separate from its presentation for review. Candidate data can be projected into human-reviewable forms, while review decisions, states, and provenance remain explicit and reproducible.
 
 ## Installation
 
@@ -36,56 +36,70 @@ pak::pak("dataobservatory-eu/betwixt")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The `delini` dataset provides a small cultural heritage example containing
+candidate semantic assertions prepared for human review:
 
 ```{r example}
 library(betwixt)
-ad_gdp_2024 <- claim(
-  scope = "country=AD;year=2023",
-  subject = "country",
-  predicate = "GDP",
-  value = "3.73 billion EUR"
-)
 
-print(ad_gdp_2024)
+data("delini")
+delini
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
 ```{r render}
-betwixt_render(ad_gdp_2024)
+betwixt_render(
+  delini,
+  cols = c(
+    col_1 = "Subject",
+    col_2 = "instance of",
+    col_3 = "heritage of",
+    context_1 = "held by"
+  ),
+  subheadings = c(
+    col_2 = "wdt:P31",
+    col_3 = "controlled range"
+  ),
+  title = "Delini semantic review",
+  description = "Review the proposed semantic assertions.",
+  project_id = "delini",
+  filename_stem = "delini-wide",
+  sequence = 0L,
+  path = tempdir()
+)
 ```
+
+The resulting standalone HTML review presents the evidence and descriptive context alongside the candidate semantic assertions and records the resulting review state and provenance.
+
 ## Vignettes
 
-Betwixt implemeents the following workflow: 
+Betwixt implements the following workflow:
 
 ```
-observation provenance
-         ↓
-candidate claim
-         ↓
-review provenance
-         ↓
-reviewed claim
+candidate knowledge
+        ↓
+bounded review task
+        ↓
+review projection
+        ↓
+human review
+        ↓
+review state
 ```
+It is organised around complementary vignettes.
 
-It is organised around three complementary vignettes.
+### 1. Betwixt Implementation
 
+Introduces scoped claims, semantic stabilisation, contextual inheritance, and the conceptual foundations of Betwixt.
 
-### 1. Preparing Data for Human Review
+### 2. Review Layouts and Semantic Projections
 
-Introduces scoped claims, semantic stabilisation, contextual inheritance,
-and the conceptual foundations of Betwixt.
+Introduces the Delini example and shows how candidate semantic material can be represented as wide, dual-wide, long, and dual-long projections. The current browser-based review implementation uses the wide projection.
 
-### 2. R Reference Implementation
+### 3. R Reference Implementation
 
-Shows how `claim_df` objects are created, manipulated, rendered,
-and integrated with the R ecosystem.
+Describes the R implementation and the construction and processing of candidate semantic data.
 
-### 3. Python Minimal Implementation
+### 4. Python Minimal Implementation
 
-Demonstrates that the Betwixt model is implementation-independent
-and can be realised using pandas and Mustache-compatible tooling.
-
-
-
+Planned vignette demonstrating how the underlying approach can be implemented outside R using ordinary tabular and web technologies.

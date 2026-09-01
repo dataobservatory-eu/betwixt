@@ -9,11 +9,12 @@ Authors@R:
       role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-7513-6760")
     )
-Description: Provides a lightweight framework for expressing, reviewing, and
-   documenting semantic claims in tabular data. Claims can be associated with
-   review states and provenance and presented through configurable human review
-   interfaces. The framework supports long and wide review projections while
-   remaining compatible with existing data, metadata, and templating workflows.
+Description: Provides a lightweight framework for constructing, reviewing, and
+   documenting candidate semantic claims in tabular data. Candidate claims can
+   be organised into bounded review tasks and presented through configurable
+   human review interfaces. Review decisions, states, and provenance can be
+   recorded while keeping the semantic representation independent of a
+   particular review interface.
 URL: https://betwixt.dataobservatory.eu/
 BugReports: https://github.com/dataobservatory-eu/betwixt/issues
 License: GPL (>= 3) + file LICENSE
@@ -30,6 +31,6 @@ Imports:
     whisker
 VignetteBuilder: knitr
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1)
 LazyData: true
 Config/roxygen2/version: 8.1.0

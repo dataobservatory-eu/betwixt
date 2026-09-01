@@ -20,12 +20,17 @@ reference:
 
   - title: Rendering
     contents:
+      - candidate_dataset
+      - add_candidate_column
+      - candidate_range
       - betwixt_render
 
   - title: Datasets
     contents:
       - delini_review
       - delini_range
+      - delini
+      - w3c_life_expectancy
 
 articles:
   - title: Concepts

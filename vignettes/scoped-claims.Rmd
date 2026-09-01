@@ -2,7 +2,7 @@
 title: "Betwixt Implementation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{betwixt}
+  %\VignetteIndexEntry{Betwixt Implementation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 Many interoperability, knowledge graph, metadata harmonisation, and AI-assisted data processing workflows ultimately depend on human judgement. Automated systems can often narrow ambiguity, identify candidate correspondences, and generate plausible semantic assertions, but they frequently cannot determine with sufficient confidence whether a claim should be corroborated, rejected, or referred for further review.
 
-This paper introduces `Betwixt`, a lightweight model for representing and reviewing semantic claims. `Betwixt` reduces the cognitive burden of semantic review by allowing claims to be assessed at the most appropriate level of abstraction. Its pragmatic approach represents a claim as a scoped assertion consisting of four components: scope, subject, predicate, and value. The model is intentionally simple. Rather than defining a new ontology, graph format, or review platform, it provides a minimal semantic representation that can be rendered through existing templating systems and reviewed through existing user interfaces.
+This paper introduces `Betwixt`, a lightweight model for representing and reviewing semantic claims. `Betwixt` reduces the cognitive burden of semantic review by allowing claims to be assessed at the most appropriate level of abstraction. Its pragmatic approach represents semantic assertions as explicit candidate claims that can be bounded, projected into reviewable forms, and subjected to human judgement. The model is intentionally simple. Rather than defining a new ontology, graph format, or review platform, it provides a minimal semantic representation that can be rendered through existing templating systems and reviewed through existing user interfaces.
 
 At the core of the model is a provenance-preserving review pipeline in which observations give rise to candidate claims, candidate claims are subjected to human review, and review outcomes create reviewed claims together with an explicit stabilisation history. In this way, `Betwixt` separates the provenance of observations from the provenance of review while maintaining both as first-class elements of the semantic workflow.
 
@@ -52,9 +52,9 @@ A *candidate claim* is derived from one or more observations and inherits their 
 
 A central premise of `Betwixt` is that semantic review should occur at the most useful level of abstraction. Rather than repeatedly reviewing identical assertions for hundreds of observations, reviewers should be able to assess broader contextual claims and concentrate their effort on exceptions, ambiguities, and conflicting evidence. `Betwixt` therefore treats review not as a workflow-management problem, but as a practical mechanism for allocating scarce human attention where it creates the greatest semantic value.
 
-## The Scoped Claim
+## Scoped Claims
 
-The fundamental `Betwixt` object is a scoped claim:
+One useful way of representing candidate knowledge in `Betwixt` is as a scoped claim:
 
 | scope | subject | predicate | value |
 | ----- | ------- | --------- | ----- |
@@ -157,13 +157,15 @@ A reviewer may be asked to evaluate:
 - a candidate subject;
 - or any combination thereof.
 
-The reference implementation focuses on value review, but the model itself is not restricted to any particular review target.
+The reference implementation presents bounded candidate assertions for review while preserving descriptive, evidential, and contextual information around them.
 
-Review outcomes are intentionally simple:
+Review outcomes are intentionally simple. A candidate assertion may be accepted or modified, rejected, or deferred when further evidence or review is required.
 
-- corroborated;
-- rejected;
-- referred (to further review).
+- `accepted`: the candidate or modified assertion is accepted for the current review purpose;
+
+- `rejected`: the candidate assertion should not be accepted;
+
+- `deferred`: the assertion requires additional evidence, another review procedure, or another reviewer.
 
 The objective is not workflow management but semantic stabilisation.
 
@@ -179,9 +181,9 @@ A candidate claim represents a semantic assertion that is sufficiently plausible
 
 The objective of review is not merely to approve or reject the claim. The objective is to transform a candidate claim into a reviewed claim while making the review process explicit and reproducible.
 
-Betwixt therefore treats review as a transformation of tabular data. Candidate claims are rendered into review interfaces, and the result of the review is a new tabular dataset containing the reviewed semantic elements together with provenance information describing how the review was performed.
+Betwixt treats review as a transformation of candidate semantic state. Candidate data are projected into review interfaces, where human decisions can stabilise, modify, reject, or defer the assertions presented for review. The review activity and its evolving state are recorded separately from the candidate assertions themselves.
 
-The reference implementation uses Mustache templates to render candidate claims into lightweight serverless HTML and CSS documents. These documents are intended to minimise cognitive burden by presenting only the semantic components that require human judgement. In the simplest workflow, the review target is the value component of a claim. More advanced implementations may allow review of the subject, predicate, or any combination of semantic components.
+The reference implementation renders candidate datasets into lightweight standalone HTML review documents that can be used directly in a web browser. These documents are intended to minimise cognitive burden by presenting only the semantic components that require human judgement. In the simplest workflow, the review target is the value component of a claim. More advanced implementations may allow review of the subject, predicate, or any combination of semantic components.
 
 For example, a candidate claim may be represented as:
 
@@ -220,7 +222,7 @@ Typical outcomes include:
 | Latin     | German   | rejected     |
 | Latin     | NA       | referred     |
 
-- corroboratee: the reviewed claim is sufficiently stable for the intended purpose;
+- corroborate: the reviewed claim is sufficiently stable for the intended purpose;
 
 - rejected: the candidate claim should not be retained in its current form;
 
@@ -281,29 +283,24 @@ In this sense, `Betwixt` follows the same pragmatic principle that contributed t
 The reference implementation represents claims as tabular structures and renders them through Mustache templates.
 
 ```         
-candidate_claim_df
-        ↓
-   render()
-        ↓
- HTML / CSS
-        ↓
-   reviewer
-        ↓
-reviewed_claim_df
+candidate data
+      ↓
+review projection
+      ↓
+standalone HTML
+      ↓
+ human review
+      ↓
+ review state
 ```
 
 The essential operation of `Betwixt` is therefore a transformation from one tabular representation into another through human review.
 
-In R, a claim is represented as a one-row tibble:
+Conceptually, an atomic scoped claim may be represented as:
 
-``` r
-claim(
-  scope = "box45",
-  subject = "page",
-  predicate = "language",
-  value = "Latin"
-)
-```
+| scope | subject | predicate | value |
+|---|---|---|---|
+| box45 | page | language | Latin |
 
 A review target specifies which semantic component of a claim is subject to stabilisation.
 
@@ -344,6 +341,6 @@ The model deliberately avoids dependence on any specific graph technology, ontol
 
 ## Conclusion
 
-`Betwixt` proposes a minimal model for representing semantic assertions as reviewable objects. By introducing scope as an explicit component of a claim and separating semantic representation from rendering, it provides a lightweight review layer that can be integrated into a wide range of interoperability, harmonisation, and knowledge management workflows.
+`Betwixt` provides a lightweight model for transforming candidate semantic assertions into bounded, human-reviewable objects. By separating candidate knowledge, review projections, human decisions, and review provenance, it provides a review layer that can be integrated into a wide range of interoperability, harmonisation, and knowledge management workflows.
 
 The long-term objective is not the creation of a new review platform, but the definition of a portable semantic review model that supports the broader process of semantic stabilisation.

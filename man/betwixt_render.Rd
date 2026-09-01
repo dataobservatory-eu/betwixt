@@ -10,9 +10,10 @@ betwixt_render(
   subheadings = NULL,
   title = "Betwixt Review",
   description = "Please review the following claims.",
+  filename_stem = "betwixt-review",
   project_id = "",
   sequence = 0L,
-  con = NULL
+  path = NULL
 )
 }
 \arguments{
@@ -28,22 +29,29 @@ presentation subheadings for candidate columns.}
 
 \item{description}{Character string containing review instructions.}
 
+\item{filename_stem}{Character string used as the base name for saved review
+files. Review sequences greater than \code{0} append the sequence number.}
+
 \item{project_id}{Character string identifying the review project.}
 
 \item{sequence}{A single non-negative integer identifying the review
 sequence. The initial candidate review has sequence \code{0}.}
 
-\item{con}{Optional output file. If \code{NULL}, the rendered HTML is returned.}
+\item{path}{Optional directory where the standalone review HTML is written.
+If \code{NULL}, the rendered HTML is returned without writing a file.}
 }
 \value{
-Invisibly returns the rendered HTML when \code{con} is supplied;
+Invisibly returns the rendered HTML when \code{path} is supplied;
 otherwise returns the HTML as a character string.
 }
 \description{
 Renders a Betwixt candidate dataset as a standalone HTML review.
 
-A review belongs to a project and has a non-negative sequence number.
-Sequence \code{0} represents the initial candidate review. Subsequent review
-states may use sequence \code{1}, \code{2}, and so on. Saving a draft or finalising
-a review does not itself change the sequence.
+A review belongs to a project, has a filename stem, and has a non-negative
+sequence number. Sequence \code{0} represents the initial candidate review.
+Subsequent review states may use sequence \code{1}, \code{2}, and so on. Saving a
+draft or finalising a review does not itself change the sequence.
+
+The project identifier records the stable identity of the review project.
+The filename stem is used independently to construct saved review filenames.
 }

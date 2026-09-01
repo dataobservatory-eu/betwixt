@@ -80,19 +80,24 @@
     sr.forEach((x,i)=>{if(!dr[i])return;dr[i].dataset.finalised=x.dataset.finalised||"false";dr[i].dataset.outcome=x.dataset.outcome||"accept"});
   }
   function saveReview(finaliseReview){
-    const now=new Date().toISOString();
-    document.getElementById("review-last-saved-at").value=now;
-    document.getElementById("review-status").value=finaliseReview?"finalised":"in-progress";
-    if(finaliseReview)document.getElementById("review-ended-at").value=now;
-    const clone=document.documentElement.cloneNode(true);persistStateIntoClone(clone);
-    const projectId=document.getElementById("project-id").value.trim()||"review";
-    const sequence=document.getElementById("review-sequence").value||"0";
-    const stem=sequence==="0"?projectId:`${projectId}_reviewed_${sequence}`;
-    const suffix=finaliseReview?"-betwixt-finalised.html":"-betwixt-draft.html";
-    const blob=new Blob(["<!doctype html>\n"+clone.outerHTML],{type:"text/html;charset=utf-8"});
-    const url=URL.createObjectURL(blob),a=document.createElement("a");
-    a.href=url;a.download=stem+suffix;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-    document.getElementById("save-status").textContent=(finaliseReview?"Finalised review saved at ":"Draft saved at ")+now;
+  const now=new Date().toISOString();
+  document.getElementById("review-last-saved-at").value=now;
+  document.getElementById("review-status").value=finaliseReview?"finalised":"in-progress";
+  if(finaliseReview)document.getElementById("review-ended-at").value=now;
+  const clone=document.documentElement.cloneNode(true);persistStateIntoClone(clone);
+
+  const filenameStem=document.getElementById("filename-stem").value.trim()||
+    "betwixt-review";
+  const sequence=Number(
+    document.getElementById("review-sequence").value||0
+  );
+  const stem=sequence===0?filenameStem:`${filenameStem}_${sequence}`;
+
+  const suffix=finaliseReview?"-betwixt-finalised.html":"-betwixt-draft.html";
+  const blob=new Blob(["<!doctype html>\n"+clone.outerHTML],{type:"text/html;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=stem+suffix;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  document.getElementById("save-status").textContent=(finaliseReview?"Finalised review saved at ":"Draft saved at ")+now;
   }
   document.getElementById("save-draft").addEventListener("click",()=>saveReview(false));
   document.getElementById("save-final").addEventListener("click",()=>saveReview(true));

@@ -62,13 +62,27 @@ review_context_html <- function(
     value <- escape_html(assertion$value)
     has_definition <- !is.na(assertion$definition) &&
       nzchar(assertion$definition)
+    is_url <- grepl(
+      "^https?://",
+      as.character(assertion$value),
+      ignore.case = TRUE
+    )
 
     if (length(assertion$range) == 0) {
-      # Link a resolved entity or allow creation of an unresolved one.
+      # Link a resolved entity, link a URL value, or allow creation of an
+      # unresolved one.
       if (has_definition) {
         control <- paste0(
           '<a class="entity-link" href="',
           escape_html(assertion$definition),
+          '" target="_blank" rel="noopener">',
+          value,
+          "</a>"
+        )
+      } else if (is_url && assertion$name != "col_1") {
+        control <- paste0(
+          '<a class="entity-link" href="',
+          escape_html(assertion$value),
           '" target="_blank" rel="noopener">',
           value,
           "</a>"

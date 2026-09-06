@@ -4,7 +4,7 @@
 delini_review <- tibble::tribble(
   ~evidence_id,
   ~thumbnail_url,
-  ~evidence_url,
+  ~evidence_media_url,
   ~subject,
   ~label_en,
   ~description_en,

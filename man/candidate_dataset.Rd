@@ -5,7 +5,8 @@
 \title{Construct a Betwixt candidate dataset}
 \usage{
 candidate_dataset(
-  evidence_url,
+  evidence_url = NA_character_,
+  evidence_media_url = NA_character_,
   evidence_text,
   label,
   description,
@@ -17,8 +18,12 @@ candidate_dataset(
 )
 }
 \arguments{
-\item{evidence_url}{A character vector containing URLs or other resolvable
-locations of the evidence presented to the reviewer.}
+\item{evidence_url}{An optional character vector containing URLs or other
+resolvable locations of evidence resources that can be opened by the
+reviewer.}
+
+\item{evidence_media_url}{An optional character vector containing URLs or
+other resolvable locations of media presented directly to the reviewer.}
 
 \item{evidence_text}{A character vector containing short identifiers or
 labels for the evidence.}
@@ -55,7 +60,7 @@ indicates that the subject already exists as an identified entity;
 }
 \value{
 A tibble with one row per evidence-subject observation and the columns
-\code{row_number}, \code{evidence_url}, \code{evidence_text}, \code{label}, \code{description},
+\code{row_number}, \code{evidence_media_url}, \code{evidence_text}, \code{label}, \code{description},
 \code{col_1}, \code{col_1_range}, and \code{col_1_definition}.
 
 If \code{evidence_relation} is supplied, the tibble additionally contains
@@ -87,6 +92,9 @@ Additional reviewable assertions can be appended with
 \code{\link[=add_candidate_column]{add_candidate_column()}}. Display-only contextual columns can be added with
 ordinary data manipulation functions such as \code{\link[dplyr:mutate]{dplyr::mutate()}}.
 
+At least one of \code{evidence_media_url} or \code{evidence_url} must be supplied for
+each row.
+
 The evidence relation is distinct from review provenance. When present, it
 represents a candidate semantic relation between the evidence and the
 subject and is itself available for review.
@@ -94,7 +102,7 @@ subject and is itself available for review.
 \examples{
 # Candidate dataset without a reviewable evidence relation
 delini_candidates <- candidate_dataset(
-  evidence_url = delini$evidence_url,
+  evidence_media_url = delini$evidence_media_url,
   evidence_text = delini$evidence_text,
   label = delini$label,
   description = delini$description,
@@ -107,7 +115,7 @@ delini_candidates
 
 # Candidate dataset with a reviewable evidence relation
 delini_dual_candidates <- candidate_dataset(
-  evidence_url = delini$evidence_url,
+  evidence_media_url = delini$evidence_media_url,
   evidence_text = delini$evidence_text,
   label = delini$label,
   description = delini$description,
@@ -124,7 +132,7 @@ delini_dual_candidates
 
 # Statistical example based on the W3C RDF Data Cube Vocabulary
 w3c_candidates <- candidate_dataset(
-  evidence_url = rep(
+  evidence_media_url = rep(
     "https://www.w3.org/TR/vocab-data-cube/",
     nrow(w3c_life_expectancy)
   ),

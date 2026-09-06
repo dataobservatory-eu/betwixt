@@ -13,8 +13,12 @@
 #' between the evidence and the subject, for example `"depicts"` or
 #' `"documents"`.
 #'
-#' @param evidence_url A character vector containing URLs or other resolvable
-#'   locations of the evidence presented to the reviewer.
+#' @param evidence_media_url An optional character vector containing URLs or
+#'   other resolvable locations of media presented directly to the reviewer.
+#'
+#' @param evidence_url An optional character vector containing URLs or other
+#'   resolvable locations of evidence resources that can be opened by the
+#'   reviewer.
 #'
 #' @param evidence_text A character vector containing short identifiers or
 #'   labels for the evidence.
@@ -51,7 +55,7 @@
 #'
 #' @return
 #' A tibble with one row per evidence-subject observation and the columns
-#' `row_number`, `evidence_url`, `evidence_text`, `label`, `description`,
+#' `row_number`, `evidence_media_url`, `evidence_text`, `label`, `description`,
 #' `col_1`, `col_1_range`, and `col_1_definition`.
 #'
 #' If `evidence_relation` is supplied, the tibble additionally contains
@@ -70,6 +74,9 @@
 #' [add_candidate_column()]. Display-only contextual columns can be added with
 #' ordinary data manipulation functions such as [dplyr::mutate()].
 #'
+#' At least one of `evidence_media_url` or `evidence_url` must be supplied for
+#' each row.
+#'
 #' The evidence relation is distinct from review provenance. When present, it
 #' represents a candidate semantic relation between the evidence and the
 #' subject and is itself available for review.
@@ -77,7 +84,7 @@
 #' @examples
 #' # Candidate dataset without a reviewable evidence relation
 #' delini_candidates <- candidate_dataset(
-#'   evidence_url = delini$evidence_url,
+#'   evidence_media_url = delini$evidence_media_url,
 #'   evidence_text = delini$evidence_text,
 #'   label = delini$label,
 #'   description = delini$description,
@@ -90,7 +97,7 @@
 #'
 #' # Candidate dataset with a reviewable evidence relation
 #' delini_dual_candidates <- candidate_dataset(
-#'   evidence_url = delini$evidence_url,
+#'   evidence_media_url = delini$evidence_media_url,
 #'   evidence_text = delini$evidence_text,
 #'   label = delini$label,
 #'   description = delini$description,
@@ -107,7 +114,7 @@
 #'
 #' # Statistical example based on the W3C RDF Data Cube Vocabulary
 #' w3c_candidates <- candidate_dataset(
-#'   evidence_url = rep(
+#'   evidence_media_url = rep(
 #'     "https://www.w3.org/TR/vocab-data-cube/",
 #'     nrow(w3c_life_expectancy)
 #'   ),
@@ -142,7 +149,8 @@
 #' @importFrom tibble tibble
 #' @export
 candidate_dataset <- function(
-  evidence_url,
+  evidence_url = NA_character_,
+  evidence_media_url = NA_character_,
   evidence_text,
   label,
   description,
@@ -160,18 +168,30 @@ candidate_dataset <- function(
     )
   }
 
+  missing_media <- is.na(evidence_media_url) | !nzchar(evidence_media_url)
+  missing_url <- is.na(evidence_url) | !nzchar(evidence_url)
+
+  if (any(missing_media & missing_url)) {
+    stop(
+      "Each row requires evidence_media_url or evidence_url.",
+      call. = FALSE
+    )
+  }
+
   if (is.null(evidence_relation)) {
     x <- tibble::tibble(
-      row_number = seq_along(evidence_url),
+      row_number = seq_along(evidence_media_url),
       evidence_url = evidence_url,
+      evidence_media_url = evidence_media_url,
       evidence_text = evidence_text,
       label = label,
       description = description
     )
   } else {
     x <- tibble::tibble(
-      row_number = seq_along(evidence_url),
+      row_number = seq_along(evidence_media_url),
       evidence_url = evidence_url,
+      evidence_media_url = evidence_media_url,
       evidence_text = evidence_text,
       evidence_relation = evidence_relation,
       evidence_relation_range = evidence_relation_range,

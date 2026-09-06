@@ -1,6 +1,6 @@
 test_that("candidate_dataset() constructs the expected base structure", {
   result <- candidate_dataset(
-    evidence_url = delini$evidence_url,
+    evidence_media_url = delini$evidence_media_url,
     evidence_text = delini$evidence_text,
     evidence_relation = rep("depicts", nrow(delini)),
     evidence_relation_range = rep(
@@ -21,6 +21,7 @@ test_that("candidate_dataset() constructs the expected base structure", {
     c(
       "row_number",
       "evidence_url",
+      "evidence_media_url",
       "evidence_text",
       "evidence_relation",
       "evidence_relation_range",
@@ -45,7 +46,7 @@ test_that("candidate_dataset() preserves Delini input values", {
   )
 
   result <- candidate_dataset(
-    evidence_url = delini$evidence_url,
+    evidence_media_url = delini$evidence_media_url,
     evidence_text = delini$evidence_text,
     evidence_relation = relation,
     evidence_relation_range = relation_range,
@@ -56,7 +57,8 @@ test_that("candidate_dataset() preserves Delini input values", {
     subject_definition = delini$col_1_definition
   )
 
-  expect_equal(result$evidence_url, delini$evidence_url)
+  expect_equal(result$evidence_media_url, delini$evidence_media_url)
+  expect_true(all(is.na(result$evidence_url)))
   expect_equal(result$evidence_text, delini$evidence_text)
   expect_equal(result$evidence_relation, relation)
   expect_equal(result$evidence_relation_range, relation_range)
@@ -71,7 +73,7 @@ test_that("candidate_dataset() preserves Delini input values", {
 
 test_that("candidate_dataset() creates integer row numbers in input order", {
   result <- candidate_dataset(
-    evidence_url = delini$evidence_url,
+    evidence_media_url = delini$evidence_media_url,
     evidence_text = delini$evidence_text,
     evidence_relation = rep("depicts", nrow(delini)),
     label = delini$label,
@@ -95,7 +97,7 @@ test_that("candidate_dataset() creates integer row numbers in input order", {
 
 test_that("candidate_dataset() uses NA defaults for optional subject metadata", {
   result <- candidate_dataset(
-    evidence_url = rep(
+    evidence_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
     ),
@@ -115,11 +117,14 @@ test_that("candidate_dataset() uses NA defaults for optional subject metadata", 
     subject = w3c_life_expectancy$observation
   )
 
+  # test default behavior
+  expect_true(all(is.na(result$evidence_url)))
   expect_true(all(is.na(result$evidence_relation_range)))
   expect_true(all(is.na(result$col_1_range)))
   expect_true(all(is.na(result$col_1_definition)))
 
-  expect_type(result$evidence_relation_range, "character")
+  # test types
+  expect_type(result$evidence_url, "character")
   expect_type(result$col_1_range, "character")
   expect_type(result$col_1_definition, "character")
 })
@@ -127,7 +132,7 @@ test_that("candidate_dataset() uses NA defaults for optional subject metadata", 
 
 test_that("candidate_dataset() works with statistical source data", {
   result <- candidate_dataset(
-    evidence_url = rep(
+    evidence_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
     ),
@@ -155,7 +160,7 @@ test_that("candidate_dataset() works with statistical source data", {
 
 test_that("candidate_dataset() integrates with add_candidate_column()", {
   result <- candidate_dataset(
-    evidence_url = rep(
+    evidence_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
     ),
@@ -199,7 +204,7 @@ test_that("candidate_dataset() integrates with add_candidate_column()", {
 
 test_that("candidate_dataset() omits optional evidence relation columns", {
   result <- candidate_dataset(
-    evidence_url = "https://example.org/evidence/1",
+    evidence_media_url = "https://example.org/evidence/1",
     evidence_text = "Evidence 1",
     label = "Example subject",
     description = "An example subject",
@@ -214,6 +219,7 @@ test_that("candidate_dataset() omits optional evidence relation columns", {
     c(
       "row_number",
       "evidence_url",
+      "evidence_media_url",
       "evidence_text",
       "label",
       "description",
@@ -228,7 +234,7 @@ test_that("candidate_dataset() omits optional evidence relation columns", {
 test_that("evidence relation range requires an evidence relation", {
   expect_error(
     candidate_dataset(
-      evidence_url = "https://example.org/evidence/1",
+      evidence_media_url = "https://example.org/evidence/1",
       evidence_text = "Evidence 1",
       label = "Example subject",
       description = "An example subject",
@@ -236,5 +242,35 @@ test_that("evidence relation range requires an evidence relation", {
       evidence_relation_range = candidate_range("depicts", "documents")
     ),
     "evidence_relation_range requires evidence_relation."
+  )
+})
+
+
+test_that("candidate_dataset() accepts evidence_url without evidence_media_url", {
+  result <- candidate_dataset(
+    evidence_url = "https://example.org/evidence/1",
+    evidence_text = "Evidence 1",
+    label = "Example subject",
+    description = "An example subject",
+    subject = "example:Q1"
+  )
+
+  expect_true(is.na(result$evidence_media_url))
+  expect_equal(
+    result$evidence_url,
+    "https://example.org/evidence/1"
+  )
+})
+
+
+test_that("candidate_dataset() requires evidence for every row", {
+  expect_error(
+    candidate_dataset(
+      evidence_text = "Evidence 1",
+      label = "Example subject",
+      description = "An example subject",
+      subject = "example:Q1"
+    ),
+    "Each row requires evidence_media_url or evidence_url."
   )
 })

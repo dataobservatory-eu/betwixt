@@ -10,6 +10,10 @@
 #' rendered as links that can be opened by the reviewer. Multiple evidence
 #' media or resource URLs may be supplied and are rendered independently.
 #'
+#' Alternative labels and descriptions are rendered as additional editable
+#' columns when they are present in the review context. Columns containing no
+#' alternative values are omitted from the review table.
+#'
 #' Presentation labels and subheadings may be supplied independently of the
 #' candidate data model. Candidate ranges are rendered as selection controls,
 #' resolved entities as links, and unresolved entities as editable values.
@@ -23,6 +27,8 @@
 #'   labels for candidate and context columns.
 #' @param subheadings An optional named character vector containing
 #'   presentation subheadings for candidate columns.
+#' @param row_comment Logical. If `TRUE`, adds an optional reviewer comment
+#'   field to each review row. Defaults to `FALSE`.
 #'
 #' @return A character string containing the generated HTML review table.
 #'
@@ -31,7 +37,8 @@
 review_context_html <- function(
   context,
   cols = NULL,
-  subheadings = NULL
+  subheadings = NULL,
+  row_comment = FALSE
 ) {
   # Escape text before inserting it into HTML.
   escape_html <- function(x) {
@@ -60,6 +67,13 @@ review_context_html <- function(
       '<button data-qualify="reject">Reject</button>',
       "</div>"
     )
+  }
+
+  # Create the optional reviewer comment
+  row_comment_header <- if (row_comment) {
+    '<th class="row-comment">Reviewer comment</th>'
+  } else {
+    ""
   }
 
   # Render one reviewable assertion.
@@ -189,14 +203,50 @@ review_context_html <- function(
     )
   }, character(1))
 
+  # Determine whether alternative descriptive columns are required.
+  has_alternative_label <- any(vapply(
+    context$rows,
+    function(row) {
+      !is.na(row$alternative_label) &&
+        nzchar(row$alternative_label)
+    },
+    logical(1)
+  ))
+
+  has_alternative_description <- any(vapply(
+    context$rows,
+    function(row) {
+      !is.na(row$alternative_description) &&
+        nzchar(row$alternative_description)
+    },
+    logical(1)
+  ))
+
+  # Render alternative descriptive headings only when required.
+  alternative_headers <- paste0(
+    if (has_alternative_label) {
+      "<th>Alternative label</th>"
+    } else {
+      ""
+    },
+    if (has_alternative_description) {
+      "<th>Alternative description</th>"
+    } else {
+      ""
+    }
+  )
+
+  # Assemble the table header.
   header <- paste0(
     "<thead><tr>",
     '<th class="num">#</th>',
     "<th>Evidence</th>",
     "<th>Label</th>",
     "<th>Description</th>",
+    alternative_headers,
     paste(assertion_headers, collapse = ""),
     '<th class="finalise-head">Finalise</th>',
+    row_comment_header,
     paste(context_headers, collapse = ""),
     "</tr></thead>"
   )
@@ -215,7 +265,7 @@ review_context_html <- function(
       character(1)
     )
 
-    # Concatenate all media URLs first as evidence
+    # Concatenate all media URLs first as evidence.
     media <- vapply(row$evidence_media_url, function(url) {
       paste0(
         '<a class="evidence-media-link" href="',
@@ -230,7 +280,7 @@ review_context_html <- function(
       )
     }, character(1))
 
-    # Concatenate all generic URLs second as evidence
+    # Concatenate all generic URLs second as evidence.
     links <- vapply(row$evidence_url, function(url) {
       paste0(
         '<a class="evidence-link" href="',
@@ -241,7 +291,7 @@ review_context_html <- function(
       )
     }, character(1))
 
-    # Concatenate all URLs as evidence
+    # Concatenate all URLs as evidence.
     evidence <- paste0(
       '<td class="evidence">',
       paste(media, collapse = ""),
@@ -251,6 +301,56 @@ review_context_html <- function(
       "</div>",
       "</td>"
     )
+
+    # Represent missing alternative values as empty editable fields.
+    alternative_label <- if (is.na(row$alternative_label)) {
+      ""
+    } else {
+      row$alternative_label
+    }
+
+    alternative_description <- if (
+      is.na(row$alternative_description)
+    ) {
+      ""
+    } else {
+      row$alternative_description
+    }
+
+    # Render alternative descriptive cells only when their columns are used.
+    alternative_cells <- paste0(
+      if (has_alternative_label) {
+        paste0(
+          '<td class="label">',
+          '<input class="text-input" value="',
+          escape_html(alternative_label),
+          '">',
+          "</td>"
+        )
+      } else {
+        ""
+      },
+      if (has_alternative_description) {
+        paste0(
+          '<td class="description"><textarea>',
+          escape_html(alternative_description),
+          "</textarea></td>"
+        )
+      } else {
+        ""
+      }
+    )
+
+    # Render an optional reviewer comment field for this row.
+    row_comment_cell <- if (row_comment) {
+      paste0(
+        '<td class="row-comment">',
+        '<textarea placeholder="Optional comment on row"></textarea>',
+        "</td>"
+      )
+    } else {
+      ""
+    }
 
     paste0(
       '<tr data-row="', row$row_number,
@@ -264,6 +364,7 @@ review_context_html <- function(
       '<td class="description"><textarea>',
       escape_html(row$description),
       "</textarea></td>",
+      alternative_cells,
       paste(assertions, collapse = ""),
       '<td class="finalise-cell">',
       '<label class="finalise-control">',
@@ -271,6 +372,7 @@ review_context_html <- function(
       '<span class="finalise-mark"></span>',
       "</label>",
       "</td>",
+      row_comment_cell,
       paste(context_values, collapse = ""),
       "</tr>"
     )

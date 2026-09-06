@@ -21,6 +21,8 @@ test_that("prepare_review_context() prepares delini", {
   expect_equal(context$rows[[1]]$evidence_text, delini$evidence_text[1])
   expect_equal(context$rows[[1]]$label, delini$label[1])
   expect_equal(context$rows[[1]]$description, delini$description[1])
+  expect_true(is.na(context$rows[[1]]$alternative_label))
+  expect_true(is.na(context$rows[[1]]$alternative_description))
 })
 
 
@@ -128,5 +130,32 @@ test_that("prepare_review_context() parses multiple evidence URLs", {
       "https://example.com/001.html",
       "https://example.com/002.html"
     )
+  )
+})
+
+
+test_that("prepare_review_context() preserves alternative descriptive information", {
+  candidate <- candidate_dataset(
+    evidence_media_url = "https://example.com/001.jpg",
+    evidence_text = "Example evidence",
+    label = "Tablet-woven sash",
+    description = "A tablet-woven textile object.",
+    alternative_label = "Tablet-woven belt",
+    alternative_description = paste(
+      "A visitor-facing description of the textile object."
+    ),
+    subject = "example:Q1"
+  )
+
+  context <- prepare_review_context(candidate)
+
+  expect_equal(
+    context$rows[[1]]$alternative_label,
+    "Tablet-woven belt"
+  )
+
+  expect_equal(
+    context$rows[[1]]$alternative_description,
+    "A visitor-facing description of the textile object."
   )
 })

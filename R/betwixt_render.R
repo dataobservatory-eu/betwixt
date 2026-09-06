@@ -18,6 +18,10 @@
 #'   presentation subheadings for candidate columns.
 #' @param title Character string used as the review title.
 #' @param description Character string containing review instructions.
+#' @param row_comment Logical. If `TRUE`, adds an optional reviewer comment
+#'   field to each review row. Defaults to `FALSE`.
+#' @param review_comment Logical. If `TRUE`, adds an optional comment field
+#'   for the review as a whole. Defaults to `FALSE`.
 #' @param filename_stem Character string used as the base name for saved review
 #'   files. Review sequences greater than `0` append the sequence number.
 #' @param project_id Character string identifying the review project.
@@ -35,6 +39,8 @@ betwixt_render <- function(
   subheadings = NULL,
   title = "Betwixt Review",
   description = "Please review the following claims.",
+  row_comment = FALSE,
+  review_comment = FALSE,
   filename_stem = "betwixt-review",
   project_id = "",
   sequence = 0L,
@@ -60,7 +66,8 @@ betwixt_render <- function(
   table_html <- review_context_html(
     context,
     cols = cols,
-    subheadings = subheadings
+    subheadings = subheadings,
+    row_comment = row_comment
   )
 
   # Locate the packaged review resources.
@@ -94,6 +101,18 @@ betwixt_render <- function(
     x <- gsub(">", "&gt;", x, fixed = TRUE)
     x <- gsub('"', "&quot;", x, fixed = TRUE)
     x
+  }
+
+  # Render an optional comment field for the review as a whole.
+  review_comment_html <- if (review_comment) {
+    paste0(
+      '<label class="review-comment">Review comment',
+      '<textarea id="review-comment" ',
+      'placeholder="Optional comment on review"></textarea>',
+      "</label>\n"
+    )
+  } else {
+    ""
   }
 
   # Assemble the standalone review document.
@@ -153,6 +172,9 @@ betwixt_render <- function(
     'value="in-progress" readonly>',
     "</label>\n",
     "</div>\n",
+
+    # Add the optional review-level comment.
+    review_comment_html,
 
     # Store the filename stem as non-editable process metadata.
     '<input id="filename-stem" type="hidden" value="',

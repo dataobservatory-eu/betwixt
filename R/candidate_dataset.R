@@ -29,6 +29,15 @@
 #' @param description A character vector containing human-readable
 #'   descriptions of the subjects presented for review.
 #'
+#' @param alternative_label An optional character vector containing alternative
+#'   human-readable labels for the subjects presented for review, for example
+#'   a translation or a label intended for a different user group.
+#'
+#' @param alternative_description An optional character vector containing
+#'   alternative human-readable descriptions of the subjects presented for
+#'   review, for example a translation, a more detailed description, or a
+#'   description intended for a different user group.
+#'
 #' @param subject A vector containing the subject identifiers or values to be
 #'   reviewed. The subject is stored as the first candidate column, `col_1`.
 #'
@@ -55,8 +64,9 @@
 #'
 #' @return
 #' A tibble with one row per evidence-subject observation and the columns
-#' `row_number`, `evidence_media_url`, `evidence_text`, `label`, `description`,
-#' `col_1`, `col_1_range`, and `col_1_definition`.
+#' `row_number`, `evidence_url`, `evidence_media_url`, `evidence_text`, `label`,
+#' `description`, `alternative_label`, `alternative_description`, `col_1`,
+#' `col_1_range`, and `col_1_definition`.
 #'
 #' If `evidence_relation` is supplied, the tibble additionally contains
 #' `evidence_relation` and `evidence_relation_range`.
@@ -154,6 +164,8 @@ candidate_dataset <- function(
   evidence_text,
   label,
   description,
+  alternative_label = NA_character_,
+  alternative_description = NA_character_,
   subject,
   evidence_relation = NULL,
   evidence_relation_range = NA_character_,
@@ -185,7 +197,9 @@ candidate_dataset <- function(
       evidence_media_url = evidence_media_url,
       evidence_text = evidence_text,
       label = label,
-      description = description
+      description = description,
+      alternative_label = alternative_label,
+      alternative_description = alternative_description
     )
   } else {
     x <- tibble::tibble(
@@ -196,7 +210,9 @@ candidate_dataset <- function(
       evidence_relation = evidence_relation,
       evidence_relation_range = evidence_relation_range,
       label = label,
-      description = description
+      description = description,
+      alternative_label = alternative_label,
+      alternative_description = alternative_description
     )
   }
 

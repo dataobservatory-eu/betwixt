@@ -10,6 +10,8 @@ candidate_dataset(
   evidence_text,
   label,
   description,
+  alternative_label = NA_character_,
+  alternative_description = NA_character_,
   subject,
   evidence_relation = NULL,
   evidence_relation_range = NA_character_,
@@ -33,6 +35,15 @@ subjects presented for review.}
 
 \item{description}{A character vector containing human-readable
 descriptions of the subjects presented for review.}
+
+\item{alternative_label}{An optional character vector containing alternative
+human-readable labels for the subjects presented for review, for example
+a translation or a label intended for a different user group.}
+
+\item{alternative_description}{An optional character vector containing
+alternative human-readable descriptions of the subjects presented for
+review, for example a translation, a more detailed description, or a
+description intended for a different user group.}
 
 \item{subject}{A vector containing the subject identifiers or values to be
 reviewed. The subject is stored as the first candidate column, \code{col_1}.}
@@ -60,8 +71,9 @@ indicates that the subject already exists as an identified entity;
 }
 \value{
 A tibble with one row per evidence-subject observation and the columns
-\code{row_number}, \code{evidence_media_url}, \code{evidence_text}, \code{label}, \code{description},
-\code{col_1}, \code{col_1_range}, and \code{col_1_definition}.
+\code{row_number}, \code{evidence_url}, \code{evidence_media_url}, \code{evidence_text}, \code{label},
+\code{description}, \code{alternative_label}, \code{alternative_description}, \code{col_1},
+\code{col_1_range}, and \code{col_1_definition}.
 
 If \code{evidence_relation} is supplied, the tibble additionally contains
 \code{evidence_relation} and \code{evidence_relation_range}.

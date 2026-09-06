@@ -17,8 +17,9 @@
 #'
 #' @return A list containing the candidate column names, context column names,
 #'   whether an evidence relation is present, and row-wise review data. Each
-#'   row contains parsed evidence media and resource URLs, descriptive
-#'   information, reviewable assertions, and display-only context.
+#'   row contains parsed evidence media and resource URLs, primary and
+#'   alternative descriptive information, reviewable assertions, and
+#'   display-only context.
 #'
 #' @noRd
 #' @keywords internal
@@ -41,6 +42,7 @@ prepare_review_context <- function(candidate) {
     "row_number", "evidence_url", "evidence_media_url", "evidence_text",
     "label", "description"
   )
+
   missing <- setdiff(required, names(candidate))
 
   if (length(missing) > 0) {
@@ -81,9 +83,20 @@ prepare_review_context <- function(candidate) {
       evidence_url = parse_range(candidate$evidence_url[i]),
       evidence_media_url = parse_range(candidate$evidence_media_url[i]),
       evidence_text = candidate$evidence_text[i],
-      evidence_text = candidate$evidence_text[i],
       label = candidate$label[i],
       description = candidate$description[i],
+      alternative_label = if (
+        "alternative_label" %in% names(candidate)) {
+        candidate$alternative_label[i]
+      } else {
+        NA_character_
+      },
+      alternative_description = if (
+        "alternative_description" %in% names(candidate)) {
+        candidate$alternative_description[i]
+      } else {
+        NA_character_
+      },
       assertions = assertions,
       context = context
     )

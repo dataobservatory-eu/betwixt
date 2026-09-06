@@ -177,7 +177,7 @@ delini_long <- delini |>
     subject = col_1
   ) |>
   dplyr::select(
-    row_number, 
+    row_number,
     evidence_url, evidence_media_url, evidence_text,
     label, description,
     subject, predicate, value,
@@ -201,8 +201,7 @@ The dual-long projection combines atomic semantic claims with an explicit, revie
 Evidence | Evidence relation | Subject | Predicate | Value
 ```
 
-It can be derived by pivoting the dual-wide projection in the same way as the
-ordinary wide projection:
+It can be derived by pivoting the dual-wide projection in the same way as the ordinary wide projection:
 
 ```{r delini-dual-long}
 delini_dual_long <- delini_dual_wide |>

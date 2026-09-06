@@ -9,7 +9,8 @@ A tibble with 5 rows and 12 columns:
 \item{evidence_id}{Identifier of the media object used as evidence.}
 \item{thumbnail_url}{URL of the thumbnail presented as visual evidence
 in the review interface.}
-\item{evidence_media_url}{URL of the supporting source, where available.}
+\item{evidence__url}{URL of the supporting source, where available.}
+\item{evidence_media_url}{URL of the supporting media source, where available.}
 \item{subject}{Human-readable placeholder identifying the subject of
 the candidate assertion.}
 \item{label_en}{English label for the depicted or documented object.}

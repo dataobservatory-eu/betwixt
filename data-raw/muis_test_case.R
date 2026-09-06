@@ -6,10 +6,13 @@ library(tibble)
 # -------------------------------------------------------------------
 
 review_input <- tibble::tribble(
-  ~page_id, ~title, ~page_url, ~thumbnail_url,
+  ~page_id, ~title, ~title_hu, ~description_hu,
+  ~page_url, ~thumbnail_url,
   ~subject, ~predicate, ~value,
   "635780",
   "sweater, women's",
+  "női pulóver",
+  "A MuIS 635780 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/635780",
   "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=ebc07930-f719-44f2-a108-6698bcecc20b",
   "[image shown]",
@@ -17,6 +20,8 @@ review_input <- tibble::tribble(
   "sweaters",
   "633053",
   "gloves",
+  "kesztyű",
+  "A MuIS 633053 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/633053",
   "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=6440f24f-eaad-4cd4-84d7-1ae7a9d44d5a",
   "[image shown]",
@@ -24,6 +29,8 @@ review_input <- tibble::tribble(
   "gloves",
   "635778",
   "shirt, women's",
+  "női ing",
+  "A MuIS 635778 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/635778",
   "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=826c402e-c130-4860-b11e-9538bd403ecf",
   "[image shown]",
@@ -45,6 +52,8 @@ candidates <- candidate_dataset(
     "MuIS museum record",
     review_input$page_id
   ),
+  alternative_label = review_input$title_hu,
+  alternative_description = review_input$description_hu,
   subject = review_input$subject
 )
 
@@ -80,6 +89,8 @@ betwixt_render(
     "Review the candidate semantic claims derived from",
     "the museum records."
   ),
+  row_comment = TRUE,
+  review_comment = TRUE,
   project_id = "muis-garments",
   filename_stem = "muis-garments-review",
   sequence = 0L,

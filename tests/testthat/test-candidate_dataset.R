@@ -27,6 +27,8 @@ test_that("candidate_dataset() constructs the expected base structure", {
       "evidence_relation_range",
       "label",
       "description",
+      "alternative_label",
+      "alternative_description",
       "col_1",
       "col_1_range",
       "col_1_definition"
@@ -64,6 +66,9 @@ test_that("candidate_dataset() preserves Delini input values", {
   expect_equal(result$evidence_relation_range, relation_range)
   expect_equal(result$label, delini$label)
   expect_equal(result$description, delini$description)
+
+  expect_true(all(is.na(result$alternative_label)))
+  expect_true(all(is.na(result$alternative_description)))
 
   expect_equal(result$col_1, delini$col_1)
   expect_equal(result$col_1_range, delini$col_1_range)
@@ -127,6 +132,8 @@ test_that("candidate_dataset() uses NA defaults for optional subject metadata", 
   expect_type(result$evidence_url, "character")
   expect_type(result$col_1_range, "character")
   expect_type(result$col_1_definition, "character")
+  expect_type(result$alternative_label, "character")
+  expect_type(result$alternative_description, "character")
 })
 
 
@@ -223,6 +230,8 @@ test_that("candidate_dataset() omits optional evidence relation columns", {
       "evidence_text",
       "label",
       "description",
+      "alternative_label",
+      "alternative_description",
       "col_1",
       "col_1_range",
       "col_1_definition"
@@ -272,5 +281,29 @@ test_that("candidate_dataset() requires evidence for every row", {
       subject = "example:Q1"
     ),
     "Each row requires evidence_media_url or evidence_url."
+  )
+})
+
+test_that("candidate_dataset() preserves alternative labels and descriptions", {
+  result <- candidate_dataset(
+    evidence_media_url = "https://example.org/evidence/1",
+    evidence_text = "Evidence 1",
+    label = "Tablet-woven sash",
+    description = "A tablet-woven textile object.",
+    alternative_label = "Tablet-woven belt",
+    alternative_description = paste(
+      "A visitor-facing description of the textile object."
+    ),
+    subject = "example:Q1"
+  )
+
+  expect_equal(
+    result$alternative_label,
+    "Tablet-woven belt"
+  )
+
+  expect_equal(
+    result$alternative_description,
+    "A visitor-facing description of the textile object."
   )
 })

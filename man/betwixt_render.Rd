@@ -10,6 +10,8 @@ betwixt_render(
   subheadings = NULL,
   title = "Betwixt Review",
   description = "Please review the following claims.",
+  row_comment = FALSE,
+  review_comment = FALSE,
   filename_stem = "betwixt-review",
   project_id = "",
   sequence = 0L,
@@ -28,6 +30,12 @@ presentation subheadings for candidate columns.}
 \item{title}{Character string used as the review title.}
 
 \item{description}{Character string containing review instructions.}
+
+\item{row_comment}{Logical. If \code{TRUE}, adds an optional reviewer comment
+field to each review row. Defaults to \code{FALSE}.}
+
+\item{review_comment}{Logical. If \code{TRUE}, adds an optional comment field
+for the review as a whole. Defaults to \code{FALSE}.}
 
 \item{filename_stem}{Character string used as the base name for saved review
 files. Review sequences greater than \code{0} append the sequence number.}

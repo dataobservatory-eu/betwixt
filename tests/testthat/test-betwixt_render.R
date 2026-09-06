@@ -111,3 +111,73 @@ test_that("betwixt_render() writes an initial Delini review", {
     fixed = TRUE
   )
 })
+
+
+
+test_that("comments are not rendered by default", {
+  html <- betwixt_render(delini)
+
+  expect_false(grepl(
+    '<th class="row-comment">',
+    html,
+    fixed = TRUE
+  ))
+
+  expect_false(grepl(
+    'id="review-comment"',
+    html,
+    fixed = TRUE
+  ))
+})
+
+
+test_that("row comments are rendered when requested", {
+  html <- betwixt_render(
+    delini,
+    row_comment = TRUE
+  )
+
+  expect_match(
+    html,
+    '<th class="row-comment">Reviewer comment</th>',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    '<td class="row-comment">',
+    fixed = TRUE
+  )
+
+  expect_false(grepl(
+    'id="review-comment"',
+    html,
+    fixed = TRUE
+  ))
+})
+
+## Optional comments ---------------------------------------------------------
+test_that("review comment is rendered when requested", {
+  html <- betwixt_render(
+    delini,
+    review_comment = TRUE
+  )
+
+  expect_match(
+    html,
+    '<label class="review-comment">Review comment',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="review-comment"',
+    fixed = TRUE
+  )
+
+  expect_false(grepl(
+    '<th class="row-comment">',
+    html,
+    fixed = TRUE
+  ))
+})

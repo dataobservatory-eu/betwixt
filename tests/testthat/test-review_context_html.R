@@ -116,3 +116,159 @@ test_that("multiple evidence URLs are rendered", {
   expect_match(html, 'href="https://example.org/001.html"', fixed = TRUE)
   expect_match(html, 'href="https://example.org/002.html"', fixed = TRUE)
 })
+
+
+test_that("alternative descriptive columns are not rendered when unused", {
+  x <- candidate_dataset(
+    evidence_media_url = "https://example.org/evidence.jpg",
+    evidence_text = "Example evidence",
+    label = "Example",
+    description = "Example description",
+    subject = "[image shown]"
+  )
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_false(grepl(
+    "<th>Alternative label</th>",
+    html,
+    fixed = TRUE
+  ))
+
+  expect_false(grepl(
+    "<th>Alternative description</th>",
+    html,
+    fixed = TRUE
+  ))
+})
+
+
+test_that("alternative label is rendered without alternative description", {
+  x <- candidate_dataset(
+    evidence_media_url = "https://example.org/evidence.jpg",
+    evidence_text = "Example evidence",
+    label = "Tablet-woven sash",
+    description = "A tablet-woven textile object.",
+    alternative_label = "Tablet-woven belt",
+    subject = "[image shown]"
+  )
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_match(
+    html,
+    "<th>Alternative label</th>",
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'value="Tablet-woven belt"',
+    fixed = TRUE
+  )
+
+  expect_false(grepl(
+    "<th>Alternative description</th>",
+    html,
+    fixed = TRUE
+  ))
+})
+
+
+test_that("alternative label and description are rendered together", {
+  x <- candidate_dataset(
+    evidence_media_url = "https://example.org/evidence.jpg",
+    evidence_text = "Example evidence",
+    label = "Tablet-woven sash",
+    description = "A tablet-woven textile object.",
+    alternative_label = "Tablet-woven belt",
+    alternative_description =
+      "A visitor-facing description of the textile object.",
+    subject = "[image shown]"
+  )
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_match(
+    html,
+    "<th>Alternative label</th>",
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'value="Tablet-woven belt"',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    "<th>Alternative description</th>",
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    "A visitor-facing description of the textile object.",
+    fixed = TRUE
+  )
+})
+
+
+test_that("row comment is not rendered by default", {
+  x <- candidate_dataset(
+    evidence_media_url = "https://example.org/evidence.jpg",
+    evidence_text = "Example evidence",
+    label = "Example",
+    description = "Example description",
+    subject = "[image shown]"
+  )
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_false(grepl(
+    '<th class="row-comment">Reviewer comment</th>',
+    html,
+    fixed = TRUE
+  ))
+
+  expect_false(grepl(
+    '<td class="row-comment">',
+    html,
+    fixed = TRUE
+  ))
+})
+
+
+test_that("row comment is rendered when requested", {
+  x <- candidate_dataset(
+    evidence_media_url = "https://example.org/evidence.jpg",
+    evidence_text = "Example evidence",
+    label = "Example",
+    description = "Example description",
+    subject = "[image shown]"
+  )
+
+  html <- review_context_html(
+    prepare_review_context(x),
+    row_comment = TRUE
+  )
+
+  expect_match(
+    html,
+    '<th class="row-comment">Reviewer comment</th>',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    '<td class="row-comment">',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    '<textarea placeholder="Optional comment on row"></textarea>',
+    fixed = TRUE
+  )
+})

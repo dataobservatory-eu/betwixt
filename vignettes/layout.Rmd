@@ -221,7 +221,7 @@ delini_dual_long <- delini_dual_wide |>
   ) |>
   dplyr::select(
     row_number,
-    evidene_url, evidence_media_url, evidence_text,
+    evidence_url, evidence_media_url, evidence_text,
     evidence_relation, evidence_relation_range,
     label, description,
     subject, predicate, value,

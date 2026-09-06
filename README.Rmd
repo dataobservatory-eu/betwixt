@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# betwixt
+# betwixt <a href="https://betwixt.dataobservatory.eu/"><img src="man/figures/logo.png" align="right" height="120" alt="betwixt website" /></a>
 
 <!-- badges: start -->
 
@@ -96,10 +96,27 @@ Introduces scoped claims, semantic stabilisation, contextual inheritance, and th
 
 Introduces the Delini example and shows how candidate semantic material can be represented as wide, dual-wide, long, and dual-long projections. The current browser-based review implementation uses the wide projection.
 
-### 3. R Reference Implementation
+### 3. Creating Candidate Datasets
+
+Shows how to construct a Betwixt candidate dataset from ordinary source data using a MuIS museum example. It distinguishes evidence media, evidence resources, descriptive metadata, alternative descriptions, and candidate assertions, then demonstrates adding candidate columns and rendering a review with row-level and review-level comments.
+
+### 4. R Reference Implementation
 
 Describes the R implementation and the construction and processing of candidate semantic data.
 
-### 4. Python Minimal Implementation
+### 5. Python Minimal Implementation
 
 Planned vignette demonstrating how the underlying approach can be implemented outside R using ordinary tabular and web technologies.
+
+
+## Citation
+
+If you use Betwixt in research, please cite:
+
+> Antal, D. (2026). *Betwixt*. Reprex. https://doi.org/10.5281/zenodo.22091535
+
+In R, the current citation can be obtained with:
+
+```r
+citation("betwixt")
+```

@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# betwixt
+# betwixt <a href="https://betwixt.dataobservatory.eu/"><img src="man/figures/logo.png" align="right" height="120" alt="betwixt website" /></a>
 
 <!-- badges: start -->
 
@@ -43,17 +43,17 @@ library(betwixt)
 
 data("delini")
 delini
-#> # A tibble: 5 × 15
-#>   row_number evidence_url      evidence_text label description col_1 col_1_range
-#>        <int> <chr>             <chr>         <chr> <chr>       <chr> <chr>      
-#> 1          1 https://betwixt.… P7101565      Deli… the farmho… fuds… <NA>       
-#> 2          2 https://betwixt.… P7101561      tabl… a tablet-w… tabl… <NA>       
-#> 3          3 https://betwixt.… P7101556      bed … a bed in t… bed … <NA>       
-#> 4          4 https://betwixt.… P7101590      reco… a record c… reco… <NA>       
-#> 5          5 https://betwixt.… P7101623      reco… a floor pl… reco… <NA>       
-#> # ℹ 8 more variables: col_1_definition <chr>, col_2 <chr>, col_2_range <chr>,
-#> #   col_2_definition <chr>, col_3 <chr>, col_3_range <chr>,
-#> #   col_3_definition <chr>, context_1 <chr>
+#> # A tibble: 5 × 16
+#>   row_number evidence_url evidence_media_url     evidence_text label description
+#>        <int> <chr>        <chr>                  <chr>         <chr> <chr>      
+#> 1          1 <NA>         https://betwixt.datao… P7101565      Deli… the farmho…
+#> 2          2 <NA>         https://betwixt.datao… P7101561      tabl… a tablet-w…
+#> 3          3 <NA>         https://betwixt.datao… P7101556      bed … a bed in t…
+#> 4          4 <NA>         https://betwixt.datao… P7101590      reco… a record c…
+#> 5          5 <NA>         https://betwixt.datao… P7101623      reco… a floor pl…
+#> # ℹ 10 more variables: col_1 <chr>, col_1_range <chr>, col_1_definition <chr>,
+#> #   col_2 <chr>, col_2_range <chr>, col_2_definition <chr>, col_3 <chr>,
+#> #   col_3_range <chr>, col_3_definition <chr>, context_1 <chr>
 ```
 
 ``` r
@@ -110,12 +110,33 @@ can be represented as wide, dual-wide, long, and dual-long projections.
 The current browser-based review implementation uses the wide
 projection.
 
-### 3. R Reference Implementation
+### 3. Creating Candidate Datasets
+
+Shows how to construct a Betwixt candidate dataset from ordinary source
+data using a MuIS museum example. It distinguishes evidence media,
+evidence resources, descriptive metadata, alternative descriptions, and
+candidate assertions, then demonstrates adding candidate columns and
+rendering a review with row-level and review-level comments.
+
+### 4. R Reference Implementation
 
 Describes the R implementation and the construction and processing of
 candidate semantic data.
 
-### 4. Python Minimal Implementation
+### 5. Python Minimal Implementation
 
 Planned vignette demonstrating how the underlying approach can be
 implemented outside R using ordinary tabular and web technologies.
+
+## Citation
+
+If you use Betwixt in research, please cite:
+
+> Antal, D. (2026). *Betwixt*. Reprex.
+> <https://doi.org/10.5281/zenodo.22091535>
+
+In R, the current citation can be obtained with:
+
+``` r
+citation("betwixt")
+```

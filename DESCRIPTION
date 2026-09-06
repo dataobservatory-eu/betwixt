@@ -1,6 +1,6 @@
 Package: betwixt
 Title: Scoped Semantic Claims and Human Review Workflows
-Version: 0.0.5
+Version: 0.0.6
 Authors@R:
     person(
       given = "Daniel",
@@ -28,7 +28,8 @@ Suggests:
     testthat (>= 3.0.0)
 Imports: 
     tibble,
-    whisker
+    whisker,
+    xml2
 VignetteBuilder: knitr
 Depends: 
     R (>= 4.1)

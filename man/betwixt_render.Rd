@@ -2,7 +2,7 @@
 % Please edit documentation in R/betwixt_render.R
 \name{betwixt_render}
 \alias{betwixt_render}
-\title{Render a Betwixt review}
+\title{Renders a Betwixt candidate dataset as a standalone HTML review.}
 \usage{
 betwixt_render(
   candidate,
@@ -53,13 +53,15 @@ Invisibly returns the rendered HTML when \code{path} is supplied;
 otherwise returns the HTML as a character string.
 }
 \description{
-Renders a Betwixt candidate dataset as a standalone HTML review.
+The generated review preserves the original candidate values alongside
+editable review values. It also records the original HTML filename and its
+creation time as artefact provenance. Timestamps are represented as
+ISO 8601 UTC values at one-second precision.
 
 A review belongs to a project, has a filename stem, and has a non-negative
 sequence number. Sequence \code{0} represents the initial candidate review.
 Subsequent review states may use sequence \code{1}, \code{2}, and so on. Saving a
 draft or finalising a review does not itself change the sequence.
-
 The project identifier records the stable identity of the review project.
 The filename stem is used independently to construct saved review filenames.
 }

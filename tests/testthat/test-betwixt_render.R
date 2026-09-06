@@ -41,12 +41,32 @@ test_that("betwixt_render() writes an initial Delini review", {
   expect_match(html, 'value="delini_wide"', fixed = TRUE)
   expect_match(html, 'id="review-sequence"', fixed = TRUE)
   expect_match(html, 'value="0"', fixed = TRUE)
+  expect_match(html, 'id="original-filename"', fixed = TRUE)
+  expect_match(html, 'value="delini_wide.html"', fixed = TRUE)
+  expect_match(html, 'id="review-filename"', fixed = TRUE)
+  expect_match(html, 'id="original-created-at"', fixed = TRUE)
+  expect_match(
+    html,
+    'class="semantic-cell" data-column="col_1"',
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    'class="semantic-cell" data-column="col_2"',
+    fixed = TRUE
+  )
 
   # Check the initial review structure and state.
   expect_match(html, 'id="review-table"', fixed = TRUE)
   expect_match(html, 'data-finalised="false"', fixed = TRUE)
   expect_match(html, 'data-qualification="none"', fixed = TRUE)
   expect_match(html, 'value="in-progress"', fixed = TRUE)
+
+  # Check the timestamp structure.
+  expect_match(
+    html,
+    'id="original-created-at" type="text" value="\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z"'
+  )
 
   # Check that both review save operations are available.
   expect_match(html, 'id="save-draft"', fixed = TRUE)
@@ -93,6 +113,31 @@ test_that("betwixt_render() writes an initial Delini review", {
     "const filename = `${stem}${suffix}.html`",
     fixed = TRUE
   )
+  expect_match(
+    html,
+    "function utcTimestamp()",
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    'toISOString().replace(/\\.\\d{3}Z$/, "Z")',
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    "startedAt.value = utcTimestamp()",
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    "const now = utcTimestamp()",
+    fixed = TRUE
+  )
+  expect_match(
+    html,
+    'document.getElementById("review-filename").value = filename',
+    fixed = TRUE
+  )
 
   # Check the JavaScript interaction hooks.
   expect_match(
@@ -107,12 +152,52 @@ test_that("betwixt_render() writes an initial Delini review", {
   )
   expect_match(
     html,
-    'querySelector(".create-item")',
+    'querySelectorAll\\("\\.create-item"\\)\\.forEach'
+  )
+  # Review controls are wired into the standalone document.
+  expect_match(html, 'querySelectorAll\\("\\[data-qualify\\]"\\)')
+  expect_match(html, 'querySelectorAll\\("\\.candidate-select"\\)')
+  expect_match(html, 'querySelectorAll\\("\\.create-item"\\)\\.forEach')
+  expect_match(html, 'querySelector\\("\\.finalise-check"\\)')
+
+  # Review state is persisted into saved HTML.
+  expect_match(html, "persistStateIntoClone")
+  expect_match(html, "dataset\\.qualification")
+  expect_match(html, "dataset\\.finalised")
+  expect_match(html, "dataset\\.outcome")
+  expect_match(html, 'class="create-item"')
+  expect_match(html, 'querySelectorAll\\("\\.create-item"\\)\\.forEach')
+
+  # Draft and final review actions remain available.
+  expect_match(html, 'getElementById\\("save-draft"\\)')
+  expect_match(html, 'getElementById\\("save-final"\\)')
+})
+
+test_that("betwixt_render() records a sequenced original filename", {
+  html <- betwixt_render(
+    delini,
+    filename_stem = "delini_wide",
+    sequence = 2L
+  )
+
+  expect_match(
+    html,
+    'id="original-filename" type="text" value="delini_wide_2.html"',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="review-filename" type="text" value="delini_wide_2.html"',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="review-sequence" type="number" value="2"',
     fixed = TRUE
   )
 })
-
-
 
 test_that("comments are not rendered by default", {
   html <- betwixt_render(delini)

@@ -1,6 +1,7 @@
 (() => {
   const rows = [...document.querySelectorAll("tbody tr")];
 
+  // Determine the overall outcome of a review row.
   function outcome(row) {
     const cells = [...row.querySelectorAll(".semantic-cell")];
 
@@ -15,6 +16,7 @@
     return "accept";
   }
 
+  // Update the finalisation marker for a row.
   function paint(row) {
     row.dataset.outcome = outcome(row);
 
@@ -34,6 +36,7 @@
     }
   }
 
+  // Update the review summary.
   function summary() {
     const finalised = rows.filter(
       row => row.dataset.finalised === "true"
@@ -52,6 +55,7 @@
       `${rejected} rejected cells`;
   }
 
+  // Apply a qualification and update the row state.
   function qualify(cell, state) {
     cell.dataset.qualification = state;
     paint(cell.closest("tr"));
@@ -63,6 +67,7 @@
     return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   }
 
+  // Attach review controls to each row.
   rows.forEach(row => {
     row.querySelectorAll("[data-qualify]").forEach(button => {
       button.addEventListener("click", () => {
@@ -107,9 +112,8 @@
       summary();
     });
 
-    const create = row.querySelector(".create-item");
-
-    if (create) {
+    // Attach creation controls to every unresolved assertion.
+    row.querySelectorAll(".create-item").forEach(create => {
       create.addEventListener("click", () => {
         const cell = create.closest(".semantic-cell");
         const input = cell.querySelector(".subject-input");
@@ -124,6 +128,7 @@
           `<button data-qualify="reject">Reject</button>` +
           `</div>`;
 
+        // Restore qualification controls in the replaced cell.
         cell.querySelectorAll("[data-qualify]").forEach(button => {
           button.addEventListener("click", () => {
             const qualification = button.dataset.qualify;
@@ -136,9 +141,10 @@
           });
         });
       });
-    }
+    });
   });
 
+  // Initialise row presentation and review summary.
   rows.forEach(paint);
   summary();
 
@@ -148,6 +154,7 @@
     startedAt.value = utcTimestamp();
   }
 
+  // Copy the live review state into the HTML to be saved.
   function persistStateIntoClone(clone) {
     const sourceInputs = [...document.querySelectorAll("input")];
     const clonedInputs = [...clone.querySelectorAll("input")];
@@ -230,6 +237,7 @@
     });
   }
 
+  // Save the current review as a draft or finalised HTML file.
   function saveReview(finaliseReview) {
     const now = utcTimestamp();
     const sequenceInput =
@@ -289,6 +297,7 @@
         : "Draft saved at ") + now;
   }
 
+  // Attach the review save actions.
   document
     .getElementById("save-draft")
     .addEventListener("click", () => saveReview(false));
@@ -297,4 +306,3 @@
     .getElementById("save-final")
     .addEventListener("click", () => saveReview(true));
 })();
-

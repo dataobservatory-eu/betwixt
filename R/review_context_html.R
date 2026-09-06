@@ -3,20 +3,27 @@
 #' @description
 #' Converts a prepared Betwixt review context into an HTML table containing
 #' evidence, descriptive information, reviewable assertions, finalisation
-#' controls, and display-only contextual information.
+#' controls, optional row comments, and display-only contextual information.
 #'
 #' Evidence media supplied through `evidence_media_url` are presented inline
 #' as images, while evidence resources supplied through `evidence_url` are
 #' rendered as links that can be opened by the reviewer. Multiple evidence
 #' media or resource URLs may be supplied and are rendered independently.
 #'
-#' Alternative labels and descriptions are rendered as additional editable
-#' columns when they are present in the review context. Columns containing no
-#' alternative values are omitted from the review table.
+#' Primary and alternative labels and descriptions are rendered as editable
+#' fields. Alternative columns are included only when corresponding values
+#' are present in the review context.
 #'
-#' Presentation labels and subheadings may be supplied independently of the
-#' candidate data model. Candidate ranges are rendered as selection controls,
-#' resolved entities as links, and unresolved entities as editable values.
+#' Reviewable assertions are rendered according to their available semantic
+#' information. Candidate ranges are rendered as selection controls, resolved
+#' entities as links, and unresolved entities as editable values. Presentation
+#' labels and subheadings may be supplied independently of the candidate data
+#' model.
+#'
+#' Original candidate values are preserved in the generated HTML independently
+#' of their editable values. This allows subsequent reviewer edits to be
+#' distinguished from the candidate state when a saved review is read back
+#' into Betwixt.
 #'
 #' This is an internal HTML generation step. Candidate data should first be
 #' converted with `prepare_review_context()`.
@@ -156,8 +163,13 @@ review_context_html <- function(
       )
     }
 
+    # Preserve the assertion identity and original candidate value.
     paste0(
-      '<td class="semantic-cell" data-qualification="none">',
+      '<td class="semantic-cell" data-column="',
+      escape_html(assertion$name),
+      '" data-qualification="none" data-candidate="',
+      value,
+      '">',
       control,
       definition,
       qualification_html(),
@@ -317,12 +329,14 @@ review_context_html <- function(
       row$alternative_description
     }
 
-    # Render alternative descriptive cells only when their columns are used.
+    # Render alternatives and preserve their original candidate values.
     alternative_cells <- paste0(
       if (has_alternative_label) {
         paste0(
           '<td class="label">',
-          '<input class="text-input" value="',
+          '<input class="text-input" data-field="alternative_label" value="',
+          escape_html(alternative_label),
+          '" data-candidate="',
           escape_html(alternative_label),
           '">',
           "</td>"
@@ -332,7 +346,9 @@ review_context_html <- function(
       },
       if (has_alternative_description) {
         paste0(
-          '<td class="description"><textarea>',
+          '<td class="description"><textarea data-field="alternative_description" data-candidate="',
+          escape_html(alternative_description),
+          '">',
           escape_html(alternative_description),
           "</textarea></td>"
         )
@@ -352,20 +368,32 @@ review_context_html <- function(
       ""
     }
 
+    # Assemble the complete review row.
     paste0(
       '<tr data-row="', row$row_number,
       '" data-finalised="false" data-outcome="accept">',
       '<td class="num">', row$row_number, "</td>",
       evidence,
+
+      # Preserve the original label as the candidate value.
       '<td class="label">',
-      '<input class="text-input" value="',
-      escape_html(row$label), '">',
+      '<input class="text-input" data-field="label" value="',
+      escape_html(row$label),
+      '" data-candidate="',
+      escape_html(row$label),
+      '">',
       "</td>",
-      '<td class="description"><textarea>',
+
+      # Preserve the original description as the candidate value.
+      '<td class="description"><textarea data-field="description" data-candidate="',
+      escape_html(row$description),
+      '">',
       escape_html(row$description),
       "</textarea></td>",
       alternative_cells,
       paste(assertions, collapse = ""),
+
+      # Row-level finalisation control.
       '<td class="finalise-cell">',
       '<label class="finalise-control">',
       '<input type="checkbox" class="finalise-check">',

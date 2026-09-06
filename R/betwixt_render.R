@@ -1,13 +1,15 @@
-#' Render a Betwixt review
+#' Renders a Betwixt candidate dataset as a standalone HTML review.
 #'
 #' @description
-#' Renders a Betwixt candidate dataset as a standalone HTML review.
+#' The generated review preserves the original candidate values alongside
+#' editable review values. It also records the original HTML filename and its
+#' creation time as artefact provenance. Timestamps are represented as
+#' ISO 8601 UTC values at one-second precision.
 #'
 #' A review belongs to a project, has a filename stem, and has a non-negative
 #' sequence number. Sequence `0` represents the initial candidate review.
 #' Subsequent review states may use sequence `1`, `2`, and so on. Saving a
 #' draft or finalising a review does not itself change the sequence.
-#'
 #' The project identifier records the stable identity of the review project.
 #' The filename stem is used independently to construct saved review filenames.
 #'
@@ -57,7 +59,22 @@ betwixt_render <- function(
     )
   }
 
+  # Store the validated sequence as an integer.
   sequence <- as.integer(sequence)
+
+  # Record the creation time in ISO 8601 UTC at one-second precision.
+  original_created_at <- format(
+    Sys.time(),
+    tz = "UTC",
+    format = "%Y-%m-%dT%H:%M:%SZ"
+  )
+
+  # Record the filename of the HTML artefact created by this render.
+  original_filename <- if (sequence == 0L) {
+    paste0(filename_stem, ".html")
+  } else {
+    paste0(filename_stem, "_", sequence, ".html")
+  }
 
   # Prepare the candidate data for rendering.
   context <- prepare_review_context(candidate)
@@ -158,6 +175,18 @@ betwixt_render <- function(
     '<input id="review-sequence" type="number" value="',
     sequence, '" readonly>',
     "</label>\n",
+    "<label>Original filename",
+    '<input id="original-filename" type="text" value="',
+    escape_html(original_filename), '" readonly>',
+    "</label>\n",
+    "<label>Filename",
+    '<input id="review-filename" type="text" value="',
+    escape_html(original_filename), '" readonly>',
+    "</label>\n",
+    "<label>Original created at",
+    '<input id="original-created-at" type="text" value="',
+    original_created_at, '" readonly>',
+    "</label>\n",
     "<label>Started at",
     '<input id="review-started-at" type="text" readonly>',
     "</label>\n",
@@ -190,7 +219,13 @@ betwixt_render <- function(
     '<div id="save-status" class="save-status"></div>\n',
     "</section>\n",
     '<footer class="site-footer">',
-    "Betwixt semantic review",
+    "Created with Betwixt semantic review · ",
+    '<a href="https://github.com/dataobservatory-eu/betwixt" ',
+    'target="_blank" rel="noopener">GitHub</a>',
+    " · ",
+    '<a href="https://doi.org/10.5281/zenodo.22091535" ',
+    'target="_blank" rel="noopener">',
+    "doi:10.5281/zenodo.22091535</a>",
     "</footer>\n",
     "</main>\n",
     "<script>\n", js, "\n</script>\n",
@@ -203,19 +238,9 @@ betwixt_render <- function(
     return(html)
   }
 
-  # Construct the sequence-specific initial review filename.
-  stem <- if (sequence == 0L) {
-    filename_stem
-  } else {
-    paste0(filename_stem, "_", sequence)
-  }
+  # Write the review using the filename recorded in its provenance.
+  output <- file.path(path, original_filename)
 
-  output <- file.path(
-    path,
-    paste0(stem, ".html")
-  )
-
-  # Write the standalone review and return it invisibly.
   writeLines(html, output, useBytes = TRUE)
   invisible(html)
 }

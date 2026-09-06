@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 # Overview
 
-A Betwixt review begins with a **candidate dataset**. The candidate dataset brings together the evidence presented to a reviewer, human-readable descriptions of the objects under review, and the semantic assertions that the reviewer is asked to evaluate.
+A Betwixt review begins with a **candidate dataset**. The candidate dataset brings together evidence made available to a reviewer, human-readable descriptions of the objects under review, and candidate semantic assertions that the reviewer is asked to evaluate. It defines the input to review rather than the resulting review state.
 
 ```{r setup}
 library(betwixt)
@@ -30,7 +30,7 @@ This vignette constructs a small candidate dataset from three museum records in 
 - several candidate semantic assertions; and
 - optional row-level and review-level comments.
 
-The example uses a wide review representation, in which each row represents one object and candidate assertions are added as columns.
+The example uses a wide review representation, in which each row groups the review material for one object and candidate assertions are exposed through columns.
 
 ## Source data
 
@@ -74,7 +74,7 @@ review_input <- tibble::tribble(
 )
 ```
 
-The input separates information about the **evidence**, information used to describe the object to the reviewer, and values that will become **candidate assertions**. Keeping these roles distinct becomes important when constructing the Betwixt representation.
+The input separates **evidence**, human-readable descriptive information, and values that will become **candidate assertions**. Keeping these roles distinct is important because their presence in the same review representation does not give them the same semantic or review role.
 
 ## Evidence
 
@@ -98,11 +98,11 @@ A short human-readable identification of the evidence is supplied separately:
 evidence_text = review_input$title
 ```
 
-This distinction allows a review to show convenient visual evidence while retaining a link to the source from which the evidence originates.
+This distinction allows a review to present convenient visual evidence while separately retaining links to evidence resources that the reviewer may inspect. These roles are distinct from review provenance.
 
 ## Describing the object under review
 
-The primary label and description provide human-readable information to the reviewer:
+The primary label and description provide human-readable descriptive information to the reviewer. They belong to the review representation but are distinct from the candidate semantic assertions:
 
 ```         
 label = review_input$title
@@ -142,7 +142,7 @@ candidates <- candidate_dataset(
 )
 ```
 
-The `subject` establishes the first candidate column. In this example, `[image shown]` indicates that the subject of the proposed assertions is the object depicted by the evidence presented to the reviewer.
+The `subject` identifies the subject of the candidate assertions and is represented as the first candidate column, `col_1`. In this example, `[image shown]` indicates that the proposed assertions concern the object depicted by the evidence presented to the reviewer.
 
 ```{r}
 candidates
@@ -167,13 +167,13 @@ candidates <- candidates |>
   )
 ```
 
-The resulting wide representation contains the subject followed by three additional candidate columns.
+The resulting wide projection contains the subject followed by three additional candidate columns. These columns arrange candidate semantic material for review without making the wide tabular structure itself the underlying semantic model.
 
 ```{r}
 candidates
 ```
 
-The generic names `col_1`, `col_2`, and so forth belong to the intermediate representation. Presentation labels can be assigned when the review is rendered, without changing the underlying candidate dataset.
+The generic names `col_1`, `col_2`, and so forth belong to the intermediate review representation rather than to the semantics of the assertions themselves. Presentation labels can be assigned when the review is rendered without changing the underlying candidate assertions.
 
 ## Rendering the review
 
@@ -190,7 +190,7 @@ betwixt_render(
   ),
   title = "MuIS garment review",
   description = paste(
-    "Review the candidate semantic claims derived from",
+    "Review the candidate semantic assertions derived from",
     "the museum records."
   ),
   row_comment = TRUE,
@@ -204,29 +204,29 @@ betwixt_render(
 
 Here `row_comment = TRUE` gives the reviewer an optional comment field for each object. `review_comment = TRUE` adds a separate comment field for observations concerning the review as a whole.
 
-![Initial candidate review](images/muis/muis-review-start.png){alt="Initial candidate review" fig-align="center"}
+![Initial candidate review](images/muis/muis-review-start.png){fig-align="center"}
 
 The resulting review therefore separates several kinds of reviewer intervention:
 
-- editing descriptive or candidate values;
+- editing descriptive information or candidate values;
 - qualifying individual candidate assertions;
-- finalising the outcome of a row;
+- finalising individual review rows;
 - commenting on an individual row; and
 - commenting on the review as a whole.
 
 ## Candidate data and review output
 
-The candidate dataset describes the **input to review**. Reviewer decisions and comments are not added to `candidate_dataset()` because they do not yet exist when the candidate review is constructed.
+The candidate dataset defines the **input to review**. Reviewer decisions and comments are not added to `candidate_dataset()` because they belong to the resulting review state rather than to the candidate state.
 
-Instead, the standalone review records those interventions during review. The initial review generated above is sequence `0`: it contains the candidate assertions but no reviewer decisions.
+Instead, the standalone review records those interventions as review proceeds. The initial review generated above is sequence `0`: it contains the candidate state but no reviewer decisions.
 
 [Open the initial candidate review](examples/muis-garments-review.html)
 
 ### Saving a review
 
-Once the reviewer begins working with the candidate assertions, the review becomes a new review state. The first browser save therefore starts sequence `1`.
+Once reviewer interventions are recorded, the review has a state distinct from its original candidate input. The first browser save therefore starts review sequence `1`.
 
-Saving a draft preserves the current state without finalising the review. Edited labels and descriptions, assertion qualifications, row finalisation, row comments, review-level comments, reviewer information, and lifecycle metadata are written into the standalone HTML.
+Saving a draft preserves the current review state without finalising the review. The standalone HTML retains the original candidate values while also persisting current descriptive and assertion values, assertion qualifications, row finalisation, row comments, review-level comments, reviewer information, and lifecycle metadata.
 
 [Open the saved draft](examples/muis-garments-review_1-draft.html)
 
@@ -236,7 +236,7 @@ The reviewer can reopen the saved HTML and continue working with the preserved s
 
 ### Finalising the review
 
-Finalising the review preserves the same information but marks the review as finalised and records its completion time. A draft and a finalised review from the same review cycle therefore belong to the same sequence.
+Finalising the review preserves the same information but marks the review activity as completed and records its completion time. It does not by itself promote reviewed assertions into a subsequent stabilised semantic state or apply them to an external knowledge system. A draft and a finalised review from the same review cycle therefore belong to the same sequence.
 
 [Open the finalised review](examples/muis-garments-review_1-finalised.html)
 
@@ -248,4 +248,4 @@ The three files make the review lifecycle directly inspectable:
 2.  [saved draft — sequence 1](examples/muis-garments-review_1-draft.html)
 3.  [finalised review — sequence 1](examples/muis-garments-review_1-finalised.html)
 
-This separation is fundamental to Betwixt. The candidate dataset defines **what is proposed for review**. The review document records **what the reviewer did with those proposals**. A saved review is therefore not merely a visual rendering of the original candidate data: it is a persistent record of the resulting review state.
+This separation is fundamental to Betwixt. The candidate dataset defines **what is proposed for review**. The saved review preserves that candidate state while recording **what the reviewer did with those proposals**. It is therefore not merely a visual rendering of the original candidate data, but a persistent review artefact from which the candidate and reviewed states can be distinguished and reconstructed.

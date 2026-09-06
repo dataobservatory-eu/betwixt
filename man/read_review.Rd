@@ -7,12 +7,72 @@
 read_review(path)
 }
 \arguments{
-\item{path}{Path to a Betwixt review HTML file.}
+\item{path}{A single character string giving the path to a standalone
+Betwixt review HTML file.}
 }
 \value{
-A canonical Betwixt review object.
+A named list with four elements:
+
+\describe{
+\item{metadata}{
+Review-level metadata including \code{title}, \code{description}, \code{project_id},
+\code{sequence}, and \code{status}.
+}
+\item{provenance}{
+Review provenance including the original and saved filenames,
+creation and lifecycle timestamps, reviewer name and email, and the
+optional review-level comment.
+}
+\item{candidate}{
+A data frame reconstructing the candidate state presented for review.
+It contains row number, evidence fields, descriptive fields, and
+candidate semantic assertion values.
+}
+\item{reviewed}{
+A data frame reconstructing the persisted reviewed state. It contains
+the current descriptive and semantic values, assertion qualifications,
+row finalisation state, row outcome, and optional row-level comments.
+}
+}
+
+Empty optional evidence fields and comments are returned as \code{NA_character_}.
+\code{row_number} is returned as integer and \code{reviewed$finalised} as logical.
 }
 \description{
-Reads a Betwixt review HTML artefact and reconstructs its canonical
-review representation.
+Reads a standalone Betwixt review HTML file and reconstructs the original
+candidate state, the persisted reviewed state, review metadata, and review
+provenance.
+}
+\details{
+\code{read_review()} does not finalise semantic knowledge or construct a
+subsequent stabilised semantic state. It reconstructs the review artefact
+as saved by Betwixt.
+
+The returned \code{candidate} and \code{reviewed} data frames preserve the same
+evidence, descriptive, and semantic fields. The \code{reviewed} data additionally
+contains assertion qualifications, row finalisation state, row outcome, and
+optional row-level comments.
+
+Review-wide information such as reviewer identity, lifecycle timestamps, and
+the review-level comment is returned separately in \code{provenance}.
+
+Betwixt review files preserve both original candidate values and the current
+reviewed values in machine-readable HTML attributes and controls.
+\code{read_review()} uses these persisted values to reconstruct the two states
+independently.
+
+A finalised Betwixt review is a completed review artefact. Reading such a
+file does not promote reviewed assertions into a subsequent stabilised
+semantic state or apply them to an external knowledge system.
+}
+\examples{
+\dontrun{
+review <- read_review("muis-garments-review_1-finalised.html")
+
+review$metadata
+review$provenance
+review$candidate
+review$reviewed
+}
+
 }

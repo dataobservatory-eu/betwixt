@@ -5,6 +5,11 @@
 #' evidence, descriptive information, reviewable assertions, finalisation
 #' controls, and display-only contextual information.
 #'
+#' Evidence media supplied through `evidence_media_url` are presented inline
+#' as images, while evidence resources supplied through `evidence_url` are
+#' rendered as links that can be opened by the reviewer. Multiple evidence
+#' media or resource URLs may be supplied and are rendered independently.
+#'
 #' Presentation labels and subheadings may be supplied independently of the
 #' candidate data model. Candidate ranges are rendered as selection controls,
 #' resolved entities as links, and unresolved entities as editable values.
@@ -210,13 +215,37 @@ review_context_html <- function(
       character(1)
     )
 
+    # Concatenate all media URLs first as evidence
+    media <- vapply(row$evidence_media_url, function(url) {
+      paste0(
+        '<a class="evidence-media-link" href="',
+        escape_html(url),
+        '" target="_blank" rel="noopener">',
+        '<img src="',
+        escape_html(url),
+        '" alt="Evidence ',
+        escape_html(row$evidence_text),
+        '">',
+        "</a>"
+      )
+    }, character(1))
+
+    # Concatenate all generic URLs second as evidence
+    links <- vapply(row$evidence_url, function(url) {
+      paste0(
+        '<a class="evidence-link" href="',
+        escape_html(url),
+        '" target="_blank" rel="noopener">',
+        escape_html(url),
+        "</a>"
+      )
+    }, character(1))
+
+    # Concatenate all URLs as evidence
     evidence <- paste0(
       '<td class="evidence">',
-      '<a href="', escape_html(row$evidence_url),
-      '" target="_blank" rel="noopener">',
-      '<img src="', escape_html(row$evidence_url),
-      '" alt="Evidence ', escape_html(row$evidence_text), '">',
-      "</a>",
+      paste(media, collapse = ""),
+      paste(links, collapse = ""),
       '<div class="media-id">',
       escape_html(row$evidence_text),
       "</div>",

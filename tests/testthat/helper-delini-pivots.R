@@ -32,7 +32,7 @@ delini_long <- delini |>
   ) |>
   dplyr::select(
     row_number,
-    evidence_url,
+    evidence_media_url,
     evidence_text,
     label,
     description,
@@ -52,7 +52,7 @@ delini_long <- delini |>
 
 ## Dual wide -------------------------------------------------------
 delini_dual_wide <- candidate_dataset(
-  evidence_url = delini$evidence_url,
+  evidence_media_url = delini$evidence_media_url,
   evidence_text = delini$evidence_text,
   evidence_relation = rep("depicts", nrow(delini)),
   evidence_relation_range = candidate_range(
@@ -113,7 +113,7 @@ delini_dual_long <- delini_dual_wide |>
   ) |>
   dplyr::select(
     row_number,
-    evidence_url,
+    evidence_media_url,
     evidence_text,
     evidence_relation,
     evidence_relation_range,

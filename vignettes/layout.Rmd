@@ -63,19 +63,14 @@ The columns belong to four functional groups:
 
 | Role | Columns | Purpose |
 |---|---|---|
-| Evidence | `evidence_url`, `evidence_text` | Identifies the evidence presented to the reviewer |
+| Evidence | `evidence_url`, `evidence_media_url`, `evidence_text` | Identifies the evidence resource, media presented to the reviewer, and its human-readable description |
 | Description | `label`, `description` | Identifies and describes the resource in human-readable form |
 | Candidate assertions | `col_1`, `col_2`, `col_3` and their range and definition columns | Contains the semantic assertions proposed for review |
 | Context | `context_1` | Provides information outside the current review boundary |
 
-In this review task, `col_1` identifies the **subject**, `col_2` proposes its
-type through **`instance of`**, and `col_3` proposes its **`heritage of`**
-association. The generic column names keep the candidate data structure
-independent of a particular ontology or presentation vocabulary.
+In this review task, `evidence_url` identifies an evidence resource that the reviewer can open, while `evidence_media_url` identifies media that can be presented directly in the review interface. At least one of these must be present for each observation, and either may contain multiple pipe-separated URLs. `evidence_text` provides a short human-readable identification or description of the evidence. The semantic assertions begin with `col_1`, which identifies the **subject**; `col_2` proposes its type through **`instance of`**; and `col_3` proposes its **`heritage of`** association. These generic column names keep the candidate data structure independent of a particular ontology or presentation vocabulary.
 
-Candidate columns may be accompanied by a `_range` and a `_definition`.
-Ranges provide controlled or suggested values, while definitions provide
-resolvable semantic references where available.
+Candidate columns may be accompanied by a `_range` and a `_definition`. Ranges provide controlled or suggested values, while definitions provide resolvable semantic references where available.
 
 The `delini` dataset is already in the **wide projection**: each row brings
 together evidence, description, a subject, several candidate assertions, and
@@ -156,17 +151,13 @@ remain unchanged.
 
 ## Long projection
 
-The long projection makes the atomic semantic claim structure explicit.
-Instead of representing predicates as columns, each row contains one
-subject–predicate–value assertion:
+The long projection makes the atomic semantic claim structure explicit. Instead of representing predicates as columns, each row contains one subject–predicate–value assertion:
 
 ```text
 Evidence | Subject | Predicate | Value
 ```
 
-The wide assertions concerning one subject therefore become multiple rows. In
-the Delini example, each resource has candidate `instance of` and `heritage of`
-assertions, so the five wide rows become ten atomic candidate claims.
+The wide assertions concerning one subject therefore become multiple rows. In the Delini example, each resource has candidate `instance of` and `heritage of` assertions, so the five wide rows become ten atomic candidate claims.
 
 The long projection can be derived directly from `delini`:
 
@@ -186,8 +177,8 @@ delini_long <- delini |>
     subject = col_1
   ) |>
   dplyr::select(
-    row_number,
-    evidence_url, evidence_text,
+    row_number, 
+    evidence_url, evidence_media_url, evidence_text,
     label, description,
     subject, predicate, value,
     context_1
@@ -196,26 +187,15 @@ delini_long <- delini |>
 delini_long
 ```
 
-Each original row now produces two rows with the same subject: one for
-`instance of` and one for `heritage of`. The semantic content is unchanged;
-only its tabular projection has changed.
+Each original row now produces two rows with the same subject: one for `instance of` and one for `heritage of`. The semantic content is unchanged; only its tabular projection has changed.
 
-This representation makes the boundary of an individual assertion explicit
-and is closer to the subject–predicate–value structure used in graph
-serialization. It is therefore useful for semantic modelling, review-task
-design, data stewardship, and inspection of atomic candidate claims.
+This representation makes the boundary of an individual assertion explicit and is closer to the subject–predicate–value structure used in graph serialization. It is therefore useful for semantic modelling, review-task design, data stewardship, and inspection of atomic candidate claims.
 
-For domain-expert review, however, repeatedly presenting the same resource
-across several atomic rows may be less natural than seeing its related
-properties together. Wide and long are therefore not merely cosmetic table
-layouts: they provide different views of the same candidate semantic material
-for different review tasks.
-
+For domain-expert review, however, repeatedly presenting the same resource across several atomic rows may be less natural than seeing its related properties together. Wide and long are therefore not merely cosmetic table layouts: they provide different views of the same candidate semantic material for different review tasks.
 
 ## Dual-long projection
 
-The dual-long projection combines atomic semantic claims with an explicit,
-reviewable relation between the evidence and the subject:
+The dual-long projection combines atomic semantic claims with an explicit, reviewable relation between the evidence and the subject:
 
 ```text
 Evidence | Evidence relation | Subject | Predicate | Value
@@ -241,25 +221,17 @@ delini_dual_long <- delini_dual_wide |>
   ) |>
   dplyr::select(
     row_number,
-    evidence_url,
-    evidence_text,
-    evidence_relation,
-    evidence_relation_range,
-    label,
-    description,
-    subject,
-    predicate,
-    value,
+    evidene_url, evidence_media_url, evidence_text,
+    evidence_relation, evidence_relation_range,
+    label, description,
+    subject, predicate, value,
     context_1
   )
 
 delini_dual_long
 ```
 
-Each row now exposes two distinct semantic relationships: the relation between
-the evidence and the subject, and one atomic assertion about that subject. As
-in the dual-wide projection, the evidence relation is a candidate assertion
-and remains distinct from review provenance.
+Each row now exposes two distinct semantic relationships: the relation between the evidence and the subject, and one atomic assertion about that subject. As in the dual-wide projection, the evidence relation is a candidate assertion and remains distinct from review provenance.
 
 The four projections therefore preserve the same basic semantic material while
 varying two dimensions: whether assertions are arranged in wide or atomic-long
@@ -318,12 +290,14 @@ Betwixt currently provides browser-based rendering for the wide projection.
 The renderer adapts the candidate dataset to the review interface without
 changing its semantic contract.
 
-Evidence and descriptive information remain visible alongside the candidate
-assertions. Depending on the candidate data, reviewable values can be presented
+Evidence and descriptive information remain visible alongside the candidate assertions. Evidence media supplied through `evidence_media_url` can be presented directly in the interface, while evidence resources supplied through `evidence_url` are provided as links that the reviewer can open. An observation
+may contain either or both. Depending on the candidate data, reviewable values can be presented
 as resolved entities, editable unresolved entities, or controlled choices.
 Definitions can link to semantic resources, while controlled ranges constrain
 or guide the available values. Context remains visible but outside the review
 boundary.
+
+A URL appearing as evidence is not thereby part of the candidate assertion. The same URL may independently occur as a reviewable candidate value, for example as an access point, without conflating these two semantic roles.
 
 Reviewers can accept or modify candidate values, defer or reject assertions,
 and finalise reviewed rows. The interface also records review metadata,

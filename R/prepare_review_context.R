@@ -8,10 +8,17 @@
 #' columns are identified by names of the form `context_n`. Evidence relations
 #' are included when present but are not required.
 #'
+#' Pipe-separated values in `evidence_media_url` and `evidence_url` are parsed
+#' into character vectors. Each review row may therefore contain zero, one, or
+#' multiple evidence media URLs and evidence resource URLs for subsequent
+#' rendering.
+#'
 #' @param candidate A Betwixt candidate dataset.
 #'
 #' @return A list containing the candidate column names, context column names,
-#'   whether an evidence relation is present, and row-wise review data.
+#'   whether an evidence relation is present, and row-wise review data. Each
+#'   row contains parsed evidence media and resource URLs, descriptive
+#'   information, reviewable assertions, and display-only context.
 #'
 #' @noRd
 #' @keywords internal
@@ -31,7 +38,7 @@ prepare_review_context <- function(candidate) {
 
   # Check the columns required by every candidate dataset.
   required <- c(
-    "row_number", "evidence_url", "evidence_text",
+    "row_number", "evidence_url", "evidence_media_url", "evidence_text",
     "label", "description"
   )
   missing <- setdiff(required, names(candidate))
@@ -68,9 +75,12 @@ prepare_review_context <- function(candidate) {
     })
 
     # Assemble the common rendering information for one row.
+    # Several evidence URL's may be pipe separated.
     row <- list(
       row_number = candidate$row_number[i],
-      evidence_url = candidate$evidence_url[i],
+      evidence_url = parse_range(candidate$evidence_url[i]),
+      evidence_media_url = parse_range(candidate$evidence_media_url[i]),
+      evidence_text = candidate$evidence_text[i],
       evidence_text = candidate$evidence_text[i],
       label = candidate$label[i],
       description = candidate$description[i],

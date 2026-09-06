@@ -1,7 +1,6 @@
 devtools::load_all()
 library(tibble)
 
-
 # -------------------------------------------------------------------
 # Input data
 # -------------------------------------------------------------------
@@ -9,16 +8,13 @@ library(tibble)
 review_input <- tibble::tribble(
   ~page_id, ~title, ~page_url, ~thumbnail_url,
   ~subject, ~predicate, ~value,
-
   "635780",
   "sweater, women's",
   "https://www.muis.ee/museaalview/635780",
-  #"https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=ebc07930-f719-44f2-a108-6698bcecc20b",
-  "https://www.muis.ee/museaalview/635780",
+  "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=ebc07930-f719-44f2-a108-6698bcecc20b",
   "[image shown]",
   "depicts",
   "sweaters",
-
   "633053",
   "gloves",
   "https://www.muis.ee/museaalview/633053",
@@ -26,7 +22,6 @@ review_input <- tibble::tribble(
   "[image shown]",
   "depicts",
   "gloves",
-
   "635778",
   "shirt, women's",
   "https://www.muis.ee/museaalview/635778",
@@ -36,12 +31,14 @@ review_input <- tibble::tribble(
   "shirts"
 )
 
+
 # -------------------------------------------------------------------
 # Construct candidate dataset
 # -------------------------------------------------------------------
 
 candidates <- candidate_dataset(
-  evidence_url = review_input$thumbnail_url,
+  evidence_media_url = review_input$thumbnail_url,
+  evidence_url = review_input$page_url,
   evidence_text = review_input$title,
   label = review_input$title,
   description = paste(
@@ -64,6 +61,7 @@ candidates <- candidates |>
 
 # Inspect the intermediate representation.
 print(candidates)
+
 
 # -------------------------------------------------------------------
 # Render current wide review

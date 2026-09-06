@@ -18,7 +18,7 @@
 #' @format A data frame with 5 rows and 15 variables:
 #' \describe{
 #'   \item{row_number}{Integer row identifier.}
-#'   \item{evidence_url}{URL of the evidential resource.}
+#'   \item{evidence_media_url}{URL of the evidential resource.}
 #'   \item{evidence_text}{Short human-readable identifier for the evidence.}
 #'   \item{label}{Human-readable label of the described entity.}
 #'   \item{description}{Human-readable description of the described entity.}

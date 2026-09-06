@@ -15,7 +15,9 @@ test_that("prepare_review_context() prepares delini", {
 
   # Check the common contents of the first row.
   expect_equal(context$rows[[1]]$row_number, delini$row_number[1])
-  expect_equal(context$rows[[1]]$evidence_url, delini$evidence_url[1])
+  expect_equal(context$rows[[1]]$evidence_media_url, delini$evidence_media_url[1])
+  expect_length(context$rows[[1]]$evidence_media_url, 1)
+  expect_length(context$rows[[1]]$evidence_url, 0)
   expect_equal(context$rows[[1]]$evidence_text, delini$evidence_text[1])
   expect_equal(context$rows[[1]]$label, delini$label[1])
   expect_equal(context$rows[[1]]$description, delini$description[1])
@@ -89,4 +91,42 @@ test_that("prepare_review_context() supports evidence relations", {
   expect_true(all(vapply(
     ranges, identical, logical(1), c("depicts", "documents")
   )))
+})
+
+
+test_that("prepare_review_context() parses multiple evidence URLs", {
+  candidate <- candidate_dataset(
+    evidence_media_url = paste(
+      "https://example.com/001.jpg",
+      "https://example.com/002.jpg",
+      sep = " | "
+    ),
+    evidence_url = paste(
+      "https://example.com/001.html",
+      "https://example.com/002.html",
+      sep = " | "
+    ),
+    evidence_text = "Multiple evidence resources",
+    label = "Example subject",
+    description = "An example subject",
+    subject = "example:Q1"
+  )
+
+  context <- prepare_review_context(candidate)
+
+  expect_equal(
+    context$rows[[1]]$evidence_media_url,
+    c(
+      "https://example.com/001.jpg",
+      "https://example.com/002.jpg"
+    )
+  )
+
+  expect_equal(
+    context$rows[[1]]$evidence_url,
+    c(
+      "https://example.com/001.html",
+      "https://example.com/002.html"
+    )
+  )
 })

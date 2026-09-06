@@ -39,6 +39,11 @@ articles:
       - scoped-claims
       - layout
 
+  - title: Tutorials
+    navbar: Tutorials
+    contents:
+      - candidate_dataset
+
   - title: Implementations
     navbar: Implementations
     contents:

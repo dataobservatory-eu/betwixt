@@ -111,3 +111,4 @@ tr[data-finalised="true"][data-outcome="reject"] .finalise-mark {
 .save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
 #save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:var(--muted);font-size:12px}
 .site-footer{max-width:920px;margin-top:20px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+.reviewer-comment { width:260px; min-width:260px; }

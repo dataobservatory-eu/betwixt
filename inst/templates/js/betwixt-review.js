@@ -58,6 +58,11 @@
     summary();
   }
 
+  // Return an ISO 8601 UTC timestamp at one-second precision.
+  function utcTimestamp() {
+    return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
   rows.forEach(row => {
     row.querySelectorAll("[data-qualify]").forEach(button => {
       button.addEventListener("click", () => {
@@ -140,7 +145,7 @@
   const startedAt = document.getElementById("review-started-at");
 
   if (startedAt && !startedAt.value) {
-    startedAt.value = new Date().toISOString();
+    startedAt.value = utcTimestamp();
   }
 
   function persistStateIntoClone(clone) {
@@ -226,7 +231,7 @@
   }
 
   function saveReview(finaliseReview) {
-    const now = new Date().toISOString();
+    const now = utcTimestamp();
     const sequenceInput =
       document.getElementById("review-sequence");
 
@@ -251,14 +256,15 @@
       document.getElementById("review-ended-at").value = now;
     }
 
-    // Preserve the updated state in the downloaded HTML.
-    const clone = document.documentElement.cloneNode(true);
-    persistStateIntoClone(clone);
-
     // Draft and finalised files belong to the same review sequence.
     const stem = `${filenameStem}_${sequence}`;
     const suffix = finaliseReview ? "-finalised" : "-draft";
     const filename = `${stem}${suffix}.html`;
+    document.getElementById("review-filename").value = filename;
+
+    // Preserve the updated state in the downloaded HTML.
+    const clone = document.documentElement.cloneNode(true);
+    persistStateIntoClone(clone);
 
     const blob = new Blob(
       ["<!doctype html>\n" + clone.outerHTML],

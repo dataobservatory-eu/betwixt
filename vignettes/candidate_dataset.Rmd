@@ -157,13 +157,16 @@ Additional candidate columns can be added incrementally with `add_candidate_colu
 ```{r}
 candidates <- candidates |>
   add_candidate_column(
-    value = review_input$predicate
+    value = review_input$predicate, 
+    name = "predicate",
   ) |>
   add_candidate_column(
-    value = review_input$value
+    value = review_input$value, 
+    name = "value"
   ) |>
   add_candidate_column(
-    value = review_input$page_url
+    value = review_input$page_url, 
+    name = "resource"
   )
 ```
 

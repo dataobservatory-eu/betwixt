@@ -33,6 +33,8 @@ path <- system.file(
 review <- read_review(path)
 ```
 
+You can also take a look at this HTML file at   <http://usebetwixt.com/examples/muis-garments-review_1-finalised.html>.
+
 ## Serialise the review as RDF
 
 A completed review can be serialised as RDF using the Betwixt intermediate vocabulary. The serialisation preserves the reviewed assertions, their review status, and provenance of the review activity.
@@ -46,9 +48,13 @@ ttl <- serialise_review(
   description = "Reviewed terminology assertions for three MuIS garments."
 )
 
+ttl_file <- file.path(tempdir(), "muis-garments-review.ttl")
+writeLines(text = ttl, con = ttl_file)
+
 cat(ttl)
 ```
 
+You can download this file from  <http://usebetwixt.com/examples/muis-garments-review.ttl>.
 
 ## Tabular projections
 
@@ -120,7 +126,8 @@ writexl::write_xlsx(
   x=list(
     candidate = wide[wide$plane == "candidate", ],
     reviewed = wide[wide$plane == "reviewed", ],
-    status = wide[wide$plane == "status", ]
+    status = wide[wide$plane == "status", ],
+    long = long
   ),
   path=xlsx_file
 )
@@ -128,4 +135,4 @@ writexl::write_xlsx(
 xlsx_file
 ```
 
-The resulting workbook preserves the same separation between candidate knowledge, reviewed knowledge, and review status that we saw above.
+The resulting workbook preserves the same separation between candidate knowledge, reviewed knowledge, and review status that we saw above. You can review this Excel workbook at <http://usebetwixt.com/examples/muis-garments-review.xlsx>.

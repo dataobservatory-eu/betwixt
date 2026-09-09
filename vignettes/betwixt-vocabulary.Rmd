@@ -1,0 +1,371 @@
+---
+title: "The Betwixt Vocabulary"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The Betwixt Vocabulary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(betwixt)
+```
+
+## Why an intermediate vocabulary?
+
+Betwixt operates between candidate knowledge and its eventual representation in a domain knowledge graph. At the time of review, the components of an assertion may not yet have stable identifiers or mappings to a particular ontology.
+
+For example, a reviewed assertion might consist of:
+
+```text
+subject:   Q223
+predicate: depicts
+value:     cardigan
+```
+
+The subject may eventually resolve to a Wikibase entity, `depicts` may be mapped to a property from an external vocabulary, and `cardigan` may later be replaced by a controlled concept. Betwixt does not require these decisions to have been made before the assertion can be reviewed.
+
+The Betwixt vocabulary therefore represents **reviewed semantic assertions before they are committed to a particular domain ontology**. It is deliberately small: its purpose is to preserve assertion structure, review state, and the information required for subsequent semantic projection.
+
+## Assertions
+
+The central class is `btx:Assertion`. Its subject, predicate, and value are represented as lexical values.
+
+```turtle
+btx:Assertion
+    a owl:Class ;
+    rdfs:label "Assertion" ;
+    rdfs:comment "An intermediate semantic assertion represented independently of a domain ontology." .
+
+btx:subject
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:string ;
+    rdfs:label "subject" ;
+    rdfs:comment "The lexical representation of the subject of an assertion." .
+
+btx:predicate
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:string ;
+    rdfs:label "predicate" ;
+    rdfs:comment "The lexical representation of the predicate of an assertion." .
+
+btx:value
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:string ;
+    rdfs:label "value" ;
+    rdfs:comment "The lexical representation of the value of an assertion." .
+```
+
+Using datatype properties here is intentional. Betwixt does not assume that a subject, predicate, or value is already an RDF resource. A filename, local inventory number, Wikibase QID, natural-language predicate, or unresolved concept can therefore participate in the same review process.
+
+A concrete assertion can consequently be represented as:
+
+```turtle
+:assertion-5
+    a btx:Assertion ;
+    btx:subject "Q223" ;
+    btx:predicate "depicts" ;
+    btx:value "cardigan" ;
+    btx:status btx:Deferred .
+```
+
+This is valid RDF, but it does **not** assert the domain triple `Q223 depicts cardigan`. Instead, it describes an intermediate assertion whose semantic components can subsequently be resolved and projected.
+
+`btx:assertion` associates assertions with a containing resource, while `btx:rowNumber` preserves the coordinate from the review from which an assertion was projected.
+
+## Review state
+
+Review state is represented separately from the content of an assertion.
+
+```turtle
+...
+```
+
+`btx:Corroborated` means that the candidate assertion survived review unchanged. `btx:Corrected` records that the reviewed value differs from the candidate. `btx:Rejected` records rejection, while `btx:Deferred` explicitly preserves an unresolved decision. `btx:Pending` represents an assertion whose review has not yet been finalised.
+
+This distinction matters because the result of review is not merely another table of values. Betwixt also preserves **what happened to the proposed knowledge during review**.
+
+## From review matrices to assertions
+
+A Betwixt review is naturally represented in wide form during human review. Candidate values, reviewed values, and review states occupy corresponding coordinates.
+
+`project_review_long()` transforms the reviewed matrix into atomic assertions:
+
+```{r}
+path <- system.file(
+  "examples",
+  "muis-garments-review_1-finalised.html",
+  package = "betwixt"
+)
+review <- read_review(path)
+long <- project_review_long(review)
+head(long)
+```
+
+Each row in the long projection represents one assertion. `row_number` retains its relationship to the original review matrix, while `assertion_number` identifies the assertion within the projection.
+
+This transformation provides the bridge between a human-oriented review matrix and the assertion-oriented representation used by the Betwixt RDF vocabulary.
+
+## Mappings
+
+Keeping assertions lexical allows semantic resolution to happen separately from review. A `btx:Mapping` records a correspondence between a lexical Betwixt term and a target RDF resource.
+
+Mappings can apply to any of the three structural positions of an assertion:
+
+```turtle
+btx:AssertionRole
+    a owl:Class ;
+    rdfs:label "Assertion role" .
+
+btx:Subject a btx:AssertionRole .
+btx:Predicate a btx:AssertionRole .
+btx:Value a btx:AssertionRole .
+```
+
+For example:
+
+```turtle
+:mapping-1
+    a btx:Mapping ;
+    btx:source "depicts" ;
+    btx:target wdt:P121 ;
+    btx:role btx:Predicate .
+```
+
+The mapping does not state that the lexical term `"depicts"` is universally equivalent to `wdt:P121`. It records a correspondence that may warrant that transformation in an appropriate context.
+
+This distinction is deliberate: **Betwixt does not align ontologies. It records reviewed correspondences that can warrant bounded semantic projections.**
+
+## Bounded semantic projection
+
+Consider a reviewed assertion:
+
+```turtle
+:assertion-5
+    a btx:Assertion ;
+    btx:subject "Q223" ;
+    btx:predicate "depicts" ;
+    btx:value "Q456" ;
+    btx:status btx:Corroborated .
+```
+
+Together with reviewed mappings for its three components, this may warrant a projection such as:
+
+```turtle
+wd:Q223 wdt:P121 wd:Q456 .
+```
+
+The projected triple belongs to the target semantic environment; the Betwixt assertion remains the intermediate representation from which it was derived.
+
+This establishes an intentional boundary. Betwixt does not attempt to replace Wikibase, Schema.org, CIDOC CRM, RiC-O, or another domain model. It represents reviewed assertions and their correspondences sufficiently explicitly that transformations into such environments can be reproducible and auditable.
+
+In this sense, Betwixt sits literally **betwixt** documentary or computational evidence and the domain knowledge graph:
+
+**candidate knowledge → human review → stabilised assertion → bounded semantic projection**
+
+
+## From mappings to federation
+
+The need for mappings becomes particularly clear when knowledge is exchanged between independently governed knowledge graphs.
+
+Two graphs may describe the same person, use apparently equivalent predicates, and classify that person using apparently equivalent concepts, while sharing none of the identifiers involved. Neither graph is necessarily wrong, incomplete, or subordinate to the other. They simply operate within different semantic environments.
+
+This is a normal situation in a federation.
+
+Consider the Finno-Ugric Data Sharing Space (FUDSS) and Wikidata. Both can express the proposition:
+
+> **Béla Bartók — instance of — human**
+
+In FUDSS:
+
+```turtle
+fudss:Q5613 fudsst:P14 fudss:Q6 .
+```
+
+In Wikidata:
+
+```turtle
+wd:Q83326 wdt:P31 wd:Q5 .
+```
+
+The propositions are readily recognisable to a human as corresponding. Computationally, however, every component is different.
+
+| Role | FUDSS | Wikidata |
+|---|---|---|
+| subject | `fudss:Q5613` | `wd:Q83326` |
+| predicate | `fudsst:P14` | `wdt:P31` |
+| value | `fudss:Q6` | `wd:Q5` |
+
+Nothing in the RDF statements themselves establishes these correspondences.
+
+A federation therefore needs more than access to both graphs. It needs an explicit account of **which semantic correspondences are sufficiently warranted for a particular exchange**.
+
+This is where Betwixt enters the federation.
+
+## Candidate correspondences
+
+Rather than immediately asserting global equivalence between the resources, Betwixt can represent the proposed correspondences as candidates.
+
+For the Bartók assertion, three correspondences are required:
+
+```text
+subject:    fudss:Q5613  →  wd:Q83326
+predicate:  fudsst:P14   →  wdt:P31
+value:      fudss:Q6     →  wd:Q5
+```
+
+These are not merely technical lookup rules. Each is a semantic claim.
+
+The subject correspondence claims that the two identifiers refer appropriately to Béla Bartók for the intended projection. The predicate correspondence claims that the two properties can play corresponding roles. The value correspondence claims that the two resources provide compatible classifications for the purpose at hand.
+
+Betwixt therefore treats mappings as material that can itself be reviewed.
+
+## Reviewing the correspondence
+
+The same candidate-review workflow used for ordinary semantic assertions can be used for proposed mappings.
+
+For example:
+
+```{r, eval=FALSE}
+mapping <- candidate_dataset(
+  label = "FUDSS instance of → Wikidata instance of",
+  subject = "https://reprexbase.eu/fu/prop/direct/P14"
+) |>
+  add_candidate_column(
+    name = "predicate",
+    value = "https://usebetwixt.com/ns/target"
+  ) |>
+  add_candidate_column(
+    name = "value",
+    value = "http://www.wikidata.org/prop/direct/P31"
+  )
+```
+
+The proposed correspondence can now be corroborated, corrected, rejected, or deferred.
+
+This is important because mappings are not necessarily permanent or universal. A correspondence that is adequate for one research question, data exchange, or federation may be too broad for another.
+
+## From reviewed correspondence to projection
+
+Once the relevant correspondences have been reviewed, Betwixt can represent them explicitly:
+
+```turtle
+:mapping-subject
+    a btx:Mapping ;
+    btx:source "https://reprexbase.eu/fu/entity/Q5613" ;
+    btx:target wd:Q83326 ;
+    btx:role btx:Subject .
+
+:mapping-predicate
+    a btx:Mapping ;
+    btx:source "https://reprexbase.eu/fu/prop/direct/P14" ;
+    btx:target wdt:P31 ;
+    btx:role btx:Predicate .
+
+:mapping-value
+    a btx:Mapping ;
+    btx:source "https://reprexbase.eu/fu/entity/Q6" ;
+    btx:target wd:Q5 ;
+    btx:role btx:Value .
+```
+
+Together with the reviewed source assertion, these correspondences provide the warrant for the bounded projection:
+
+```turtle
+wd:Q83326 wdt:P31 wd:Q5 .
+```
+
+The important point is what has **not** happened.
+
+FUDSS has not adopted Wikidata's ontology. Wikidata has not adopted the FUDSS ontology. Neither graph has surrendered its identifiers or governance. Betwixt has not asserted global `owl:sameAs` or `owl:equivalentProperty` relationships.
+
+Instead, the federation has established enough reviewed semantic correspondence to perform a declared projection.
+
+## Why this matters for bounded federation
+
+This changes the interoperability problem.
+
+A federation does not necessarily need complete ontology alignment before independently governed graphs can exchange knowledge. It needs sufficient correspondence for the particular inference or exchange being attempted.
+
+Betwixt makes that correspondence an explicit object of knowledge production:
+
+**local assertion → candidate correspondence → human review → warranted projection**
+
+The boundary is therefore not merely technical. It records the limits within which a semantic transformation is considered justified.
+
+This is what makes the projection **bounded**.
+
+A mapping can be useful without claiming universal equivalence. A local vocabulary can remain local. A specialised knowledge graph can preserve distinctions that do not exist in Wikidata while still projecting those assertions for which an adequate correspondence has been established.
+
+Conversely, when no satisfactory correspondence exists, the correct outcome can be `deferred` rather than forcing an alignment.
+
+The purpose of Betwixt is therefore not to eliminate semantic difference between federated graphs. It is to make the decisions required to cross those differences **explicit, reviewable, reproducible and revisable**.
+
+```turtle
+@prefix btx: <https://usebetwixt.com/ns/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix fudss: <https://reprexbase.eu/fu/entity/> .
+@prefix fudsst: <https://reprexbase.eu/fu/prop/direct/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Betwixt vocabulary ----------------------------------------------------------
+
+<https://usebetwixt.com/ns/betwixt.ttl>
+    a <http://www.w3.org/2002/07/owl#Ontology> .
+
+# Source assertion ------------------------------------------------------------
+
+# FUDSS:
+# Béla Bartók — instance of — human
+#
+# fudss:Q5613 fudsst:P14 fudss:Q6 .
+
+<https://usebetwixt.com/examples/bartok/assertion/1>
+    a btx:Assertion ;
+    btx:subject "https://reprexbase.eu/fu/entity/Q5613" ;
+    btx:predicate "https://reprexbase.eu/fu/prop/direct/P14" ;
+    btx:value "https://reprexbase.eu/fu/entity/Q6" ;
+    btx:status btx:Corroborated .
+
+# Subject mapping -------------------------------------------------------------
+
+<https://usebetwixt.com/examples/bartok/mapping/subject>
+    a btx:Mapping ;
+    btx:source "https://reprexbase.eu/fu/entity/Q5613" ;
+    btx:target wd:Q83326 ;
+    btx:role btx:Subject .
+
+# Predicate mapping -----------------------------------------------------------
+
+<https://usebetwixt.com/examples/bartok/mapping/predicate>
+    a btx:Mapping ;
+    btx:source "https://reprexbase.eu/fu/prop/direct/P14" ;
+    btx:target wdt:P31 ;
+    btx:role btx:Predicate .
+
+# Value mapping ---------------------------------------------------------------
+
+<https://usebetwixt.com/examples/bartok/mapping/value>
+    a btx:Mapping ;
+    btx:source "https://reprexbase.eu/fu/entity/Q6" ;
+    btx:target wd:Q5 ;
+    btx:role btx:Value .
+
+# Bounded semantic projection -------------------------------------------------
+
+# Wikidata:
+# Béla Bartók — instance of — human
+
+wd:Q83326 wdt:P31 wd:Q5 .
+```

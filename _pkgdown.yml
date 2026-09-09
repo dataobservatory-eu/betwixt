@@ -48,6 +48,7 @@ articles:
     contents:
       - scoped-claims
       - layout
+      - betwixt-vocabulary
 
   - title: Tutorials
     navbar: Tutorials

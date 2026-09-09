@@ -26,7 +26,8 @@ Suggests:
     rdflib,
     reticulate,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    writexl
 Imports: 
     tibble,
     whisker,

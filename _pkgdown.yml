@@ -25,9 +25,15 @@ reference:
       - candidate_range
       - betwixt_render
 
-  - title: Roundtip
+  - title: Roundtrip
     contents:
       - read_review
+
+  - title: Projections and serialisation
+    contents:
+      - project_review_wide
+      - project_review_long
+      - serialise_review
 
   - title: Datasets
     contents:
@@ -47,6 +53,7 @@ articles:
     navbar: Tutorials
     contents:
       - candidate_dataset
+      - serialisation
 
   - title: Implementations
     navbar: Implementations

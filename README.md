@@ -8,7 +8,7 @@
 [![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Project Status:
 WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![devel-version](https://img.shields.io/badge/devel%20version-0.0.6-blue.svg)](https://github.com/dataobservatory-eu/betwixt)
+[![devel-version](https://img.shields.io/badge/devel%20version-0.0.7-blue.svg)](https://github.com/dataobservatory-eu/betwixt)
 [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
 
 <!-- badges: end -->
@@ -51,9 +51,10 @@ delini
 #> 3          3 <NA>         https://betwixt.datao… P7101556      bed … a bed in t…
 #> 4          4 <NA>         https://betwixt.datao… P7101590      reco… a record c…
 #> 5          5 <NA>         https://betwixt.datao… P7101623      reco… a floor pl…
-#> # ℹ 10 more variables: col_1 <chr>, col_1_range <chr>, col_1_definition <chr>,
-#> #   col_2 <chr>, col_2_range <chr>, col_2_definition <chr>, col_3 <chr>,
-#> #   col_3_range <chr>, col_3_definition <chr>, context_1 <chr>
+#> # ℹ 10 more variables: subject <chr>, subject_range <chr>,
+#> #   subject_definition <chr>, instance_of <chr>, instance_of_range <chr>,
+#> #   instance_of_definition <chr>, heritage_of <chr>, heritage_of_range <chr>,
+#> #   heritage_of_definition <chr>, context_1 <chr>
 ```
 
 ``` r

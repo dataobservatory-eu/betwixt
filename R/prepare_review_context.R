@@ -4,9 +4,10 @@
 #' Converts a Betwixt candidate dataset into a simple list structure that can
 #' subsequently be used to generate a review interface.
 #'
-#' Candidate columns are identified by names of the form `col_n`. Context
-#' columns are identified by names of the form `context_n`. Evidence relations
-#' are included when present but are not required.
+#'
+#' Candidate columns are identified by accompanying `_range` and
+#' `_definition` columns. For example, the candidate column `instance_of`
+#' is associated with `instance_of_range` and `instance_of_definition`.
 #'
 #' Pipe-separated values in `evidence_media_url` and `evidence_url` are parsed
 #' into character vectors. Each review row may therefore contain zero, one, or
@@ -53,7 +54,13 @@ prepare_review_context <- function(candidate) {
   }
 
   # Identify candidate and contextual columns.
-  candidate_cols <- grep("^col_[0-9]+$", names(candidate), value = TRUE)
+  range_cols <- grep("_range$", names(candidate), value = TRUE)
+  definition_cols <- grep("_definition$", names(candidate), value = TRUE)
+
+  range_names <- sub("_range$", "", range_cols)
+  definition_names <- sub("_definition$", "", definition_cols)
+
+  candidate_cols <- intersect(range_names, definition_names)
   context_cols <- grep("^context_[0-9]+$", names(candidate), value = TRUE)
 
   # Determine whether the optional evidence relation is present.

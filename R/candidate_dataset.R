@@ -14,7 +14,7 @@
 #' `"documents"`.
 #'
 #' @param subject A vector containing the subject identifiers or values to be
-#'   reviewed. The subject is stored as the first candidate column, `col_1`.
+#'   reviewed. The subject is stored as the subject column named `subject`.
 #'
 #' @param evidence_media_url An optional character vector containing URLs or
 #'   other resolvable locations of media presented directly to the reviewer.
@@ -65,8 +65,8 @@
 #' @return
 #' A tibble with one row per evidence-subject observation and the columns
 #' `row_number`, `evidence_url`, `evidence_media_url`, `evidence_text`, `label`,
-#' `description`, `alternative_label`, `alternative_description`, `col_1`,
-#' `col_1_range`, and `col_1_definition`.
+#' `description`, `alternative_label`, `alternative_description`, `subject`,
+#' `subject_range`, and `subject_definition`.
 #'
 #' If `evidence_relation` is supplied, the tibble additionally contains
 #' `evidence_relation` and `evidence_relation_range`.
@@ -98,9 +98,9 @@
 #'   evidence_text = delini$evidence_text,
 #'   label = delini$label,
 #'   description = delini$description,
-#'   subject = delini$col_1,
-#'   subject_range = delini$col_1_range,
-#'   subject_definition = delini$col_1_definition
+#'   subject = delini$subject,
+#'   subject_range = delini$subject_range,
+#'   subject_definition = delini$subject_definition
 #' )
 #'
 #' delini_candidates
@@ -111,8 +111,8 @@
 #'   evidence_text = delini$evidence_text,
 #'   label = delini$label,
 #'   description = delini$description,
-#'   subject = delini$col_1,
-#'   subject_definition = delini$col_1_definition,
+#'   subject = delini$subject,
+#'   subject_definition = delini$subject_definition,
 #'   evidence_relation = rep("depicts", nrow(delini)),
 #'   evidence_relation_range = rep(
 #'     candidate_range("depicts", "documents", "Other…"),
@@ -180,9 +180,6 @@ candidate_dataset <- function(
     )
   }
 
-  missing_media <- is.na(evidence_media_url) | !nzchar(evidence_media_url)
-  missing_url <- is.na(evidence_url) | !nzchar(evidence_url)
-
   if (is.null(evidence_relation)) {
     x <- tibble::tibble(
       row_number = seq_along(subject),
@@ -192,7 +189,10 @@ candidate_dataset <- function(
       label = label,
       description = description,
       alternative_label = alternative_label,
-      alternative_description = alternative_description
+      alternative_description = alternative_description,
+      subject = subject,
+      subject_range = subject_range,
+      subject_definition = subject_definition
     )
   } else {
     x <- tibble::tibble(
@@ -205,14 +205,12 @@ candidate_dataset <- function(
       label = label,
       description = description,
       alternative_label = alternative_label,
-      alternative_description = alternative_description
+      alternative_description = alternative_description,
+      subject = subject,
+      subject_range = subject_range,
+      subject_definition = subject_definition
     )
   }
 
-  add_candidate_column(
-    x,
-    value = subject,
-    range = subject_range,
-    definition = subject_definition
-  )
+  x
 }

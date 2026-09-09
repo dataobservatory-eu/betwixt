@@ -21,7 +21,7 @@ candidate_dataset(
 }
 \arguments{
 \item{subject}{A vector containing the subject identifiers or values to be
-reviewed. The subject is stored as the first candidate column, \code{col_1}.}
+reviewed. The subject is stored as the subject column named \code{subject}.}
 
 \item{evidence_url}{An optional character vector containing URLs or other
 resolvable locations of evidence resources that can be opened by the
@@ -72,8 +72,8 @@ indicates that the subject already exists as an identified entity;
 \value{
 A tibble with one row per evidence-subject observation and the columns
 \code{row_number}, \code{evidence_url}, \code{evidence_media_url}, \code{evidence_text}, \code{label},
-\code{description}, \code{alternative_label}, \code{alternative_description}, \code{col_1},
-\code{col_1_range}, and \code{col_1_definition}.
+\code{description}, \code{alternative_label}, \code{alternative_description}, \code{subject},
+\code{subject_range}, and \code{subject_definition}.
 
 If \code{evidence_relation} is supplied, the tibble additionally contains
 \code{evidence_relation} and \code{evidence_relation_range}.
@@ -118,9 +118,9 @@ delini_candidates <- candidate_dataset(
   evidence_text = delini$evidence_text,
   label = delini$label,
   description = delini$description,
-  subject = delini$col_1,
-  subject_range = delini$col_1_range,
-  subject_definition = delini$col_1_definition
+  subject = delini$subject,
+  subject_range = delini$subject_range,
+  subject_definition = delini$subject_definition
 )
 
 delini_candidates
@@ -131,8 +131,8 @@ delini_dual_candidates <- candidate_dataset(
   evidence_text = delini$evidence_text,
   label = delini$label,
   description = delini$description,
-  subject = delini$col_1,
-  subject_definition = delini$col_1_definition,
+  subject = delini$subject,
+  subject_definition = delini$subject_definition,
   evidence_relation = rep("depicts", nrow(delini)),
   evidence_relation_range = rep(
     candidate_range("depicts", "documents", "Other…"),

@@ -105,7 +105,7 @@ review_context_html <- function(
           value,
           "</a>"
         )
-      } else if (is_url && assertion$name != "col_1") {
+      } else if (is_url && assertion$name != "subject") {
         control <- paste0(
           '<a class="entity-link" href="',
           escape_html(assertion$value),

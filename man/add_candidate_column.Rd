@@ -6,6 +6,7 @@
 \usage{
 add_candidate_column(
   x,
+  name,
   value,
   range = NA_character_,
   definition = NA_character_
@@ -13,6 +14,8 @@ add_candidate_column(
 }
 \arguments{
 \item{x}{A data frame or tibble representing a Betwixt candidate dataset.}
+
+\item{name}{A character string giving the name of the candidate column.}
 
 \item{value}{A vector containing the candidate values to be reviewed.
 Its length must be compatible with the number of rows in \code{x}.}
@@ -27,24 +30,17 @@ Use \code{NA_character_} when no definition is supplied. Defaults to
 \code{NA_character_}.}
 }
 \value{
-A tibble with three additional columns: \code{col_n}, \code{col_n_range}, and
-\code{col_n_definition}, where \code{n} is one greater than the highest existing
-candidate-column number. If no candidate columns are present, \code{n} is \code{1}.
+A tibble with three additional columns: \code{name}, \code{name_range}, and
+\code{name_definition}, where \code{name} is the supplied candidate-column name.
 }
 \description{
-Adds the next candidate column to a Betwixt candidate dataset. Candidate
-columns are stored as consecutive triplets consisting of a candidate value,
-an optional controlled range, and an optional semantic definition.
-
-The function determines the next available candidate-column number from
-existing columns named \code{col_1}, \code{col_2}, and so on. It is intended to
-support construction of candidate datasets by piping successive calls to
-\code{add_candidate_column()}.
+Adds a named candidate column to a Betwixt candidate dataset. Candidate
+columns are stored as triplets consisting of a candidate value, an optional
+controlled range, and an optional semantic definition.
 }
 \details{
 \code{add_candidate_column()} does not modify existing candidate columns.
-The numbering of newly added columns is derived from column names matching
-the pattern \verb{col_<integer>}.
+Candidate columns use semantic names supplied explicitly through \code{name}.
 
 Contextual, non-reviewable information does not need to be added with this
 function and can be appended with ordinary data manipulation operations,
@@ -58,6 +54,7 @@ candidates <- tibble::tibble(
 
 candidates <- add_candidate_column(
   candidates,
+  name = "instance_of",
   value = c("farmhouse", "bed"),
   range = rep("farmhouse | bed | Other...", 2),
   definition = rep(

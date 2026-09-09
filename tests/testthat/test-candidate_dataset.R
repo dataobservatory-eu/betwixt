@@ -9,9 +9,9 @@ test_that("candidate_dataset() constructs the expected base structure", {
     ),
     label = delini$label,
     description = delini$description,
-    subject = delini$col_1,
-    subject_range = delini$col_1_range,
-    subject_definition = delini$col_1_definition
+    subject = delini$subject,
+    subject_range = delini$subject_range,
+    subject_definition = delini$subject_definition
   )
 
   expect_s3_class(result, "data.frame")
@@ -29,9 +29,9 @@ test_that("candidate_dataset() constructs the expected base structure", {
       "description",
       "alternative_label",
       "alternative_description",
-      "col_1",
-      "col_1_range",
-      "col_1_definition"
+      "subject",
+      "subject_range",
+      "subject_definition"
     )
   )
 
@@ -54,9 +54,9 @@ test_that("candidate_dataset() preserves Delini input values", {
     evidence_relation_range = relation_range,
     label = delini$label,
     description = delini$description,
-    subject = delini$col_1,
-    subject_range = delini$col_1_range,
-    subject_definition = delini$col_1_definition
+    subject = delini$subject,
+    subject_range = delini$subject_range,
+    subject_definition = delini$subject_definition
   )
 
   expect_equal(result$evidence_media_url, delini$evidence_media_url)
@@ -70,9 +70,9 @@ test_that("candidate_dataset() preserves Delini input values", {
   expect_true(all(is.na(result$alternative_label)))
   expect_true(all(is.na(result$alternative_description)))
 
-  expect_equal(result$col_1, delini$col_1)
-  expect_equal(result$col_1_range, delini$col_1_range)
-  expect_equal(result$col_1_definition, delini$col_1_definition)
+  expect_equal(result$subject, delini$subject)
+  expect_equal(result$subject_range, delini$subject_range)
+  expect_equal(result$subject_definition, delini$subject_definition)
 })
 
 
@@ -83,7 +83,7 @@ test_that("candidate_dataset() creates integer row numbers in input order", {
     evidence_relation = rep("depicts", nrow(delini)),
     label = delini$label,
     description = delini$description,
-    subject = delini$col_1
+    subject = delini$subject
   )
 
   expect_type(result$row_number, "integer")
@@ -125,13 +125,13 @@ test_that("candidate_dataset() uses NA defaults for optional subject metadata", 
   # test default behavior
   expect_true(all(is.na(result$evidence_url)))
   expect_true(all(is.na(result$evidence_relation_range)))
-  expect_true(all(is.na(result$col_1_range)))
-  expect_true(all(is.na(result$col_1_definition)))
+  expect_true(all(is.na(result$subject_range)))
+  expect_true(all(is.na(result$subject_definition)))
 
   # test types
   expect_type(result$evidence_url, "character")
-  expect_type(result$col_1_range, "character")
-  expect_type(result$col_1_definition, "character")
+  expect_type(result$subject_range, "character")
+  expect_type(result$subject_definition, "character")
   expect_type(result$alternative_label, "character")
   expect_type(result$alternative_description, "character")
 })
@@ -160,7 +160,7 @@ test_that("candidate_dataset() works with statistical source data", {
   )
 
   expect_equal(nrow(result), 4L)
-  expect_equal(result$col_1, w3c_life_expectancy$observation)
+  expect_equal(result$subject, w3c_life_expectancy$observation)
   expect_equal(result$label, w3c_life_expectancy$observation)
 })
 
@@ -175,10 +175,7 @@ test_that("candidate_dataset() integrates with add_candidate_column()", {
       "W3C RDF Data Cube Vocabulary",
       nrow(w3c_life_expectancy)
     ),
-    evidence_relation = rep(
-      "documents",
-      nrow(w3c_life_expectancy)
-    ),
+    evidence_relation = rep("documents", nrow(w3c_life_expectancy)),
     label = w3c_life_expectancy$observation,
     description = paste(
       "Life expectancy observation for",
@@ -186,25 +183,19 @@ test_that("candidate_dataset() integrates with add_candidate_column()", {
     ),
     subject = w3c_life_expectancy$observation
   ) |>
+    add_candidate_column("area", w3c_life_expectancy$area) |>
+    add_candidate_column("period", w3c_life_expectancy$period) |>
+    add_candidate_column("sex", w3c_life_expectancy$sex) |>
     add_candidate_column(
-      value = w3c_life_expectancy$area
-    ) |>
-    add_candidate_column(
-      value = w3c_life_expectancy$period
-    ) |>
-    add_candidate_column(
-      value = w3c_life_expectancy$sex
-    ) |>
-    add_candidate_column(
-      value = w3c_life_expectancy$life_expectancy
+      "life_expectancy",
+      w3c_life_expectancy$life_expectancy
     )
 
-  expect_equal(result$col_1, w3c_life_expectancy$observation)
-  expect_equal(result$col_2, w3c_life_expectancy$area)
-  expect_equal(result$col_3, w3c_life_expectancy$period)
-  expect_equal(result$col_4, w3c_life_expectancy$sex)
-  expect_equal(result$col_5, w3c_life_expectancy$life_expectancy)
-
+  expect_equal(result$subject, w3c_life_expectancy$observation)
+  expect_equal(result$area, w3c_life_expectancy$area)
+  expect_equal(result$period, w3c_life_expectancy$period)
+  expect_equal(result$sex, w3c_life_expectancy$sex)
+  expect_equal(result$life_expectancy, w3c_life_expectancy$life_expectancy)
   expect_equal(nrow(result), nrow(w3c_life_expectancy))
 })
 
@@ -232,9 +223,9 @@ test_that("candidate_dataset() omits optional evidence relation columns", {
       "description",
       "alternative_label",
       "alternative_description",
-      "col_1",
-      "col_1_range",
-      "col_1_definition"
+      "subject",
+      "subject_range",
+      "subject_definition"
     )
   )
 })

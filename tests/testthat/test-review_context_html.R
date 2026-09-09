@@ -2,9 +2,10 @@
 # Assertion rendering
 # -------------------------------------------------------------------------
 
-test_that("subject definitions identify resolved entities", {
-  context <- prepare_review_context(betwixt::delini)
+test_that("subject definitions distinguish resolved entities", {
+  context <- prepare_review_context(delini)
 
+  expect_false(is.na(context$rows[[1]]$assertions[[1]]$definition))
   expect_true(is.na(context$rows[[2]]$assertions[[1]]$definition))
 })
 
@@ -17,10 +18,14 @@ test_that("URL candidate values are rendered as links", {
     description = "Example description",
     subject = "[image shown]"
   ) |>
-    add_candidate_column(value = "https://example.org/access-point")
+    add_candidate_column(
+      value = "https://example.org/access-point",
+      name = "access_point"
+    )
 
   html <- review_context_html(prepare_review_context(x))
 
+  expect_match(html, 'data-column="access_point"', fixed = TRUE)
   expect_match(html, '<a class="entity-link" href="https://example.org/access-point"', fixed = TRUE)
 })
 
@@ -49,15 +54,24 @@ test_that("assertions preserve their column identity", {
 
   expect_match(
     html,
-    'class="semantic-cell" data-column="col_1"',
+    'class="semantic-cell" data-column="subject"',
     fixed = TRUE
   )
 
   expect_match(
     html,
-    'class="semantic-cell" data-column="col_2"',
+    'class="semantic-cell" data-column="instance_of"',
     fixed = TRUE
   )
+})
+
+test_that("assertions preserve their semantic column identities", {
+  html <- review_context_html(prepare_review_context(delini))
+
+  expect_match(html, 'data-column="subject"', fixed = TRUE)
+  expect_match(html, 'data-column="instance_of"', fixed = TRUE)
+  expect_match(html, 'data-column="heritage_of"', fixed = TRUE)
+  expect_false(grepl('data-column="col_', html, fixed = TRUE))
 })
 
 # -------------------------------------------------------------------------
@@ -97,7 +111,10 @@ test_that("assertions preserve their candidate values", {
     description = "Example description",
     subject = "[image shown]"
   ) |>
-    add_candidate_column(value = "depicts")
+    add_candidate_column(
+      value = "depicts",
+      name = "value"
+    )
 
   html <- review_context_html(prepare_review_context(x))
 

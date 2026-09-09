@@ -2,7 +2,7 @@ test_that("prepare_review_context() prepares delini", {
   context <- prepare_review_context(delini)
 
   # Check the discovered candidate and context columns.
-  expect_equal(context$candidate_columns, c("col_1", "col_2", "col_3"))
+  expect_equal(context$candidate_columns, c("subject", "instance_of", "heritage_of"))
   expect_equal(context$context_columns, "context_1")
 
   # Check that ordinary Delini has no evidence relation.
@@ -32,10 +32,10 @@ test_that("prepare_review_context() prepares candidate assertions", {
 
   # Check that all candidate columns become assertions.
   expect_length(assertions, 3)
-  expect_equal(assertions[[1]]$name, "col_1")
-  expect_equal(assertions[[1]]$value, delini$col_1[1])
-  expect_equal(assertions[[2]]$value, delini$col_2[1])
-  expect_equal(assertions[[3]]$value, delini$col_3[1])
+  expect_equal(assertions[[1]]$name, "subject")
+  expect_equal(assertions[[1]]$value, delini$subject[1])
+  expect_equal(assertions[[2]]$value, delini$instance_of[1])
+  expect_equal(assertions[[3]]$value, delini$heritage_of[1])
 
   # Check that candidate ranges are parsed for rendering.
   expect_equal(
@@ -44,7 +44,7 @@ test_that("prepare_review_context() prepares candidate assertions", {
   )
 
   # Check that semantic definitions are preserved.
-  expect_equal(assertions[[2]]$definition, delini$col_2_definition[1])
+  expect_equal(assertions[[2]]$definition, delini$instance_of_definition[1])
 })
 
 

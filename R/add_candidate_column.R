@@ -1,16 +1,13 @@
 #' Add a candidate column to a Betwixt candidate dataset
 #'
 #' @description
-#' Adds the next candidate column to a Betwixt candidate dataset. Candidate
-#' columns are stored as consecutive triplets consisting of a candidate value,
-#' an optional controlled range, and an optional semantic definition.
-#'
-#' The function determines the next available candidate-column number from
-#' existing columns named `col_1`, `col_2`, and so on. It is intended to
-#' support construction of candidate datasets by piping successive calls to
-#' `add_candidate_column()`.
+#' Adds a named candidate column to a Betwixt candidate dataset. Candidate
+#' columns are stored as triplets consisting of a candidate value, an optional
+#' controlled range, and an optional semantic definition.
 #'
 #' @param x A data frame or tibble representing a Betwixt candidate dataset.
+#'
+#' @param name A character string giving the name of the candidate column.
 #'
 #' @param value A vector containing the candidate values to be reviewed.
 #'   Its length must be compatible with the number of rows in `x`.
@@ -25,14 +22,12 @@
 #'   `NA_character_`.
 #'
 #' @return
-#' A tibble with three additional columns: `col_n`, `col_n_range`, and
-#' `col_n_definition`, where `n` is one greater than the highest existing
-#' candidate-column number. If no candidate columns are present, `n` is `1`.
+#' A tibble with three additional columns: `name`, `name_range`, and
+#' `name_definition`, where `name` is the supplied candidate-column name.
 #'
 #' @details
 #' `add_candidate_column()` does not modify existing candidate columns.
-#' The numbering of newly added columns is derived from column names matching
-#' the pattern `col_<integer>`.
+#' Candidate columns use semantic names supplied explicitly through `name`.
 #'
 #' Contextual, non-reviewable information does not need to be added with this
 #' function and can be appended with ordinary data manipulation operations,
@@ -46,6 +41,7 @@
 #'
 #' candidates <- add_candidate_column(
 #'   candidates,
+#'   name = "instance_of",
 #'   value = c("farmhouse", "bed"),
 #'   range = rep("farmhouse | bed | Other...", 2),
 #'   definition = rep(
@@ -57,26 +53,18 @@
 #' names(candidates)
 #'
 #' @importFrom dplyr mutate
-#'
 #' @export
 add_candidate_column <- function(
   x,
+  name,
   value,
   range = NA_character_,
   definition = NA_character_
 ) {
-  existing <- names(x)[grepl("^col_[0-9]+$", names(x))]
-
-  n <- if (length(existing) == 0L) {
-    1L
-  } else {
-    max(as.integer(sub("^col_", "", existing))) + 1L
-  }
-
   x |>
     dplyr::mutate(
-      !!paste0("col_", n) := value,
-      !!paste0("col_", n, "_range") := range,
-      !!paste0("col_", n, "_definition") := definition
+      "{name}" := value,
+      "{name}_range" := range,
+      "{name}_definition" := definition
     )
 }

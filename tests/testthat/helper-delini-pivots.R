@@ -1,21 +1,17 @@
 data("delini")
 
-## Delini long -----------------------------------------------------
+
+## Delini long ---------------------------------------------------------------
 
 delini_long <- delini |>
-  dplyr::mutate(
-    context_2 = NA_character_
-  ) |>
+  dplyr::mutate(context_2 = NA_character_) |>
   dplyr::rename(
-    subject = col_1,
-    subject_range = col_1_range,
-    subject_definition = col_1_definition,
-    instance_of__value = col_2,
-    instance_of__value_range = col_2_range,
-    instance_of__predicate_definition = col_2_definition,
-    heritage_of__value = col_3,
-    heritage_of__value_range = col_3_range,
-    heritage_of__predicate_definition = col_3_definition
+    instance_of__value = instance_of,
+    instance_of__value_range = instance_of_range,
+    instance_of__predicate_definition = instance_of_definition,
+    heritage_of__value = heritage_of,
+    heritage_of__value_range = heritage_of_range,
+    heritage_of__predicate_definition = heritage_of_definition
   ) |>
   tidyr::pivot_longer(
     cols = matches("^(instance_of|heritage_of)__"),
@@ -50,7 +46,9 @@ delini_long <- delini |>
   ) |>
   dplyr::arrange(row_number)
 
-## Dual wide -------------------------------------------------------
+
+## Dual wide -----------------------------------------------------------------
+
 delini_dual_wide <- candidate_dataset(
   evidence_media_url = delini$evidence_media_url,
   evidence_text = delini$evidence_text,
@@ -63,40 +61,36 @@ delini_dual_wide <- candidate_dataset(
   ),
   label = delini$label,
   description = delini$description,
-  subject = delini$col_1,
-  subject_range = delini$col_1_range,
-  subject_definition = delini$col_1_definition
+  subject = delini$subject,
+  subject_range = delini$subject_range,
+  subject_definition = delini$subject_definition
 ) |>
   add_candidate_column(
-    value = delini$col_2,
-    range = delini$col_2_range,
-    definition = delini$col_2_definition
+    name = "instance_of",
+    value = delini$instance_of,
+    range = delini$instance_of_range,
+    definition = delini$instance_of_definition
   ) |>
   add_candidate_column(
-    value = delini$col_3,
-    range = delini$col_3_range,
-    definition = delini$col_3_definition
+    name = "heritage_of",
+    value = delini$heritage_of,
+    range = delini$heritage_of_range,
+    definition = delini$heritage_of_definition
   ) |>
-  dplyr::mutate(
-    context_1 = delini$context_1
-  )
+  dplyr::mutate(context_1 = delini$context_1)
 
 
-## Dual long -------------------------------------------------------
+## Dual long -----------------------------------------------------------------
+
 delini_dual_long <- delini_dual_wide |>
-  dplyr::mutate(
-    context_2 = NA_character_
-  ) |>
+  dplyr::mutate(context_2 = NA_character_) |>
   dplyr::rename(
-    subject = col_1,
-    subject_range = col_1_range,
-    subject_definition = col_1_definition,
-    instance_of__value = col_2,
-    instance_of__value_range = col_2_range,
-    instance_of__predicate_definition = col_2_definition,
-    heritage_of__value = col_3,
-    heritage_of__value_range = col_3_range,
-    heritage_of__predicate_definition = col_3_definition
+    instance_of__value = instance_of,
+    instance_of__value_range = instance_of_range,
+    instance_of__predicate_definition = instance_of_definition,
+    heritage_of__value = heritage_of,
+    heritage_of__value_range = heritage_of_range,
+    heritage_of__predicate_definition = heritage_of_definition
   ) |>
   tidyr::pivot_longer(
     cols = matches("^(instance_of|heritage_of)__"),
@@ -134,6 +128,8 @@ delini_dual_long <- delini_dual_wide |>
   dplyr::arrange(row_number)
 
 
+## Dimensions ----------------------------------------------------------------
+
 test_that("Delini pivot fixtures have the expected dimensions", {
   expect_equal(nrow(delini), 5L)
   expect_equal(nrow(delini_long), 10L)
@@ -142,18 +138,22 @@ test_that("Delini pivot fixtures have the expected dimensions", {
 })
 
 
+## Wide consistency ----------------------------------------------------------
+
 test_that("Delini wide and dual-wide fixtures are consistent", {
   expect_false("evidence_relation" %in% names(delini))
   expect_true("evidence_relation" %in% names(delini_dual_wide))
   expect_equal(delini_dual_wide$evidence_relation, rep("depicts", 5L))
-  expect_equal(delini_dual_wide$col_1, delini$col_1)
-  expect_equal(delini_dual_wide$col_2, delini$col_2)
-  expect_equal(delini_dual_wide$col_3, delini$col_3)
+  expect_equal(delini_dual_wide$subject, delini$subject)
+  expect_equal(delini_dual_wide$instance_of, delini$instance_of)
+  expect_equal(delini_dual_wide$heritage_of, delini$heritage_of)
   expect_equal(delini_dual_wide$context_1, delini$context_1)
 })
 
+
+## Atomic claims -------------------------------------------------------------
+
 test_that("Delini long fixtures contain atomic claims", {
-  # Check the expected atomic claim structure.
   expect_setequal(
     unique(delini_long$predicate),
     c("instance of", "heritage of")
@@ -165,16 +165,16 @@ test_that("Delini long fixtures contain atomic claims", {
 })
 
 
-test_that("Delini long pivot preserves candidate assertions", {
-  instance_of <- delini_long |>
-    dplyr::filter(predicate == "instance of")
-  heritage_of <- delini_long |>
-    dplyr::filter(predicate == "heritage of")
+## Candidate assertions ------------------------------------------------------
 
-  expect_equal(instance_of$value, delini$col_2)
-  expect_equal(instance_of$value_range, delini$col_2_range)
-  expect_equal(instance_of$predicate_definition, delini$col_2_definition)
-  expect_equal(heritage_of$value, delini$col_3)
-  expect_equal(heritage_of$value_range, delini$col_3_range)
-  expect_equal(heritage_of$predicate_definition, delini$col_3_definition)
+test_that("Delini long pivot preserves candidate assertions", {
+  instance_of <- delini_long |> dplyr::filter(predicate == "instance of")
+  heritage_of <- delini_long |> dplyr::filter(predicate == "heritage of")
+
+  expect_equal(instance_of$value, delini$instance_of)
+  expect_equal(instance_of$value_range, delini$instance_of_range)
+  expect_equal(instance_of$predicate_definition, delini$instance_of_definition)
+  expect_equal(heritage_of$value, delini$heritage_of)
+  expect_equal(heritage_of$value_range, delini$heritage_of_range)
+  expect_equal(heritage_of$predicate_definition, delini$heritage_of_definition)
 })

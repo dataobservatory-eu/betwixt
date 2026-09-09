@@ -6,38 +6,65 @@ library(tibble)
 # -------------------------------------------------------------------
 
 review_input <- tibble::tribble(
-  ~page_id, ~title, ~title_hu, ~description_hu,
+  ~page_id, ~label_en, ~description_en, ~label_hu, ~description_hu,
   ~page_url, ~thumbnail_url,
-  ~subject, ~predicate, ~value,
+  ~subject, ~predicate, ~value, ~value_definition,
   "635780",
   "sweater, women's",
-  "női pulóver",
+  "MuIS museum record 635780.",
+  "női kardigán", # reviewer should change to pulóver
   "A MuIS 635780 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/635780",
-  "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=ebc07930-f719-44f2-a108-6698bcecc20b",
-  "[image shown]",
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=ebc07930-f719-44f2-a108-6698bcecc20b"
+  ),
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=ebc07930-f719-44f2-a108-6698bcecc20b"
+  ),
   "depicts",
-  "sweaters",
+  "300209900",
+  "http://vocab.getty.edu/page/aat/300209900",
   "633053",
   "gloves",
+  "MuIS museum record 633053.",
   "kesztyű",
   "A MuIS 633053 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/633053",
-  "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=6440f24f-eaad-4cd4-84d7-1ae7a9d44d5a",
-  "[image shown]",
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=6440f24f-eaad-4cd4-84d7-1ae7a9d44d5a"
+  ),
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=6440f24f-eaad-4cd4-84d7-1ae7a9d44d5a"
+  ),
   "depicts",
-  "gloves",
+  "300148821",
+  "http://vocab.getty.edu/page/aat/300148821",
   "635778",
   "shirt, women's",
+  "MuIS museum record 635778.",
   "női ing",
   "A MuIS 635778 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/635778",
-  "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=826c402e-c130-4860-b11e-9538bd403ecf",
-  "[image shown]",
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=826c402e-c130-4860-b11e-9538bd403ecf"
+  ),
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=826c402e-c130-4860-b11e-9538bd403ecf"
+  ),
   "depicts",
-  "shirts"
+  "300212499",
+  "http://vocab.getty.edu/page/aat/300212499"
 )
 
+# sweaters: http://vocab.getty.edu/page/aat/300209900
+# shirts: http://vocab.getty.edu/page/aat/300212499
+# gloves: http://vocab.getty.edu/page/aat/300148821
 
 # -------------------------------------------------------------------
 # Construct candidate dataset
@@ -46,31 +73,22 @@ review_input <- tibble::tribble(
 candidates <- candidate_dataset(
   evidence_media_url = review_input$thumbnail_url,
   evidence_url = review_input$page_url,
-  evidence_text = review_input$title,
-  label = review_input$title,
-  description = paste(
-    "MuIS museum record",
-    review_input$page_id
-  ),
-  alternative_label = review_input$title_hu,
+  evidence_text = review_input$label_en,
+  label = review_input$label_en,
+  description = review_input$description_en,
+  alternative_label = review_input$label_hu,
   alternative_description = review_input$description_hu,
   subject = review_input$subject
-)
-
-candidates <- candidates |>
+) |>
   add_candidate_column(
+    name = "predicate",
     value = review_input$predicate
   ) |>
   add_candidate_column(
-    value = review_input$value
-  ) |>
-  add_candidate_column(
-    value = review_input$page_url
+    name = "value",
+    value = review_input$value,
+    definition = review_input$value_definition
   )
-
-# Inspect the intermediate representation.
-print(candidates)
-
 
 # -------------------------------------------------------------------
 # Render current wide review
@@ -79,15 +97,14 @@ print(candidates)
 betwixt_render(
   candidates,
   cols = c(
-    col_1 = "Subject",
-    col_2 = "Predicate",
-    col_3 = "Value",
-    col_4 = "Access point"
+    subject = "Digital image",
+    predicate = "Relation",
+    value = "AAT concept"
   ),
-  title = "MuIS garment review",
+  title = "MuIS garment terminology review",
   description = paste(
-    "Review the candidate semantic claims derived from",
-    "the museum records."
+    "Review the proposed Hungarian labels and verify that the",
+    "Getty AAT concepts correctly identify the depicted garments."
   ),
   row_comment = TRUE,
   review_comment = TRUE,

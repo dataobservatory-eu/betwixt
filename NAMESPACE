@@ -9,6 +9,18 @@ export(candidate_dataset)
 export(candidate_range)
 export(claim)
 export(is.claim_df)
+export(project_review_long)
+export(project_review_wide)
 export(read_review)
-importFrom(dplyr,mutate)
+export(serialise_review)
+importFrom(dplyr,
+  arrange,
+  bind_rows,
+  left_join,
+  mutate,
+  row_number,
+  select,
+  transmute
+)
 importFrom(tibble,tibble)
+importFrom(tidyr,pivot_longer)

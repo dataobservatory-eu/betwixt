@@ -23,6 +23,7 @@ Language: en-GB
 Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr,
+    rdflib,
     reticulate,
     rmarkdown,
     testthat (>= 3.0.0)

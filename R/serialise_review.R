@@ -50,7 +50,6 @@ serialise_review <- function(
   )
 }
 
-
 # Prefixes --------------------------------------------------------------------
 
 #' @keywords internal

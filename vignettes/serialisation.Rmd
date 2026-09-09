@@ -1,0 +1,130 @@
+---
+title: "Projecting and Serialising Reviewed Knowledge"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Projecting and Serialising Reviewed Knowledge}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(betwixt)
+```
+
+
+## Read a completed review
+
+Betwixt review files can be read back into R after the human review has been completed. This vignette uses the finalised MuIS garment terminology review included with the package.
+
+```{r}
+path <- system.file(
+  "examples",
+  "muis-garments-review_1-finalised.html",
+  package = "betwixt"
+)
+
+review <- read_review(path)
+```
+
+## Serialise the review as RDF
+
+A completed review can be serialised as RDF using the Betwixt intermediate vocabulary. The serialisation preserves the reviewed assertions, their review status, and provenance of the review activity.
+
+```{r}
+ttl <- serialise_review(
+  review,
+  prefix = "https://usebetwixt.com/examples/",
+  filename = "muis-garments-review.ttl",
+  title = "MuIS garment terminology review",
+  description = "Reviewed terminology assertions for three MuIS garments."
+)
+
+cat(ttl)
+```
+
+
+## Tabular projections
+
+The RDF representation is useful for semantic exchange, but reviewed knowledge can also be projected into ordinary tabular structures. Betwixt provides wide and long projections for different downstream uses.
+
+### Wide projection
+
+The wide projection preserves the structure of the original review. It contains three aligned tables representing the candidate values, the reviewed values, and their review status.
+
+```{r}
+wide <- project_review_wide(review)
+```
+
+#### Candidate state
+
+The candidate table contains the semantic assertions presented to the reviewer. These may originate from existing metadata, computational transformations, or other candidate-generating processes.
+
+```{r}
+wide$candidate
+```
+
+At this stage, these values should be understood as proposed knowledge rather than accepted facts.
+
+#### Reviewed state
+
+The reviewed table contains the values after human review.
+
+```{r}
+wide$reviewed
+```
+
+Most values may remain unchanged, while others can be corrected, rejected, or left unresolved. Because the table has the same structure as the candidate state, the two can be compared directly.
+
+#### Review status
+
+The status table records what happened to each reviewable value.
+
+```{r}
+wide$status
+```
+
+The status distinguishes values that were `corroborated`, `corrected`, `rejected`, or `deferred`. It therefore records the review decision separately from the reviewed value itself.
+
+The three tables are structurally aligned: the same coordinate refers to the candidate assertion, its reviewed state, and the corresponding review decision.
+
+### Long projection
+
+For semantic processing, the reviewed state can instead be projected into atomic assertions.
+
+```{r}
+long <- project_review_long(review)
+long
+```
+
+Each row now represents one reviewed assertion with its subject, predicate, value, and review status. The original `row_number` is retained as a coordinate linking the assertion back to the wide review layout, while `assertion_number` provides a unique identifier within the projection.
+
+The wide and long forms therefore represent the same reviewed knowledge for different purposes: the wide form preserves the human review layout, while the long form exposes individual semantic assertions for further processing and serialisation.
+
+
+#### Export to Excel
+
+The three aligned projections can also be written to separate worksheets in a single Excel workbook. Excel export is not part of the Betwixt API; here we use the optional `writexl` package.
+
+```{r, eval = requireNamespace("writexl", quietly = TRUE)}
+xlsx <- tempfile(fileext = ".xlsx")
+
+writexl::write_xlsx(
+  list(
+    candidate = wide$candidate,
+    reviewed = wide$reviewed,
+    status = wide$status
+  ),
+  xlsx
+)
+
+xlsx
+```
+
+The resulting workbook preserves the same separation between candidate knowledge, reviewed knowledge, and review status that we saw above.

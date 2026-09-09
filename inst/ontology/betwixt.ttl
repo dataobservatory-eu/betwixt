@@ -1,0 +1,138 @@
+@prefix btx: <https://usebetwixt.com/ns/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Ontology --------------------------------------------------------------------
+
+<https://usebetwixt.com/ns/>
+    a owl:Ontology ;
+    owl:versionInfo "0.0.7" ;
+    rdfs:label "Betwixt vocabulary" ;
+    rdfs:comment "A minimal intermediate vocabulary for reviewed semantic assertions and their bounded semantic mappings." .
+
+# Assertion -------------------------------------------------------------------
+
+btx:Assertion
+    a owl:Class ;
+    rdfs:label "Assertion" ;
+    rdfs:comment "An intermediate semantic assertion represented independently of a domain ontology." .
+
+btx:subject
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:string ;
+    rdfs:label "subject" ;
+    rdfs:comment "The lexical representation of the subject of an assertion." .
+
+btx:predicate
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:string ;
+    rdfs:label "predicate" ;
+    rdfs:comment "The lexical representation of the predicate of an assertion." .
+
+btx:value
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:string ;
+    rdfs:label "value" ;
+    rdfs:comment "The lexical representation of the value of an assertion." .
+
+btx:assertion
+    a owl:ObjectProperty ;
+    rdfs:range btx:Assertion ;
+    rdfs:label "assertion" ;
+    rdfs:comment "Associates a resource with an assertion contained in it." .
+
+btx:rowNumber
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:integer ;
+    rdfs:label "row number" ;
+    rdfs:comment "The row coordinate from which the assertion was projected." .
+
+# Review status ---------------------------------------------------------------
+
+btx:ReviewStatus
+    a owl:Class ;
+    rdfs:label "Review status" ;
+    rdfs:comment "The review state associated with a Betwixt assertion." .
+
+btx:status
+    a owl:ObjectProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range btx:ReviewStatus ;
+    rdfs:label "review status" .
+
+btx:Pending
+    a btx:ReviewStatus ;
+    rdfs:label "pending" ;
+    rdfs:comment "The assertion has not yet been finalised." .
+
+btx:Corroborated
+    a btx:ReviewStatus ;
+    rdfs:label "corroborated" ;
+    rdfs:comment "The candidate assertion was retained by the reviewer." .
+
+btx:Corrected
+    a btx:ReviewStatus ;
+    rdfs:label "corrected" ;
+    rdfs:comment "The candidate assertion was replaced with a reviewed value." .
+
+btx:Rejected
+    a btx:ReviewStatus ;
+    rdfs:label "rejected" ;
+    rdfs:comment "The candidate assertion was rejected by the reviewer." .
+
+btx:Deferred
+    a btx:ReviewStatus ;
+    rdfs:label "deferred" ;
+    rdfs:comment "A decision on the assertion was deferred." .
+
+# Mapping ---------------------------------------------------------------------
+
+btx:Mapping
+    a owl:Class ;
+    rdfs:label "Mapping" ;
+    rdfs:comment "A correspondence that may warrant projection of a lexical Betwixt term to a target RDF resource." .
+
+btx:source
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Mapping ;
+    rdfs:range xsd:string ;
+    rdfs:label "source" ;
+    rdfs:comment "The lexical Betwixt term for which a correspondence is asserted." .
+
+btx:target
+    a owl:ObjectProperty ;
+    rdfs:domain btx:Mapping ;
+    rdfs:label "target" ;
+    rdfs:comment "The target RDF resource to which the source term may be projected." .
+
+btx:role
+    a owl:ObjectProperty ;
+    rdfs:domain btx:Mapping ;
+    rdfs:range btx:AssertionRole ;
+    rdfs:label "assertion role" ;
+    rdfs:comment "The position in an assertion for which the mapping applies." .
+
+# Assertion roles -------------------------------------------------------------
+
+btx:AssertionRole
+    a owl:Class ;
+    rdfs:label "Assertion role" ;
+    rdfs:comment "The structural role occupied by a term in a Betwixt assertion." .
+
+btx:Subject
+    a btx:AssertionRole ;
+    rdfs:label "subject" .
+
+btx:Predicate
+    a btx:AssertionRole ;
+    rdfs:label "predicate" .
+
+btx:Value
+    a btx:AssertionRole ;
+    rdfs:label "value" .

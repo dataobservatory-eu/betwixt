@@ -5,14 +5,14 @@
 \title{Construct a Betwixt candidate dataset}
 \usage{
 candidate_dataset(
+  subject,
   evidence_url = NA_character_,
   evidence_media_url = NA_character_,
-  evidence_text,
-  label,
-  description,
+  evidence_text = NA_character_,
+  label = NA_character_,
+  description = NA_character_,
   alternative_label = NA_character_,
   alternative_description = NA_character_,
-  subject,
   evidence_relation = NULL,
   evidence_relation_range = NA_character_,
   subject_range = NA_character_,
@@ -20,6 +20,9 @@ candidate_dataset(
 )
 }
 \arguments{
+\item{subject}{A vector containing the subject identifiers or values to be
+reviewed. The subject is stored as the first candidate column, \code{col_1}.}
+
 \item{evidence_url}{An optional character vector containing URLs or other
 resolvable locations of evidence resources that can be opened by the
 reviewer.}
@@ -27,13 +30,13 @@ reviewer.}
 \item{evidence_media_url}{An optional character vector containing URLs or
 other resolvable locations of media presented directly to the reviewer.}
 
-\item{evidence_text}{A character vector containing short identifiers or
+\item{evidence_text}{An optional character vector containing short identifiers or
 labels for the evidence.}
 
-\item{label}{A character vector containing human-readable labels for the
+\item{label}{An optional character vector containing human-readable labels for the
 subjects presented for review.}
 
-\item{description}{A character vector containing human-readable
+\item{description}{An optional character vector containing human-readable
 descriptions of the subjects presented for review.}
 
 \item{alternative_label}{An optional character vector containing alternative
@@ -44,9 +47,6 @@ a translation or a label intended for a different user group.}
 alternative human-readable descriptions of the subjects presented for
 review, for example a translation, a more detailed description, or a
 description intended for a different user group.}
-
-\item{subject}{A vector containing the subject identifiers or values to be
-reviewed. The subject is stored as the first candidate column, \code{col_1}.}
 
 \item{evidence_relation}{An optional character vector describing a candidate
 semantic relation between the evidence and the subject, for example

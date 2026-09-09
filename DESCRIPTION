@@ -1,6 +1,6 @@
 Package: betwixt
 Title: Scoped Semantic Claims and Human Review Workflows
-Version: 0.0.6
+Version: 0.0.7
 Authors@R:
     person(
       given = "Daniel",

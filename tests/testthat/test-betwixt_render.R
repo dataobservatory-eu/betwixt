@@ -173,6 +173,16 @@ test_that("betwixt_render() writes an initial Delini review", {
   expect_match(html, 'getElementById\\("save-final"\\)')
 })
 
+test_that("betwixt_render() preserves candidate row numbers", {
+  candidate <- delini[1:3, ]
+
+  html <- betwixt_render(candidate)
+
+  expect_match(html, 'data-row="1"', fixed = TRUE)
+  expect_match(html, 'data-row="2"', fixed = TRUE)
+  expect_match(html, 'data-row="3"', fixed = TRUE)
+})
+
 test_that("betwixt_render() records a sequenced original filename", {
   html <- betwixt_render(
     delini,

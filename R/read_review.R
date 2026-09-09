@@ -264,9 +264,15 @@ read_review <- function(path) {
   candidate$evidence_url[candidate$evidence_url == ""] <- NA_character_
   reviewed$evidence_url[reviewed$evidence_url == ""] <- NA_character_
 
+  # Handle cases where there are no evidence media URLs in the betwixt-html
   no_media <- candidate$evidence_media_url == ""
   candidate$evidence_media_url[no_media] <- NA_character_
   reviewed$evidence_media_url[no_media] <- NA_character_
+
+  # Handle cases where there are no evidence columns in the betwixt-html
+  no_text <- candidate$evidence_text == ""
+  candidate$evidence_text[no_text] <- NA_character_
+  reviewed$evidence_text[no_text] <- NA_character_
 
   # Read review metadata.
   title_xpath <- paste0(

@@ -271,19 +271,6 @@ test_that("candidate_dataset() accepts evidence_url without evidence_media_url",
   )
 })
 
-
-test_that("candidate_dataset() requires evidence for every row", {
-  expect_error(
-    candidate_dataset(
-      evidence_text = "Evidence 1",
-      label = "Example subject",
-      description = "An example subject",
-      subject = "example:Q1"
-    ),
-    "Each row requires evidence_media_url or evidence_url."
-  )
-})
-
 test_that("candidate_dataset() preserves alternative labels and descriptions", {
   result <- candidate_dataset(
     evidence_media_url = "https://example.org/evidence/1",

@@ -177,6 +177,30 @@ test_that("multiple evidence URLs are rendered", {
 })
 
 
+test_that("review can be rendered without evidence", {
+  x <- candidate_dataset(
+    subject = c("House", "Sash", "Bed")
+  )
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_match(html, 'data-row="1"', fixed = TRUE)
+  expect_match(html, 'data-row="2"', fixed = TRUE)
+  expect_match(html, 'data-row="3"', fixed = TRUE)
+
+  expect_match(
+    html,
+    '<td class="evidence"><div class="media-id"></div></td>',
+    fixed = TRUE
+  )
+  expect_false(grepl('class="evidence-media-link"', html, fixed = TRUE))
+  expect_false(grepl('class="evidence-link"', html, fixed = TRUE))
+
+  expect_match(html, 'data-candidate="House"', fixed = TRUE)
+  expect_match(html, 'data-candidate="Sash"', fixed = TRUE)
+  expect_match(html, 'data-candidate="Bed"', fixed = TRUE)
+})
+
 # -------------------------------------------------------------------------
 # Alternative descriptions
 # -------------------------------------------------------------------------

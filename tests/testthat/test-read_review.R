@@ -68,6 +68,36 @@ test_that("read_review() recognises an empty review comment", {
   expect_true(is.na(review$provenance$review_comment))
 })
 
+test_that("read_review() reads a review without evidence", {
+  path <- tempdir()
+
+  x <- candidate_dataset(
+    subject = c("House", "Sash", "Bed")
+  )
+
+  betwixt_render(
+    x,
+    filename_stem = "no-evidence",
+    path = path
+  )
+
+  review <- read_review(
+    file.path(path, "no-evidence.html")
+  )
+
+  expect_identical(review$candidate$row_number, 1:3)
+  expect_identical(review$reviewed$row_number, 1:3)
+
+  expect_true(all(is.na(review$candidate$evidence_url)))
+  expect_true(all(is.na(review$candidate$evidence_media_url)))
+  expect_true(all(is.na(review$candidate$evidence_text)))
+
+  expect_identical(
+    review$candidate$col_1,
+    c("House", "Sash", "Bed")
+  )
+})
+
 # Candidate data retention ---------------------------------------------------
 
 test_that("read_review() reconstructs candidate data", {

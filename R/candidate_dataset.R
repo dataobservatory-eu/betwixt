@@ -13,6 +13,9 @@
 #' between the evidence and the subject, for example `"depicts"` or
 #' `"documents"`.
 #'
+#' @param subject A vector containing the subject identifiers or values to be
+#'   reviewed. The subject is stored as the first candidate column, `col_1`.
+#'
 #' @param evidence_media_url An optional character vector containing URLs or
 #'   other resolvable locations of media presented directly to the reviewer.
 #'
@@ -20,13 +23,13 @@
 #'   resolvable locations of evidence resources that can be opened by the
 #'   reviewer.
 #'
-#' @param evidence_text A character vector containing short identifiers or
+#' @param evidence_text An optional character vector containing short identifiers or
 #'   labels for the evidence.
 #'
-#' @param label A character vector containing human-readable labels for the
+#' @param label An optional character vector containing human-readable labels for the
 #'   subjects presented for review.
 #'
-#' @param description A character vector containing human-readable
+#' @param description An optional character vector containing human-readable
 #'   descriptions of the subjects presented for review.
 #'
 #' @param alternative_label An optional character vector containing alternative
@@ -37,9 +40,6 @@
 #'   alternative human-readable descriptions of the subjects presented for
 #'   review, for example a translation, a more detailed description, or a
 #'   description intended for a different user group.
-#'
-#' @param subject A vector containing the subject identifiers or values to be
-#'   reviewed. The subject is stored as the first candidate column, `col_1`.
 #'
 #' @param evidence_relation An optional character vector describing a candidate
 #'   semantic relation between the evidence and the subject, for example
@@ -159,14 +159,14 @@
 #' @importFrom tibble tibble
 #' @export
 candidate_dataset <- function(
+  subject,
   evidence_url = NA_character_,
   evidence_media_url = NA_character_,
-  evidence_text,
-  label,
-  description,
+  evidence_text = NA_character_,
+  label = NA_character_,
+  description = NA_character_,
   alternative_label = NA_character_,
   alternative_description = NA_character_,
-  subject,
   evidence_relation = NULL,
   evidence_relation_range = NA_character_,
   subject_range = NA_character_,
@@ -183,16 +183,9 @@ candidate_dataset <- function(
   missing_media <- is.na(evidence_media_url) | !nzchar(evidence_media_url)
   missing_url <- is.na(evidence_url) | !nzchar(evidence_url)
 
-  if (any(missing_media & missing_url)) {
-    stop(
-      "Each row requires evidence_media_url or evidence_url.",
-      call. = FALSE
-    )
-  }
-
   if (is.null(evidence_relation)) {
     x <- tibble::tibble(
-      row_number = seq_along(evidence_media_url),
+      row_number = seq_along(subject),
       evidence_url = evidence_url,
       evidence_media_url = evidence_media_url,
       evidence_text = evidence_text,
@@ -203,7 +196,7 @@ candidate_dataset <- function(
     )
   } else {
     x <- tibble::tibble(
-      row_number = seq_along(evidence_media_url),
+      row_number = seq_along(subject),
       evidence_url = evidence_url,
       evidence_media_url = evidence_media_url,
       evidence_text = evidence_text,

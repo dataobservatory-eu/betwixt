@@ -277,6 +277,13 @@ review_context_html <- function(
       character(1)
     )
 
+    # Represent missing evidence text as an empty value.
+    evidence_text <- if (is.na(row$evidence_text)) {
+      ""
+    } else {
+      row$evidence_text
+    }
+
     # Concatenate all media URLs first as evidence.
     media <- vapply(row$evidence_media_url, function(url) {
       paste0(
@@ -286,7 +293,7 @@ review_context_html <- function(
         '<img src="',
         escape_html(url),
         '" alt="Evidence ',
-        escape_html(row$evidence_text),
+        escape_html(evidence_text),
         '">',
         "</a>"
       )
@@ -309,7 +316,7 @@ review_context_html <- function(
       paste(media, collapse = ""),
       paste(links, collapse = ""),
       '<div class="media-id">',
-      escape_html(row$evidence_text),
+      escape_html(evidence_text),
       "</div>",
       "</td>"
     )

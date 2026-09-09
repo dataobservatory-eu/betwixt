@@ -66,8 +66,8 @@ wide <- project_review_wide(review)
 
 The candidate table contains the semantic assertions presented to the reviewer. These may originate from existing metadata, computational transformations, or other candidate-generating processes.
 
-```{r}
-wide$candidate
+```{r candidate}
+wide[wide$plane == "candidate", ]
 ```
 
 At this stage, these values should be understood as proposed knowledge rather than accepted facts.
@@ -76,8 +76,8 @@ At this stage, these values should be understood as proposed knowledge rather th
 
 The reviewed table contains the values after human review.
 
-```{r}
-wide$reviewed
+```{r reviewed}
+wide[wide$plane == "reviewed", ]
 ```
 
 Most values may remain unchanged, while others can be corrected, rejected, or left unresolved. Because the table has the same structure as the candidate state, the two can be compared directly.
@@ -86,8 +86,8 @@ Most values may remain unchanged, while others can be corrected, rejected, or le
 
 The status table records what happened to each reviewable value.
 
-```{r}
-wide$status
+```{r status}
+wide[wide$plane == "status", ]
 ```
 
 The status distinguishes values that were `corroborated`, `corrected`, `rejected`, or `deferred`. It therefore records the review decision separately from the reviewed value itself.
@@ -112,19 +112,20 @@ The wide and long forms therefore represent the same reviewed knowledge for diff
 
 The three aligned projections can also be written to separate worksheets in a single Excel workbook. Excel export is not part of the Betwixt API; here we use the optional `writexl` package.
 
-```{r, eval = requireNamespace("writexl", quietly = TRUE)}
-xlsx <- tempfile(fileext = ".xlsx")
+```{r writexl}
+require(writexl)
+xlsx_file <- file.path(tempdir(), "muis-garments-review.xlsx")
 
 writexl::write_xlsx(
-  list(
-    candidate = wide$candidate,
-    reviewed = wide$reviewed,
-    status = wide$status
+  x=list(
+    candidate = wide[wide$plane == "candidate", ],
+    reviewed = wide[wide$plane == "reviewed", ],
+    status = wide[wide$plane == "status", ]
   ),
-  xlsx
+  path=xlsx_file
 )
 
-xlsx
+xlsx_file
 ```
 
 The resulting workbook preserves the same separation between candidate knowledge, reviewed knowledge, and review status that we saw above.

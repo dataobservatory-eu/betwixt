@@ -103,7 +103,6 @@ test_that("candidate metadata passes with its candidate column", {
 })
 
 
-
 test_that("row_number cannot contain missing values", {
   x <- data.frame(
     row_number = c(1L, NA_integer_),

@@ -12,13 +12,13 @@
 #'   supplied, `NA_character_` is returned.
 #'
 #' @examples
-#' candidate_range("depicts", "documents")
-#' candidate_range(c("depicts", "documents"))
-#' candidate_range("depicts|documents")
-#' candidate_range("depicts | documents")
+#' add_candidate_range("depicts", "documents")
+#' add_candidate_range(c("depicts", "documents"))
+#' add_candidate_range("depicts|documents")
+#' add_candidate_range("depicts | documents")
 #'
 #' @export
-candidate_range <- function(...) {
+add_candidate_range <- function(...) {
   values <- unlist(list(...), use.names = FALSE)
 
   if (length(values) == 0L || all(is.na(values))) {

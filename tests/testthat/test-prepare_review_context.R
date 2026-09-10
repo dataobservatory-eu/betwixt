@@ -212,3 +212,30 @@ test_that("pipe parsing tolerates surrounding whitespace", {
     c("https://example.com/a", "https://example.com/b")
   )
 })
+
+
+# Reviewer comments --------------------------------------------------------
+
+test_that("draft review preserves reviewer comments", {
+  # Fixture with both row-level and overall reviewer comments.
+  html <- render_review(
+    small_countries_dataset,
+    row_comment = TRUE,
+    review_comment = TRUE
+  )
+
+  expect_match(html, "row-comment", fixed = TRUE)
+  expect_match(html, "review-comment", fixed = TRUE)
+})
+
+
+test_that("finalised review preserves reviewer comments", {
+  html <- render_review(
+    small_countries_dataset,
+    row_comment = TRUE,
+    review_comment = TRUE
+  )
+
+  expect_match(html, "row-comment", fixed = TRUE)
+  expect_match(html, "review-comment", fixed = TRUE)
+})

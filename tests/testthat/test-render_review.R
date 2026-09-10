@@ -153,3 +153,39 @@ test_that("review comment is rendered when requested", {
     fixed = TRUE
   ))
 })
+
+
+# Numeric candidate fixture ------------------------------------------------
+
+numeric_candidate <- data.frame(
+  row_number = 1:4,
+  subject = c("Liechtenstein", "Liechtenstein", "Malta", "Malta"),
+  gdp = c(7365.4, 7812.6, 17927.3, 19147.2),
+  gdp_definition =
+    "http://dd.eionet.europa.eu/vocabulary/eurostat/na_item/B1GQ",
+  context_year = c(2023L, 2024L, 2023L, 2024L)
+)
+
+
+# Numeric candidate preparation -------------------------------------------
+
+test_that("prepare_review_context() preserves numeric candidates", {
+  context <- prepare_review_context(numeric_candidate)
+  gdp <- lapply(context$rows, \(row) row$assertions[[1]]$value)
+
+  expect_equal(unlist(gdp), numeric_candidate$gdp)
+  expect_true(all(vapply(gdp, is.numeric, logical(1))))
+})
+
+
+# Numeric candidate rendering ---------------------------------------------
+
+test_that("render_review() renders numeric candidate values", {
+  html <- render_review(numeric_candidate)
+
+  expect_match(html, "7365.4", fixed = TRUE)
+  expect_match(html, "7812.6", fixed = TRUE)
+  expect_match(html, "17927.3", fixed = TRUE)
+  expect_match(html, "19147.2", fixed = TRUE)
+})
+

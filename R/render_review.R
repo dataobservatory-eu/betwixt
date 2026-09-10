@@ -165,7 +165,7 @@ render_review <- function(
 
   provenance_footer <- paste0(
     '<div class="candidate-provenance">',
-    paste(provenance_items, collapse = " · "),
+    paste(provenance_items, collapse = " \u00b7 "),
     "</div>\n"
   )
 
@@ -275,10 +275,10 @@ render_review <- function(
     "</section>\n",
     provenance_footer,
     '<footer class="site-footer">',
-    "Created with Betwixt semantic review · ",
+    "Created with Betwixt semantic review \u00b7 ",
     '<a href="https://github.com/dataobservatory-eu/betwixt" ',
     'target="_blank" rel="noopener">GitHub</a>',
-    " · ",
+    " \u00b7 ",
     '<a href="https://doi.org/10.5281/zenodo.22091535" ',
     'target="_blank" rel="noopener">',
     "doi:10.5281/zenodo.22091535</a>",

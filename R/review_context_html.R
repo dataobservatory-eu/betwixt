@@ -138,7 +138,7 @@ review_context_html <- function(
           ""
         }
 
-        option_value <- if (identical(option, "Other…")) {
+        option_value <- if (identical(option, "Other\u2026")) {
           "__other__"
         } else {
           escape_html(option)
@@ -243,7 +243,7 @@ review_context_html <- function(
     paste0(
       '<th class="context-head">',
       escape_html(heading),
-      "<small>Context — not reviewed</small>",
+      "<small>Context \u2014 not reviewed</small>",
       "</th>"
     )
   }, character(1))

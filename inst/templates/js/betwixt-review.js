@@ -156,8 +156,8 @@
 
   // Copy the live review state into the HTML to be saved.
   function persistStateIntoClone(clone) {
-    const sourceInputs = [...document.querySelectorAll("input")];
-    const clonedInputs = [...clone.querySelectorAll("input")];
+    const sourceInputs = [...document.querySelectorAll("input:not([data-provenance])")];
+    const clonedInputs = [...clone.querySelectorAll("input:not([data-provenance])")];
 
     sourceInputs.forEach((source, index) => {
       const target = clonedInputs[index];

@@ -42,15 +42,6 @@ test_that("serialise_prefixes() creates Turtle prefixes", {
   expect_match(x, "@prefix xsd:", fixed = TRUE)
 })
 
-ttl <- serialise_review(
-  review,
-  prefix = "https://usebetwixt.com/examples/",
-  filename = "muis-garments-review.ttl",
-  title = "MuIS garment terminology review",
-  description = "Reviewed terminology assertions for three MuIS garments."
-)
-cat(ttl)
-
 # Dataset serialisation -------------------------------------------------------
 
 test_that("serialise_dataset() creates a dataset", {

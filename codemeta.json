@@ -110,6 +110,11 @@
   "softwareRequirements": {
     "1": {
       "@type": "SoftwareApplication",
+      "identifier": "stats",
+      "name": "stats"
+    },
+    "2": {
+      "@type": "SoftwareApplication",
       "identifier": "tibble",
       "name": "tibble",
       "provider": {
@@ -120,7 +125,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=tibble"
     },
-    "2": {
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "whisker",
       "name": "whisker",
@@ -132,7 +137,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=whisker"
     },
-    "3": {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "xml2",
       "name": "xml2",
@@ -144,7 +149,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=xml2"
     },
-    "4": {
+    "5": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
@@ -152,7 +157,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "16681.858KB",
+  "fileSize": "16191.676KB",
   "citation": [
     {
       "datePublished": "2026",

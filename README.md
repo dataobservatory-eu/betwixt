@@ -88,46 +88,49 @@ records the resulting review state and provenance.
 Betwixt implements the following workflow:
 
     candidate knowledge
-            ↓
+        ↓
+    candidate dataset
+        ↓
     bounded review task
-            ↓
-    review projection
-            ↓
+        ↓
     human review
-            ↓
+        ↓
     review state
+        ↓
+    semantic projection
 
 It is organised around complementary vignettes.
 
-### 1. Betwixt Implementation
+The workflow is introduced through complementary vignettes.
+
+### Betwixt Implementation
 
 Introduces scoped claims, semantic stabilisation, contextual
 inheritance, and the conceptual foundations of Betwixt.
 
-### 2. Review Layouts and Semantic Projections
+### Review Layouts and Semantic Projections
 
 Introduces the Delini example and shows how candidate semantic material
 can be represented as wide, dual-wide, long, and dual-long projections.
-The current browser-based review implementation uses the wide
-projection.
+The browser-based review implementation uses the wide candidate
+representation, while reviewed data can subsequently be projected into
+alternative forms.
 
-### 3. Creating Candidate Datasets
+### Creating Candidate Datasets
 
-Shows how to construct a Betwixt candidate dataset from ordinary source
-data using a MuIS museum example. It distinguishes evidence media,
-evidence resources, descriptive metadata, alternative descriptions, and
-candidate assertions, then demonstrates adding candidate columns and
-rendering a review with row-level and review-level comments.
+Shows how to construct a Betwixt candidate dataset programmatically from
+ordinary source data using a MuIS museum example. It distinguishes
+evidence media, evidence resources, descriptive information, candidate
+assertions, semantic definitions, and display-only context, then
+demonstrates rendering a browser-based human review.
 
-### 4. R Reference Implementation
+### Working with Externally Created Candidate Datasets
 
-Describes the R implementation and the construction and processing of
-candidate semantic data.
-
-### 5. Python Minimal Implementation
-
-Planned vignette demonstrating how the underlying approach can be
-implemented outside R using ordinary tabular and web technologies.
+Shows that the Betwixt candidate-data contract is not specific to R.
+Using a small Eurostat GDP example, it demonstrates how candidate
+datasets can be prepared or edited in Excel, LibreOffice, or other
+software, read using ordinary tabular-data tools, validated with
+`validate_candidate_dataset()`, and rendered for human review.
 
 ## Citation
 

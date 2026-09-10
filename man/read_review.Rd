@@ -20,8 +20,8 @@ Review-level metadata including \code{title}, \code{description}, \code{project_
 }
 \item{provenance}{
 Review provenance including the original and saved filenames,
-creation and lifecycle timestamps, reviewer name and email, and the
-optional review-level comment.
+creation and lifecycle timestamps, reviewer name, IRI and email,
+and the optional review-level comment.
 }
 \item{candidate}{
 A data frame reconstructing the candidate state presented for review.
@@ -53,8 +53,9 @@ evidence, descriptive, and semantic fields. The \code{reviewed} data additionall
 contains assertion qualifications, row finalisation state, row outcome, and
 optional row-level comments.
 
-Review-wide information such as reviewer identity, lifecycle timestamps, and
-the review-level comment is returned separately in \code{provenance}.
+Review-wide information such as reviewer identity and IRI, lifecycle
+timestamps, and the review-level comment is returned separately in
+\code{provenance}.
 
 Betwixt review files preserve both original candidate values and the current
 reviewed values in machine-readable HTML attributes and controls.

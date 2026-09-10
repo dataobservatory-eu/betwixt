@@ -13,8 +13,9 @@
 #' contains assertion qualifications, row finalisation state, row outcome, and
 #' optional row-level comments.
 #'
-#' Review-wide information such as reviewer identity, lifecycle timestamps, and
-#' the review-level comment is returned separately in `provenance`.
+#' Review-wide information such as reviewer identity and IRI, lifecycle
+#' timestamps, and the review-level comment is returned separately in
+#' `provenance`.
 #'
 #' @param path A single character string giving the path to a standalone
 #'   Betwixt review HTML file.
@@ -28,8 +29,8 @@
 #'   }
 #'   \item{provenance}{
 #'     Review provenance including the original and saved filenames,
-#'     creation and lifecycle timestamps, reviewer name and email, and the
-#'     optional review-level comment.
+#'     creation and lifecycle timestamps, reviewer name, IRI and email,
+#'     and the optional review-level comment.
 #'   }
 #'   \item{candidate}{
 #'     A data frame reconstructing the candidate state presented for review.
@@ -92,9 +93,26 @@ read_review <- function(path) {
     }
 
     value <- xml2::xml_attr(node, "value")
-    if (is.na(value) || !nzchar(value)) {
+    if (is.na(value) || !nzchar(value) || identical(value, "NA")) {
       return(NA_character_)
     }
+    value
+  }
+
+  candidate_provenance_value <- function(name) {
+    xpath <- paste0('//*[@data-provenance="', name, '"]')
+    node <- xml2::xml_find_first(document, xpath)
+
+    if (inherits(node, "xml_missing")) {
+      return(NA_character_)
+    }
+
+    value <- xml2::xml_attr(node, "value")
+
+    if (is.na(value) || !nzchar(value) || identical(value, "NA")) {
+      return(NA_character_)
+    }
+
     value
   }
 
@@ -184,6 +202,19 @@ read_review <- function(path) {
     )
     names(reviewed_descriptive) <- names(descriptive)
 
+    # Read row-scoped context.
+    context_nodes <- xml2::xml_find_all(row, ".//*[@data-context]")
+    context <- vapply(
+      context_nodes,
+      function(node) xml2::xml_attr(node, "data-value"),
+      character(1)
+    )
+    names(context) <- vapply(
+      context_nodes,
+      function(node) xml2::xml_attr(node, "data-context"),
+      character(1)
+    )
+
     # Read semantic assertions.
     assertion_nodes <- xml2::xml_find_all(
       row, ".//td[@data-column and @data-candidate]"
@@ -226,6 +257,7 @@ read_review <- function(path) {
       evidence_url = evidence_url,
       evidence_media_url = evidence_media_url,
       evidence_text = evidence_text,
+      context,
       descriptive,
       assertions
     )
@@ -235,6 +267,7 @@ read_review <- function(path) {
       evidence_url = evidence_url,
       evidence_media_url = evidence_media_url,
       evidence_text = evidence_text,
+      context,
       reviewed_descriptive,
       reviewed_assertions,
       qualifications,
@@ -295,13 +328,22 @@ read_review <- function(path) {
     status = input_value("review-status")
   )
 
-  # Read review provenance.
+  # Re-assemble review provenance.
+  # Read provenance.
   provenance <- list(
+    data_manager = candidate_provenance_value("data_manager"),
+    data_manager_iri = candidate_provenance_value("data_manager_iri"),
+    data_manager_email = candidate_provenance_value("data_manager_email"),
+    project_id = candidate_provenance_value("project_id"),
+    generated_at = candidate_provenance_value("generated_at"),
+    software_agent = candidate_provenance_value("software_agent"),
+    software_version = candidate_provenance_value("software_version"),
     original_filename = input_value("original-filename"),
     original_created_at = input_value("original-created-at"),
     filename = input_value("review-filename"),
     reviewer = input_value("reviewer-name"),
     reviewer_email = input_value("reviewer-email"),
+    reviewer_iri = input_value("reviewer-iri"),
     started_at = input_value("review-started-at"),
     saved_at = input_value("review-last-saved-at"),
     ended_at = input_value("review-ended-at"),

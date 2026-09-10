@@ -10,11 +10,13 @@ render_review(
   subheadings = NULL,
   title = "Betwixt Review",
   description = "Please review the following claims.",
-  row_comment = FALSE,
-  review_comment = FALSE,
   filename_stem = "betwixt-review",
+  reviewer_name = "",
+  reviewer_iri = "",
   project_id = "",
   sequence = 0L,
+  row_comment = FALSE,
+  review_comment = FALSE,
   path = NULL
 )
 }
@@ -31,19 +33,24 @@ presentation subheadings for candidate columns.}
 
 \item{description}{Character string containing review instructions.}
 
-\item{row_comment}{Logical. If \code{TRUE}, adds an optional reviewer comment
-field to each review row. Defaults to \code{FALSE}.}
-
-\item{review_comment}{Logical. If \code{TRUE}, adds an optional comment field
-for the review as a whole. Defaults to \code{FALSE}.}
-
 \item{filename_stem}{Character string used as the base name for saved review
 files. Review sequences greater than \code{0} append the sequence number.}
+
+\item{reviewer_name}{Character string containing the initial reviewer name.}
+
+\item{reviewer_iri}{Character string containing an IRI identifying the
+reviewer, such as an ORCID, ISNI, or Wikidata URI.}
 
 \item{project_id}{Character string identifying the review project.}
 
 \item{sequence}{A single non-negative integer identifying the review
 sequence. The initial candidate review has sequence \code{0}.}
+
+\item{row_comment}{Logical. If \code{TRUE}, adds an optional reviewer comment
+field to each review row. Defaults to \code{FALSE}.}
+
+\item{review_comment}{Logical. If \code{TRUE}, adds an optional comment field
+for the review as a whole. Defaults to \code{FALSE}.}
 
 \item{path}{Optional directory where the standalone review HTML is written.
 If \code{NULL}, the rendered HTML is returned without writing a file.}

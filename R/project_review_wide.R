@@ -21,6 +21,7 @@
 #'
 #' @return A data frame containing three structurally aligned wide planes,
 #'   identified by the `plane` column as `candidate`, `reviewed`, or `status`.
+#'   Review provenance is retained in the `provenance` attribute.
 #'
 #' @details
 #' Reviewable fields include descriptive fields such as `label`, `description`,
@@ -77,10 +78,14 @@ project_review_wide <- function(review) {
   reviewed <- reviewed[keep]
   status <- status[keep]
 
-  dplyr::bind_rows(
+  result <- dplyr::bind_rows(
     candidate |> dplyr::mutate(plane = "candidate"),
     reviewed |> dplyr::mutate(plane = "reviewed"),
     status |> dplyr::mutate(plane = "status")
   ) |>
     dplyr::relocate(plane, .after = row_number)
+
+  attr(result, "provenance") <- review$provenance
+
+  result
 }

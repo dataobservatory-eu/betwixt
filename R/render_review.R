@@ -20,15 +20,18 @@
 #'   presentation subheadings for candidate columns.
 #' @param title Character string used as the review title.
 #' @param description Character string containing review instructions.
+#' @param filename_stem Character string used as the base name for saved review
+#'   files. Review sequences greater than `0` append the sequence number.
+#' @param reviewer_name Character string containing the initial reviewer name.
+#' @param reviewer_iri Character string containing an IRI identifying the
+#'   reviewer, such as an ORCID, ISNI, or Wikidata URI.
+#' @param project_id Character string identifying the review project.
+#' @param sequence A single non-negative integer identifying the review
+#'   sequence. The initial candidate review has sequence `0`.
 #' @param row_comment Logical. If `TRUE`, adds an optional reviewer comment
 #'   field to each review row. Defaults to `FALSE`.
 #' @param review_comment Logical. If `TRUE`, adds an optional comment field
 #'   for the review as a whole. Defaults to `FALSE`.
-#' @param filename_stem Character string used as the base name for saved review
-#'   files. Review sequences greater than `0` append the sequence number.
-#' @param project_id Character string identifying the review project.
-#' @param sequence A single non-negative integer identifying the review
-#'   sequence. The initial candidate review has sequence `0`.
 #' @param path Optional directory where the standalone review HTML is written.
 #'   If `NULL`, the rendered HTML is returned without writing a file.
 #' @return Invisibly returns the rendered HTML when `path` is supplied;
@@ -41,11 +44,13 @@ render_review <- function(
   subheadings = NULL,
   title = "Betwixt Review",
   description = "Please review the following claims.",
-  row_comment = FALSE,
-  review_comment = FALSE,
   filename_stem = "betwixt-review",
+  reviewer_name = "",
+  reviewer_iri = "",
   project_id = "",
   sequence = 0L,
+  row_comment = FALSE,
+  review_comment = FALSE,
   path = NULL
 ) {
   # Validate the review sequence.
@@ -120,6 +125,35 @@ render_review <- function(
     x
   }
 
+  # Render non-empty candidate provenance above the site footer.
+  provenance <- context$provenance
+
+  provenance_items <- c(
+    if (nzchar(provenance$data_manager)) {
+      paste0("Data manager: ", escape_html(provenance$data_manager))
+    },
+    if (nzchar(provenance$data_manager_iri)) {
+      paste0("IRI: ", escape_html(provenance$data_manager_iri))
+    },
+    if (nzchar(provenance$project_id)) {
+      paste0("Project: ", escape_html(provenance$project_id))
+    },
+    if (!is.na(provenance$generated_at) &&
+      nzchar(provenance$generated_at)) {
+      paste0("Generated: ", escape_html(provenance$generated_at))
+    },
+    paste0(
+      escape_html(provenance$software_agent), " ",
+      escape_html(provenance$software_version)
+    )
+  )
+
+  provenance_footer <- paste0(
+    '<div class="candidate-provenance">',
+    paste(provenance_items, collapse = " · "),
+    "</div>\n"
+  )
+
   # Render an optional comment field for the review as a whole.
   review_comment_html <- if (review_comment) {
     paste0(
@@ -161,10 +195,16 @@ render_review <- function(
     "<h2>Review metadata</h2>\n",
     '<div class="reviewer-bottom">\n',
     "<label>Reviewer",
-    '<input id="reviewer-name" type="text">',
+    '<input id="reviewer-name" type="text" value="',
+    escape_html(reviewer_name), '">',
     "</label>\n",
     "<label>Reviewer email",
     '<input id="reviewer-email" type="email">',
+    "</label>\n",
+    "<label>Reviewer IRI (e.g. ORCID, ISNI, Wikidata)",
+    '<input id="reviewer-iri" class="reviewer-iri-input" ',
+    'type="text" value="',
+    escape_html(reviewer_iri), '">',
     "</label>\n",
     "<label>Project ID",
     '<input id="project-id" class="project-id-input" ',
@@ -218,6 +258,7 @@ render_review <- function(
     "</div>\n",
     '<div id="save-status" class="save-status"></div>\n',
     "</section>\n",
+    provenance_footer,
     '<footer class="site-footer">',
     "Created with Betwixt semantic review · ",
     '<a href="https://github.com/dataobservatory-eu/betwixt" ',
@@ -242,5 +283,8 @@ render_review <- function(
   output <- file.path(path, original_filename)
 
   writeLines(html, output, useBytes = TRUE)
+
+  message("Review rendered: ", output)
+
   invisible(html)
 }

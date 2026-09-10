@@ -12,6 +12,7 @@ project_review_wide(review)
 \value{
 A data frame containing three structurally aligned wide planes,
 identified by the \code{plane} column as \code{candidate}, \code{reviewed}, or \code{status}.
+Review provenance is retained in the \code{provenance} attribute.
 }
 \description{
 Projects a Betwixt review into candidate, reviewed, and status planes while

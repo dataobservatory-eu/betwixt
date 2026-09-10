@@ -10,19 +10,49 @@ project_review_long(review)
 \item{review}{A Betwixt review object returned by \code{\link[=read_review]{read_review()}}.}
 }
 \value{
-A data frame with one row per reviewed assertion and columns
-\code{assertion_number}, \code{row_number}, \code{subject}, \code{predicate}, \code{value},
-\code{status}, \code{reviewer}, and \code{generated_at}.
+A data frame with one row per candidate or reviewed assertion and
+columns \code{assertion_number}, \code{row_number}, zero or more \verb{context_*} columns,
+\code{plane}, \code{subject}, \code{predicate}, \code{value}, \code{status}, \code{reviewer}, and
+\code{generated_at}.
 }
 \description{
-Projects a Betwixt review into one row per reviewed atomic assertion.
-}
-\details{
-Descriptive fields are represented as assertions about the reviewed subject.
-Semantic \code{subject}, \code{predicate}, and \code{value} fields are combined into a
-single atomic assertion. Review status is inherited from the aligned wide
-projection.
+Projects a Betwixt review into one row per atomic assertion in the candidate
+and reviewed states.
+
+Descriptive fields are represented as assertions about the subject. Each
+semantic candidate column is represented as a predicate, with its cell value
+forming the value of the atomic assertion. Review status is inherited from
+the aligned wide projection.
 
 The long projection is derived from \code{\link[=project_review_wide]{project_review_wide()}} and introduces
 no additional review semantics.
+
+Row-scoped \verb{context_*} fields are inherited by each assertion generated from
+the corresponding wide row. They provide descriptive context only: they do
+not become assertions and do not receive review status.
+}
+\details{
+The long projection contains one row for each atomic assertion in both the
+candidate and reviewed states. Consequently, its expected number of rows is
+
+\deqn{
+n_{\\mathrm{long}} =
+(n_{\\mathrm{candidate}} + n_{\\mathrm{reviewed}})
+(n_{\\mathrm{descriptive}} + n_{\\mathrm{semantic}})
+}
+
+when each wide row contains the same set of reviewable fields. The status
+plane supplies the review status of these assertions but does not itself
+generate additional long-form rows.
+}
+\examples{
+review_html <- render_review(delini)
+
+path <- tempfile(fileext = ".html")
+writeLines(review_html, path)
+
+review <- read_review(path)
+long <- project_review_long(review)
+
+head(long)
 }

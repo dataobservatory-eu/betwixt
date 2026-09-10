@@ -1,5 +1,5 @@
-test_that("candidate_dataset() constructs the expected base structure", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() constructs the expected base structure", {
+  result <- create_candidate_dataset(
     evidence_media_url = delini$evidence_media_url,
     evidence_text = delini$evidence_text,
     evidence_relation = rep("depicts", nrow(delini)),
@@ -39,7 +39,7 @@ test_that("candidate_dataset() constructs the expected base structure", {
 })
 
 
-test_that("candidate_dataset() preserves Delini input values", {
+test_that("create_candidate_dataset() preserves Delini input values", {
   relation <- rep("depicts", nrow(delini))
 
   relation_range <- rep(
@@ -47,7 +47,7 @@ test_that("candidate_dataset() preserves Delini input values", {
     nrow(delini)
   )
 
-  result <- candidate_dataset(
+  result <- create_candidate_dataset(
     evidence_media_url = delini$evidence_media_url,
     evidence_text = delini$evidence_text,
     evidence_relation = relation,
@@ -76,8 +76,8 @@ test_that("candidate_dataset() preserves Delini input values", {
 })
 
 
-test_that("candidate_dataset() creates integer row numbers in input order", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() creates integer row numbers in input order", {
+  result <- create_candidate_dataset(
     evidence_media_url = delini$evidence_media_url,
     evidence_text = delini$evidence_text,
     evidence_relation = rep("depicts", nrow(delini)),
@@ -100,8 +100,8 @@ test_that("candidate_dataset() creates integer row numbers in input order", {
 })
 
 
-test_that("candidate_dataset() uses NA defaults for optional subject metadata", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() uses NA defaults for optional subject metadata", {
+  result <- create_candidate_dataset(
     evidence_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
@@ -137,8 +137,8 @@ test_that("candidate_dataset() uses NA defaults for optional subject metadata", 
 })
 
 
-test_that("candidate_dataset() works with statistical source data", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() works with statistical source data", {
+  result <- create_candidate_dataset(
     evidence_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
@@ -165,8 +165,8 @@ test_that("candidate_dataset() works with statistical source data", {
 })
 
 
-test_that("candidate_dataset() integrates with add_candidate_column()", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() integrates with add_candidate_column()", {
+  result <- create_candidate_dataset(
     evidence_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
@@ -200,8 +200,8 @@ test_that("candidate_dataset() integrates with add_candidate_column()", {
 })
 
 
-test_that("candidate_dataset() omits optional evidence relation columns", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() omits optional evidence relation columns", {
+  result <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence/1",
     evidence_text = "Evidence 1",
     label = "Example subject",
@@ -233,21 +233,21 @@ test_that("candidate_dataset() omits optional evidence relation columns", {
 
 test_that("evidence relation range requires an evidence relation", {
   expect_error(
-    candidate_dataset(
+    create_candidate_dataset(
       evidence_media_url = "https://example.org/evidence/1",
       evidence_text = "Evidence 1",
       label = "Example subject",
       description = "An example subject",
       subject = "example:Q1",
-      evidence_relation_range = candidate_range("depicts", "documents")
+      evidence_relation_range = add_candidate_range("depicts", "documents")
     ),
     "evidence_relation_range requires evidence_relation."
   )
 })
 
 
-test_that("candidate_dataset() accepts evidence_url without evidence_media_url", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() accepts evidence_url without evidence_media_url", {
+  result <- create_candidate_dataset(
     evidence_url = "https://example.org/evidence/1",
     evidence_text = "Evidence 1",
     label = "Example subject",
@@ -262,8 +262,8 @@ test_that("candidate_dataset() accepts evidence_url without evidence_media_url",
   )
 })
 
-test_that("candidate_dataset() preserves alternative labels and descriptions", {
-  result <- candidate_dataset(
+test_that("create_candidate_dataset() preserves alternative labels and descriptions", {
+  result <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence/1",
     evidence_text = "Evidence 1",
     label = "Tablet-woven sash",

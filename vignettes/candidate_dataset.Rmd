@@ -127,7 +127,7 @@ Alternative descriptions are deliberately not restricted to translations. They m
 We can now bring these elements together.
 
 ```{r}
-candidates <- candidate_dataset(
+candidates <- create_candidate_dataset(
   evidence_media_url = review_input$thumbnail_url,
   evidence_url = review_input$page_url,
   evidence_text = review_input$title,
@@ -183,7 +183,7 @@ The generic names `col_1`, `col_2`, and so forth belong to the intermediate revi
 We can now turn the candidate dataset into a standalone Betwixt review.
 
 ```{r eval = FALSE}
-betwixt_render(
+render_review(
   candidates,
   cols = c(
     col_1 = "Subject",
@@ -219,7 +219,7 @@ The resulting review therefore separates several kinds of reviewer intervention:
 
 ## Candidate data and review output
 
-The candidate dataset defines the **input to review**. Reviewer decisions and comments are not added to `candidate_dataset()` because they belong to the resulting review state rather than to the candidate state.
+The candidate dataset defines the **input to review**. Reviewer decisions and comments are not added to `create_candidate_dataset()` because they belong to the resulting review state rather than to the candidate state.
 
 Instead, the standalone review records those interventions as review proceeds. The initial review generated above is sequence `0`: it contains the candidate state but no reviewer decisions.
 

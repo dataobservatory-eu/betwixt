@@ -81,14 +81,11 @@ candidates <- create_candidate_dataset(
   subject = review_input$subject
 ) |>
   add_candidate_column(
-    name = "predicate",
-    value = review_input$predicate
-  ) |>
-  add_candidate_column(
-    name = "value",
+    name = "depicts",
     value = review_input$value,
     definition = review_input$value_definition
-  )
+  ) |>
+  mutate(context_held_by = "Estonian National Museum")
 
 # -------------------------------------------------------------------
 # Render current wide review
@@ -107,9 +104,17 @@ render_review(
     "Getty AAT concepts correctly identify the depicted garments."
   ),
   row_comment = TRUE,
+  reviewer_name = "Daniel Antal",
+  reviewer_iri = "https://orcid.org/0000-0001-7513-6760",
   review_comment = TRUE,
   project_id = "muis-garments",
   filename_stem = "muis-garments-review",
   sequence = 0L,
-  path = "."
+  path = here::here("inst", "examples")
+)
+
+file.copy(
+  from = here::here("inst", "examples", "muis-garments-review.html"),
+  to = here::here("tests", "testthat", "fixtures", "muis-garments-review.html"),
+  overwrite = TRUE
 )

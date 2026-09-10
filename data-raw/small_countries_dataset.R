@@ -14,7 +14,7 @@ small_countries_dataset <- data.frame(
     "GDP at market prices in Iceland in the year 2024",
     "GDP at market prices in Malta in the year 2023",
     "GDP at market prices in Malta in the year 2024"
-    ),
+  ),
   subject = rep(c("Iceland", "Malta"), each = 2),
   subject_definition = rep(c(
     "https://www.geonames.org/countries/IS/",
@@ -23,7 +23,7 @@ small_countries_dataset <- data.frame(
   country_code = rep(c("IS", "MT"), each = 2),
   country_code_definition =
     "https://www.iso.org/iso-3166-country-codes.html",
-  gdp = c(139.157,	140.144, 139.157, 140.144),
+  gdp = c(139.157, 140.144, 139.157, 140.144),
   gdp_definition =
     "http://dd.eionet.europa.eu/vocabulary/eurostat/na_item/B1GQ",
   context_year = rep(c(2023L, 2024L), 2),

@@ -5,14 +5,14 @@
 #'
 #' @param x A data frame representing a Betwixt candidate dataset.
 #'
-#' @return Invisibly returns `x` if validation succeeds. Otherwise, an error
-#'   describes the first validation failure.
-#'
 #' @details
 #' Candidate datasets can be created in a spreadsheet application after
 #' initialising a conforming header with [create_candidate_template()].
 #' Re-imported datasets can be checked with `validate_candidate_dataset()`
 #' before rendering with [render_review()].
+#'
+#' @return Invisibly returns `x` if validation succeeds. Otherwise, an error
+#'   describes the first validation failure.
 #'
 #' @examples
 #' x <- create_candidate_template()

@@ -72,3 +72,19 @@ draft or finalising a review does not itself change the sequence.
 The project identifier records the stable identity of the review project.
 The filename stem is used independently to construct saved review filenames.
 }
+\examples{
+candidates <- create_candidate_dataset(
+  evidence_media_url = delini$evidence_media_url,
+  evidence_text = delini$evidence_text,
+  label = delini$label,
+  description = delini$description,
+  subject = delini$subject,
+  subject_range = delini$subject_range,
+  subject_definition = delini$subject_definition
+)
+
+review_html <- render_review(
+  candidates,
+  title = "Delini review"
+)
+}

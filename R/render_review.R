@@ -37,6 +37,21 @@
 #' @return Invisibly returns the rendered HTML when `path` is supplied;
 #'   otherwise returns the HTML as a character string.
 #'
+#' @examples
+#' candidates <- create_candidate_dataset(
+#'   evidence_media_url = delini$evidence_media_url,
+#'   evidence_text = delini$evidence_text,
+#'   label = delini$label,
+#'   description = delini$description,
+#'   subject = delini$subject,
+#'   subject_range = delini$subject_range,
+#'   subject_definition = delini$subject_definition
+#' )
+#'
+#' review_html <- render_review(
+#'   candidates,
+#'   title = "Delini review"
+#' )
 #' @export
 render_review <- function(
   candidate,

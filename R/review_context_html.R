@@ -25,6 +25,13 @@
 #' distinguished from the candidate state when a saved review is read back
 #' into Betwixt.
 #'
+#' Contextual fields are also preserved with their column identities and values
+#' in the generated HTML. They are display-only metadata: they are not editable,
+#' do not receive review qualifications, and are not treated as assertions.
+#'
+#' This is an internal HTML generation step. Candidate data should first be
+#' converted with `prepare_review_context()`.
+#'
 #' This is an internal HTML generation step. Candidate data should first be
 #' converted with `prepare_review_context()`.
 #'
@@ -180,7 +187,11 @@ review_context_html <- function(
   # Render one display-only context value.
   context_html <- function(item) {
     paste0(
-      '<td class="context">',
+      '<td class="context" data-context="',
+      escape_html(item$name),
+      '" data-value="',
+      escape_html(item$value),
+      '">',
       escape_html(item$value),
       "</td>"
     )

@@ -282,6 +282,29 @@ test_that("alternative label and description are rendered together", {
   )
 })
 
+# -------------------------------------------------------------------------
+# Context
+# -------------------------------------------------------------------------
+
+test_that("context preserves its column identity and value", {
+  x <- create_candidate_dataset(subject = "Example") |>
+    dplyr::mutate(context_held_by = "Estonian National Museum")
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_match(html, 'data-context="context_held_by"', fixed = TRUE)
+  expect_match(html, 'data-value="Estonian National Museum"', fixed = TRUE)
+})
+
+test_that("context is not reviewable", {
+  x <- create_candidate_dataset(subject = "Example") |>
+    dplyr::mutate(context_held_by = "Estonian National Museum")
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_false(grepl('data-column="context_held_by"', html, fixed = TRUE))
+  expect_false(grepl('data-field="context_held_by"', html, fixed = TRUE))
+})
 
 # -------------------------------------------------------------------------
 # Row comments

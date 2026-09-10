@@ -20,15 +20,17 @@ A Betwixt review begins with a **candidate dataset**. The candidate dataset brin
 
 ```{r setup}
 library(betwixt)
+library(tibble)
 ```
 
 This vignette constructs a small candidate dataset from three museum records in MuIS, the Estonian museum information system. The example includes:
 
-- a thumbnail presented directly as evidence;
-- a link to the corresponding museum record;
+- thumbnails presented directly as evidence;
+- links to the corresponding museum records;
 - primary and alternative descriptive information;
-- several candidate semantic assertions; and
-- optional row-level and review-level comments.
+- candidate semantic assertions linked to Getty AAT concepts;
+- row-level contextual information; and
+- dataset-level provenance describing preparation of the candidate state.
 
 The example uses a wide review representation, in which each row groups the review material for one object and candidate assertions are exposed through columns.
 
@@ -37,44 +39,67 @@ The example uses a wide review representation, in which each row groups the revi
 We begin with an ordinary tibble. There is nothing Betwixt-specific about this input representation.
 
 ```{r}
-library(betwixt)
-library(tibble)
-
 review_input <- tibble::tribble(
-  ~page_id, ~title, ~title_hu, ~description_hu,
+  ~page_id, ~label_en, ~description_en, ~label_hu, ~description_hu,
   ~page_url, ~thumbnail_url,
-  ~subject, ~predicate, ~value,
+  ~subject, ~predicate, ~value, ~value_definition,
   "635780",
   "sweater, women's",
-  "női pulóver",
+  "MuIS museum record 635780.",
+  "női kardigán",
   "A MuIS 635780 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/635780",
-  "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=ebc07930-f719-44f2-a108-6698bcecc20b",
-  "[image shown]",
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=ebc07930-f719-44f2-a108-6698bcecc20b"
+  ),
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=ebc07930-f719-44f2-a108-6698bcecc20b"
+  ),
   "depicts",
-  "sweaters",
+  "300209900",
+  "http://vocab.getty.edu/page/aat/300209900",
   "633053",
   "gloves",
+  "MuIS museum record 633053.",
   "kesztyű",
   "A MuIS 633053 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/633053",
-  "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=6440f24f-eaad-4cd4-84d7-1ae7a9d44d5a",
-  "[image shown]",
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=6440f24f-eaad-4cd4-84d7-1ae7a9d44d5a"
+  ),
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=6440f24f-eaad-4cd4-84d7-1ae7a9d44d5a"
+  ),
   "depicts",
-  "gloves",
+  "300148821",
+  "http://vocab.getty.edu/page/aat/300148821",
   "635778",
   "shirt, women's",
+  "MuIS museum record 635778.",
   "női ing",
   "A MuIS 635778 számú múzeumi rekordja.",
   "https://www.muis.ee/museaalview/635778",
-  "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?id=826c402e-c130-4860-b11e-9538bd403ecf",
-  "[image shown]",
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=826c402e-c130-4860-b11e-9538bd403ecf"
+  ),
+  paste0(
+    "https://www.muis.ee/digitaalhoidla/api/meedia/pisipilt?",
+    "id=826c402e-c130-4860-b11e-9538bd403ecf"
+  ),
   "depicts",
-  "shirts"
+  "300212499",
+  "http://vocab.getty.edu/page/aat/300212499"
 )
 ```
 
-The input separates **evidence**, human-readable descriptive information, and values that will become **candidate assertions**. Keeping these roles distinct is important because their presence in the same review representation does not give them the same semantic or review role.
+The input separates evidence, human-readable descriptive information, and values that will become *candidate assertions*. Keeping these roles distinct is important because their presence in the same review representation does not give them the same semantic or review role.
+
+In this particular example, we will change the translation `női kardigán` to `női pulóver`.
 
 ## Evidence
 
@@ -82,45 +107,41 @@ Betwixt distinguishes between evidence that is presented directly in the review 
 
 In this example, the MuIS thumbnail is presented directly:
 
-```         
+``` text
 evidence_media_url = review_input$thumbnail_url
 ```
 
-while the museum record itself is an evidence resource:
+while the museum record itself is retained as an evidence resource:
 
-```         
+``` text
 evidence_url = review_input$page_url
 ```
 
 A short human-readable identification of the evidence is supplied separately:
 
-```         
-evidence_text = review_input$title
+``` text
+evidence_text = review_input$label_en
 ```
 
-This distinction allows a review to present convenient visual evidence while separately retaining links to evidence resources that the reviewer may inspect. These roles are distinct from review provenance.
+This distinction allows a review to present convenient visual evidence while separately retaining links to evidence resources that the reviewer may inspect. Evidence is also distinct from provenance: it supports the assertions under review, whereas provenance records how the candidate and review states were produced.
 
 ## Describing the object under review
 
-The primary label and description provide human-readable descriptive information to the reviewer. They belong to the review representation but are distinct from the candidate semantic assertions:
+The primary label and description provide human-readable descriptive information to the reviewer:
 
-```         
-label = review_input$title
-
-description = paste(
-  "MuIS museum record",
-  review_input$page_id
-)
+``` text
+label = review_input$label_en
+description = review_input$description_en
 ```
 
-A review may also contain alternative descriptive information. Here we use the optional fields to provide Hungarian descriptions:
+A review may also contain alternative descriptive information. Here the optional fields provide Hungarian descriptions:
 
-```         
-alternative_label = review_input$title_hu
+``` text
+alternative_label = review_input$label_hu
 alternative_description = review_input$description_hu
 ```
 
-Alternative descriptions are deliberately not restricted to translations. They may also contain terminology intended for another user group, a more detailed description, or another useful description of the same object.
+Alternative descriptions are deliberately not restricted to translations. They may contain terminology intended for another user group, a more detailed description, or another useful description of the same object.
 
 ## Constructing the candidate dataset
 
@@ -130,53 +151,78 @@ We can now bring these elements together.
 candidates <- create_candidate_dataset(
   evidence_media_url = review_input$thumbnail_url,
   evidence_url = review_input$page_url,
-  evidence_text = review_input$title,
-  label = review_input$title,
-  description = paste(
-    "MuIS museum record",
-    review_input$page_id
-  ),
-  alternative_label = review_input$title_hu,
+  evidence_text = review_input$label_en,
+  label = review_input$label_en,
+  description = review_input$description_en,
+  alternative_label = review_input$label_hu,
   alternative_description = review_input$description_hu,
-  subject = review_input$subject
+  subject = review_input$subject,
+  data_manager_name = "Daniel Antal",
+  data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
+  data_manager_email = "daniel@example.org",
+  project_id = "muis-garments"
 )
 ```
 
-The `subject` identifies the subject of the candidate assertions and is represented as the first candidate column, `col_1`. In this example, `[image shown]` indicates that the proposed assertions concern the object depicted by the evidence presented to the reviewer.
+The `subject` column identifies the subject of each candidate assertion. In this example it is the URL of the digital image presented as evidence.
 
 ```{r}
 candidates
 ```
 
-At this stage we have a valid candidate dataset, but have not yet added the other assertions that we want the reviewer to evaluate.
+The candidate dataset also carries dataset-level provenance. The data manager identifies the person responsible for preparing the candidate state. Betwixt records the generation time and software version automatically.
 
-## Adding candidate columns
+```{r}
+attr(candidates, "provenance")
+```
 
-Additional candidate columns can be added incrementally with `add_candidate_column()`.
+This provenance describes the preparation of the candidate dataset. It is distinct from the provenance of the subsequent review, including the identity of the reviewer and the review lifecycle.
+
+## Adding candidate assertions
+
+Additional reviewable assertions can be added incrementally with `add_candidate_column()`.
+
+Here each image is associated with a proposed concept from the Getty Art & Architecture Thesaurus:
 
 ```{r}
 candidates <- candidates |>
   add_candidate_column(
-    value = review_input$predicate,
-    name = "predicate",
-  ) |>
-  add_candidate_column(
+    name = "depicts",
     value = review_input$value,
-    name = "value"
-  ) |>
-  add_candidate_column(
-    value = review_input$page_url,
-    name = "resource"
+    definition = review_input$value_definition
   )
 ```
 
-The resulting wide projection contains the subject followed by three additional candidate columns. These columns arrange candidate semantic material for review without making the wide tabular structure itself the underlying semantic model.
+The resulting wide representation contains `subject` and `depicts` as reviewable semantic columns. The accompanying `depicts_definition` records the semantic identity of each proposed value using its Getty AAT URI.
 
 ```{r}
 candidates
 ```
 
-The generic names `col_1`, `col_2`, and so forth belong to the intermediate review representation rather than to the semantics of the assertions themselves. Presentation labels can be assigned when the review is rendered without changing the underlying candidate assertions.
+The `_definition` column is metadata about the candidate value. It is not itself presented as a separate assertion for review.
+
+The wide tabular structure arranges candidate semantic material for human review without making that table structure the underlying semantic model.
+
+## Adding row context
+
+Some information is useful for interpreting a review row without itself being something that the reviewer is asked to evaluate.
+
+Such information can be represented using `context_*` columns:
+
+```{r}
+candidates <- candidates |>
+  dplyr::mutate(
+    context_held_by = "Estonian National Museum"
+  )
+```
+
+Here `context_held_by` records the institution holding the objects represented by the MuIS records.
+
+```{r}
+candidates
+```
+
+Betwixt preserves row context throughout the review and subsequent projections, but does not treat it as a candidate assertion and does not assign it a review status.
 
 ## Rendering the review
 
@@ -186,17 +232,17 @@ We can now turn the candidate dataset into a standalone Betwixt review.
 render_review(
   candidates,
   cols = c(
-    col_1 = "Subject",
-    col_2 = "Predicate",
-    col_3 = "Value",
-    col_4 = "Access point"
+    subject = "Digital image",
+    depicts = "AAT concept"
   ),
-  title = "MuIS garment review",
+  title = "MuIS garment terminology review",
   description = paste(
-    "Review the candidate semantic assertions derived from",
-    "the museum records."
+    "Review the proposed Hungarian labels and verify that the",
+    "Getty AAT concepts correctly identify the depicted garments."
   ),
   row_comment = TRUE,
+  reviewer_name = "Daniel Antal",
+  reviewer_iri = "https://orcid.org/0000-0001-7513-6760",
   review_comment = TRUE,
   project_id = "muis-garments",
   filename_stem = "muis-garments-review",
@@ -205,11 +251,13 @@ render_review(
 )
 ```
 
+Candidate provenance and review provenance remain distinct. The data manager recorded in the candidate dataset is responsible for preparing the candidate state. The reviewer recorded by `render_review()` is responsible for evaluating it. The same person may perform both roles, as in this example, without collapsing the distinction between the two activities.
+
 Here `row_comment = TRUE` gives the reviewer an optional comment field for each object. `review_comment = TRUE` adds a separate comment field for observations concerning the review as a whole.
 
 ![Initial candidate review](images/muis/muis-review-start.png){fig-align="center"}
 
-The resulting review therefore separates several kinds of reviewer intervention:
+The resulting review separates several kinds of reviewer intervention:
 
 - editing descriptive information or candidate values;
 - qualifying individual candidate assertions;
@@ -229,11 +277,11 @@ Instead, the standalone review records those interventions as review proceeds. T
 
 Once reviewer interventions are recorded, the review has a state distinct from its original candidate input. The first browser save therefore starts review sequence `1`.
 
-Saving a draft preserves the current review state without finalising the review. The standalone HTML retains the original candidate values while also persisting current descriptive and assertion values, assertion qualifications, row finalisation, row comments, review-level comments, reviewer information, and lifecycle metadata.
+Saving a draft preserves the current review state without finalising the review. The standalone HTML retains the original candidate values while also persisting current descriptive and assertion values, assertion qualifications, row finalisation, row comments, review-level comments, reviewer information, candidate provenance, and review lifecycle metadata.
 
 [Open the saved draft](examples/muis-garments-review_1-draft.html)
 
-![Review saved as a draft](images/muis/muis-review-draft.png){fig-align="center"}
+![](images/clipboard-1597491622.png)
 
 The reviewer can reopen the saved HTML and continue working with the preserved state.
 
@@ -243,7 +291,7 @@ Finalising the review preserves the same information but marks the review activi
 
 [Open the finalised review](examples/muis-garments-review_1-finalised.html)
 
-![Finalised review](images/muis/muis-review-final.png){fig-align="center"}
+![](images/clipboard-1303547488.png)
 
 The three files make the review lifecycle directly inspectable:
 
@@ -251,4 +299,6 @@ The three files make the review lifecycle directly inspectable:
 2.  [saved draft — sequence 1](examples/muis-garments-review_1-draft.html)
 3.  [finalised review — sequence 1](examples/muis-garments-review_1-finalised.html)
 
-This separation is fundamental to Betwixt. The candidate dataset defines **what is proposed for review**. The saved review preserves that candidate state while recording **what the reviewer did with those proposals**. It is therefore not merely a visual rendering of the original candidate data, but a persistent review artefact from which the candidate and reviewed states can be distinguished and reconstructed.
+This separation is fundamental to Betwixt. The candidate dataset defines *what is proposed for review* and records the provenance of that candidate state. The saved review preserves that state while recording *what the reviewer did with those proposals* and the provenance of the review activity.
+
+The resulting review artefact therefore preserves a chain from candidate preparation through human review, from which the candidate and reviewed states can subsequently be reconstructed and projected.

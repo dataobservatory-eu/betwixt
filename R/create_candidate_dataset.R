@@ -47,12 +47,12 @@
 #'   to `NULL`.
 #'
 #' @param evidence_relation_range An optional character vector containing the
-#'   admissible or suggested evidence relations. Use [candidate_range()] to
+#'   admissible or suggested evidence relations. Use [add_candidate_range()] to
 #'   construct controlled ranges. This argument can only be used when
 #'   `evidence_relation` is supplied. Defaults to `NA_character_`.
 #'
 #' @param subject_range A character vector containing the admissible or
-#'   suggested subject values. Use [candidate_range()] to construct controlled
+#'   suggested subject values. Use [add_candidate_range()] to construct controlled
 #'   ranges, or `NA_character_` when no controlled range is supplied. Defaults
 #'   to `NA_character_`.
 #'
@@ -72,7 +72,7 @@
 #' `evidence_relation` and `evidence_relation_range`.
 #'
 #' @details
-#' `candidate_dataset()` establishes the initial structure of a Betwixt
+#' `create_candidate_dataset()` establishes the initial structure of a Betwixt
 #' candidate dataset. `row_number` is generated automatically as an integer
 #' sequence in input order.
 #'
@@ -93,7 +93,7 @@
 #'
 #' @examples
 #' # Candidate dataset without a reviewable evidence relation
-#' delini_candidates <- candidate_dataset(
+#' delini_candidates <- create_candidate_dataset(
 #'   evidence_media_url = delini$evidence_media_url,
 #'   evidence_text = delini$evidence_text,
 #'   label = delini$label,
@@ -106,7 +106,7 @@
 #' delini_candidates
 #'
 #' # Candidate dataset with a reviewable evidence relation
-#' delini_dual_candidates <- candidate_dataset(
+#' delini_dual_candidates <- create_candidate_dataset(
 #'   evidence_media_url = delini$evidence_media_url,
 #'   evidence_text = delini$evidence_text,
 #'   label = delini$label,
@@ -115,7 +115,7 @@
 #'   subject_definition = delini$subject_definition,
 #'   evidence_relation = rep("depicts", nrow(delini)),
 #'   evidence_relation_range = rep(
-#'     candidate_range("depicts", "documents", "Other…"),
+#'     add_candidate_range("depicts", "documents", "Other…"),
 #'     nrow(delini)
 #'   )
 #' )
@@ -123,7 +123,7 @@
 #' delini_dual_candidates
 #'
 #' # Statistical example based on the W3C RDF Data Cube Vocabulary
-#' w3c_candidates <- candidate_dataset(
+#' w3c_candidates <- create_candidate_dataset(
 #'   evidence_media_url = rep(
 #'     "https://www.w3.org/TR/vocab-data-cube/",
 #'     nrow(w3c_life_expectancy)
@@ -158,7 +158,7 @@
 #'
 #' @importFrom tibble tibble
 #' @export
-candidate_dataset <- function(
+create_candidate_dataset <- function(
   subject,
   evidence_url = NA_character_,
   evidence_media_url = NA_character_,

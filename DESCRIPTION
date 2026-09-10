@@ -29,9 +29,10 @@ Suggests:
     testthat (>= 3.0.0),
     writexl
 Imports: 
+    dplyr,
     stats,
     tibble,
-    whisker,
+    tidyr,
     xml2
 VignetteBuilder: knitr
 Depends: 

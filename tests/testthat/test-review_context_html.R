@@ -350,3 +350,29 @@ test_that("row comment is rendered when requested", {
     fixed = TRUE
   )
 })
+
+# -------------------------------------------------------------------------
+# Provenance
+# -------------------------------------------------------------------------
+
+test_that("candidate provenance is retained in HTML", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    evidence_url = "https://example.org",
+    data_manager_name = "Daniel Antal",
+    data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
+    data_manager_email = "daniel@example.org",
+    project_id = "example-project"
+  )
+
+  html <- review_context_html(prepare_review_context(x))
+
+  expect_match(html, 'data-provenance="data_manager"', fixed = TRUE)
+  expect_match(html, 'value="Daniel Antal"', fixed = TRUE)
+  expect_match(html, 'data-provenance="data_manager_iri"', fixed = TRUE)
+  expect_match(html, 'data-provenance="data_manager_email"', fixed = TRUE)
+  expect_match(html, 'data-provenance="project_id"', fixed = TRUE)
+  expect_match(html, 'data-provenance="generated_at"', fixed = TRUE)
+  expect_match(html, 'data-provenance="software_agent"', fixed = TRUE)
+  expect_match(html, 'data-provenance="software_version"', fixed = TRUE)
+})

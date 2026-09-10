@@ -1,5 +1,3 @@
-
-
 #' @noRd
 #' @keywords internal
 betwixt_version <- function() {

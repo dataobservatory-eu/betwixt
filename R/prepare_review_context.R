@@ -25,9 +25,26 @@
 #' @noRd
 #' @keywords internal
 prepare_review_context <- function(candidate) {
-
   # Validate the candidate dataset.
   validate_candidate_dataset(candidate)
+
+  provenance <- attr(candidate, "provenance")
+
+  if (is.null(provenance)) {
+    provenance <- list(
+      data_manager = "",
+      data_manager_iri = "",
+      data_manager_email = "",
+      project_id = "",
+      generated_at = NA_character_,
+      software_agent = "Betwixt",
+      software_version = betwixt_version() # see utils.R
+    )
+  }
+
+  if (is.null(provenance)) {
+    provenance <- list()
+  }
 
   # Convert a pipe-separated value to a character vector.
   parse_range <- function(x) {
@@ -53,7 +70,6 @@ prepare_review_context <- function(candidate) {
 
   # Prepare each candidate row for rendering.
   rows <- lapply(seq_len(nrow(candidate)), function(i) {
-
     # Prepare the reviewable candidate assertions.
     assertions <- lapply(candidate_cols, function(col) {
       range_col <- paste0(col, "_range")
@@ -145,6 +161,7 @@ prepare_review_context <- function(candidate) {
     candidate_columns = candidate_cols,
     context_columns = context_cols,
     has_evidence_relation = has_evidence_relation,
-    rows = rows
+    rows = rows,
+    provenance = provenance
   )
 }

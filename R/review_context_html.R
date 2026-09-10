@@ -197,6 +197,28 @@ review_context_html <- function(
     )
   }
 
+  # Render provenance retained for reconstruction.
+  provenance_data_html <- function(provenance) {
+    paste0(
+      '<div id="candidate-provenance" hidden>',
+      '<input data-provenance="data_manager" value="',
+      escape_html(provenance$data_manager), '">',
+      '<input data-provenance="data_manager_iri" value="',
+      escape_html(provenance$data_manager_iri), '">',
+      '<input data-provenance="data_manager_email" value="',
+      escape_html(provenance$data_manager_email), '">',
+      '<input data-provenance="project_id" value="',
+      escape_html(provenance$project_id), '">',
+      '<input data-provenance="generated_at" value="',
+      escape_html(provenance$generated_at), '">',
+      '<input data-provenance="software_agent" value="',
+      escape_html(provenance$software_agent), '">',
+      '<input data-provenance="software_version" value="',
+      escape_html(provenance$software_version), '">',
+      "</div>"
+    )
+  }
+
   # Render headings for reviewable candidate columns.
   assertion_headers <- vapply(context$candidate_columns, function(x) {
     heading <- column_label(x, cols)
@@ -386,6 +408,7 @@ review_context_html <- function(
       ""
     }
 
+
     # Assemble the complete review row.
     paste0(
       '<tr data-row="', row$row_number,
@@ -425,12 +448,14 @@ review_context_html <- function(
   }, character(1))
 
   # Assemble the generated review table.
+  # The footer will be added by render_review.R
   paste0(
     '<table id="review-table">',
     header,
     "<tbody>",
     paste(rows, collapse = "\n"),
     "</tbody>",
-    "</table>"
+    "</table>",
+    provenance_data_html(context$provenance)
   )
 }

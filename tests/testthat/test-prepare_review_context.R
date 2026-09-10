@@ -239,3 +239,24 @@ test_that("finalised review preserves reviewer comments", {
   expect_match(html, "row-comment", fixed = TRUE)
   expect_match(html, "review-comment", fixed = TRUE)
 })
+
+
+# -------------------------------------------------------------------------
+# Provenance
+# -------------------------------------------------------------------------
+
+test_that("candidate provenance survives context preparation", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    evidence_url = "https://example.org",
+    data_manager_name = "Daniel Antal",
+    data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
+    data_manager_email = "daniel@example.org",
+    project_id = "example-project"
+  )
+
+  original <- attr(x, "provenance")
+  context <- prepare_review_context(x)
+
+  expect_equal(context$provenance, original)
+})

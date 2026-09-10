@@ -1,3 +1,38 @@
+# betwixt 0.0.7
+
+## Candidate-data contract and portability
+
+* Formalised the Betwixt candidate-data contract for programmatically and externally created candidate datasets. Candidate data can be prepared in spreadsheets, statistical applications, databases, or other programming environments and validated before entering the review workflow.
+
+* Added `create_candidate_template()` for creating empty, conforming candidate tables suitable for manual or external data preparation.
+
+* Added the exported `validate_candidate_dataset()` to check required structure, column types, candidate metadata, row identifiers, and evidence URLs before rendering.
+
+* Generalised candidate assertions so that `_range` and `_definition` metadata are independently optional. Candidate values may therefore be associated with a controlled range, a semantic definition, or both.
+
+* Generalised display-only context columns through the `context_` naming convention, allowing meaningful names such as `context_year` and `context_unit` to survive spreadsheet and other tabular-data round trips.
+
+* Improved candidate preparation and rendering for typed candidate values and datasets in which optional evidence and descriptive fields are absent.
+
+## Public API naming
+
+* Regularised function names around explicit action verbs and consistent snake-case naming.
+
+* Renamed `candidate_dataset()` to `create_candidate_dataset()` and `candidate_range()` to `add_candidate_range()`, aligning them with `add_candidate_column()` and the new `create_candidate_template()`.
+
+* Renamed `betwixt_render()` to `render_review()` to describe the operation and resulting artefact more directly.
+
+* Standardised `is_claim_df()` as the canonical claim-data predicate while retaining the deprecated `is.claim_df()` alias for compatibility.
+
+* Retained British `serialise_review()` as the canonical serialisation function and added `serialize_review()` as a direct spelling alias.
+
+## Examples and documentation
+
+* Added `small_countries_dataset`, a compact Eurostat GDP example for Iceland and Malta demonstrating semantic definitions, evidence resources, statistical candidate values, and observational context outside the cultural-heritage domain.
+
+* Added the **Working with Externally Created Candidate Datasets** vignette, demonstrating the portable workflow: create or download → edit → read → validate → render → review.
+
+* Updated candidate-data, rendering, reference, and vignette documentation to reflect the revised public API and portable candidate-data contract.
 # betwixt 0.0.6
 
 ## Review round trip

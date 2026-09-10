@@ -35,7 +35,7 @@
 #'   otherwise returns the HTML as a character string.
 #'
 #' @export
-betwixt_render <- function(
+render_review <- function(
   candidate,
   cols = NULL,
   subheadings = NULL,

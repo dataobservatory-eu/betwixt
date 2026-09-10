@@ -1,7 +1,7 @@
-test_that("betwixt_render() writes an initial Delini review", {
+test_that("render_review() writes an initial Delini review", {
   path <- tempdir()
 
-  betwixt_render(
+  render_review(
     delini,
     cols = c(
       subject = "Subject",
@@ -50,18 +50,18 @@ test_that("betwixt_render() writes an initial Delini review", {
   expect_match(html, 'id="save-final"', fixed = TRUE)
 })
 
-test_that("betwixt_render() preserves candidate row numbers", {
+test_that("render_review() preserves candidate row numbers", {
   candidate <- delini[1:3, ]
 
-  html <- betwixt_render(candidate)
+  html <- render_review(candidate)
 
   expect_match(html, 'data-row="1"', fixed = TRUE)
   expect_match(html, 'data-row="2"', fixed = TRUE)
   expect_match(html, 'data-row="3"', fixed = TRUE)
 })
 
-test_that("betwixt_render() records a sequenced original filename", {
-  html <- betwixt_render(
+test_that("render_review() records a sequenced original filename", {
+  html <- render_review(
     delini,
     filename_stem = "delini_wide",
     sequence = 2L
@@ -87,7 +87,7 @@ test_that("betwixt_render() records a sequenced original filename", {
 })
 
 test_that("comments are not rendered by default", {
-  html <- betwixt_render(delini)
+  html <- render_review(delini)
 
   expect_false(grepl(
     '<th class="row-comment">',
@@ -104,7 +104,7 @@ test_that("comments are not rendered by default", {
 
 
 test_that("row comments are rendered when requested", {
-  html <- betwixt_render(
+  html <- render_review(
     delini,
     row_comment = TRUE
   )
@@ -130,7 +130,7 @@ test_that("row comments are rendered when requested", {
 
 ## Optional comments ---------------------------------------------------------
 test_that("review comment is rendered when requested", {
-  html <- betwixt_render(
+  html <- render_review(
     delini,
     review_comment = TRUE
   )

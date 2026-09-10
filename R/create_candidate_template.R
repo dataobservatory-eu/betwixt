@@ -44,20 +44,19 @@
 #' @importFrom stats setNames
 #' @export
 create_candidate_template <- function(
-    evidence_url = TRUE,
-    evidence_media_url = TRUE,
-    evidence_text = TRUE,
-    label = TRUE,
-    description = TRUE,
-    alternative_label = FALSE,
-    alternative_description = FALSE,
-    evidence_relation = FALSE,
-    subject_range = TRUE,
-    subject_definition = TRUE,
-    columns = NULL,
-    context = NULL
+  evidence_url = TRUE,
+  evidence_media_url = TRUE,
+  evidence_text = TRUE,
+  label = TRUE,
+  description = TRUE,
+  alternative_label = FALSE,
+  alternative_description = FALSE,
+  evidence_relation = FALSE,
+  subject_range = TRUE,
+  subject_definition = TRUE,
+  columns = NULL,
+  context = NULL
 ) {
-
   names <- c(
     "row_number",
     if (evidence_url) "evidence_url",

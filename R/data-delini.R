@@ -15,27 +15,28 @@
 #' candidate semantic values. Candidate values are accompanied, where
 #' applicable, by controlled ranges and semantic definitions.
 #'
-#' @format A data frame with 5 rows and 15 variables:
+#' @format A data frame with 5 rows and 16 variables:
 #' \describe{
 #'   \item{row_number}{Integer row identifier.}
-#'   \item{evidence_media_url}{URL of the evidential resource.}
+#'   \item{evidence_url}{Optional URL of an evidential resource.}
+#'   \item{evidence_media_url}{URL of the evidential media resource.}
 #'   \item{evidence_text}{Short human-readable identifier for the evidence.}
 #'   \item{label}{Human-readable label of the described entity.}
 #'   \item{description}{Human-readable description of the described entity.}
-#'   \item{col_1}{Candidate subject identifier or value.}
-#'   \item{col_1_range}{Optional controlled range for the subject.}
-#'   \item{col_1_definition}{Optional semantic definition or resolvable
+#'   \item{subject}{Candidate subject identifier or value.}
+#'   \item{subject_range}{Optional controlled range for the subject.}
+#'   \item{subject_definition}{Optional semantic definition or resolvable
 #'   reference associated with the subject.}
-#'   \item{col_2}{Candidate value for the `instance of` assertion.}
-#'   \item{col_2_range}{Optional controlled range for the `instance of`
+#'   \item{instance_of}{Candidate value for the `instance of` assertion.}
+#'   \item{instance_of_range}{Optional controlled range for the `instance of`
 #'   value.}
-#'   \item{col_2_definition}{Optional semantic definition of the
-#'   `instance of` predicate.}
-#'   \item{col_3}{Candidate value for the `heritage of` assertion.}
-#'   \item{col_3_range}{Optional controlled range for the `heritage of`
+#'   \item{instance_of_definition}{Optional semantic definition associated
+#'   with the `instance of` candidate.}
+#'   \item{heritage_of}{Candidate value for the `heritage of` assertion.}
+#'   \item{heritage_of_range}{Optional controlled range for the `heritage of`
 #'   value.}
-#'   \item{col_3_definition}{Optional semantic definition of the
-#'   `heritage of` predicate.}
+#'   \item{heritage_of_definition}{Optional semantic definition associated
+#'   with the `heritage of` candidate.}
 #'   \item{context_1}{Display-only holding-institution context supplied to
 #'   the reviewer.}
 #' }

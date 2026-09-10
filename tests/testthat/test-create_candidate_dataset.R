@@ -285,3 +285,42 @@ test_that("create_candidate_dataset() preserves alternative labels and descripti
     "A visitor-facing description of the textile object."
   )
 })
+
+
+# -------------------------------------------------------------------------
+# Provenance
+# -------------------------------------------------------------------------
+
+test_that("candidate dataset records provenance", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    evidence_url = "https://example.org",
+    data_manager_name = "Daniel Antal",
+    data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
+    data_manager_email = "daniel@example.org",
+    project_id = "example-project"
+  )
+
+  p <- attr(x, "provenance")
+
+  expect_equal(p$data_manager, "Daniel Antal")
+  expect_equal(p$data_manager_iri, "https://orcid.org/0000-0001-7513-6760")
+  expect_equal(p$data_manager_email, "daniel@example.org")
+  expect_equal(p$project_id, "example-project")
+})
+
+test_that("candidate provenance records generation metadata", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    evidence_url = "https://example.org"
+  )
+
+  p <- attr(x, "provenance")
+
+  expect_match(p$generated_at, "^\\d{4}-\\d{2}-\\d{2}T")
+  expect_equal(p$software_agent, "Betwixt")
+  expect_equal(
+    p$software_version,
+    as.character(utils::packageVersion("betwixt"))
+  )
+})

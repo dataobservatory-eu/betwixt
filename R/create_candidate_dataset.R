@@ -62,6 +62,18 @@
 #'   `NA_character_` indicates an unresolved candidate subject. Defaults to
 #'   `NA_character_`.
 #'
+#' @param data_manager_name Character string containing the name of the person
+#'   responsible for preparing the candidate dataset.
+#'
+#' @param data_manager_iri Character string containing an IRI identifying the
+#'   data manager, such as an ORCID, ISNI, or Wikidata URI.
+#'
+#' @param data_manager_email Character string containing the data manager's
+#'   email address.
+#'
+#' @param project_id Character string identifying the project within which the
+#'   candidate dataset was generated.
+#'
 #' @return
 #' A tibble with one row per evidence-subject observation and the columns
 #' `row_number`, `evidence_url`, `evidence_media_url`, `evidence_text`, `label`,
@@ -75,6 +87,11 @@
 #' `create_candidate_dataset()` establishes the initial structure of a Betwixt
 #' candidate dataset. `row_number` is generated automatically as an integer
 #' sequence in input order.
+#'
+#' Dataset-level provenance is stored in the `provenance` attribute rather than
+#' repeated across observation rows. The generation timestamp is recorded as
+#' an ISO 8601 UTC value at one-second precision. The software agent and
+#' installed Betwixt package version are recorded automatically.
 #'
 #' The subject, its candidate range, and its definition are passed internally
 #' to [add_candidate_column()], thereby establishing the same column contract
@@ -142,15 +159,19 @@
 #'
 #' w3c_candidates <- w3c_candidates |>
 #'   add_candidate_column(
+#'     name = "area",
 #'     value = w3c_life_expectancy$area
 #'   ) |>
 #'   add_candidate_column(
+#'     name = "period",
 #'     value = w3c_life_expectancy$period
 #'   ) |>
 #'   add_candidate_column(
+#'     name = "sex",
 #'     value = w3c_life_expectancy$sex
 #'   ) |>
 #'   add_candidate_column(
+#'     name = "life_expectancy",
 #'     value = w3c_life_expectancy$life_expectancy
 #'   )
 #'
@@ -170,7 +191,11 @@ create_candidate_dataset <- function(
   evidence_relation = NULL,
   evidence_relation_range = NA_character_,
   subject_range = NA_character_,
-  subject_definition = NA_character_
+  subject_definition = NA_character_,
+  data_manager_name = "",
+  data_manager_iri = "",
+  data_manager_email = "",
+  project_id = ""
 ) {
   if (is.null(evidence_relation) &&
     !all(is.na(evidence_relation_range))) {
@@ -211,6 +236,19 @@ create_candidate_dataset <- function(
       subject_definition = subject_definition
     )
   }
+
+  attr(x, "provenance") <- list(
+    data_manager = data_manager_name,
+    data_manager_iri = data_manager_iri,
+    data_manager_email = data_manager_email,
+    project_id = project_id,
+    generated_at = format(
+      Sys.time(),
+      tz = "UTC", format = "%Y-%m-%dT%H:%M:%SZ"
+    ),
+    software_agent = "Betwixt",
+    software_version = betwixt_version() # see utils.R
+  )
 
   x
 }

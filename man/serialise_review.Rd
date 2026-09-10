@@ -2,9 +2,19 @@
 % Please edit documentation in R/serialise_review.R
 \name{serialise_review}
 \alias{serialise_review}
+\alias{serialize_review}
 \title{Serialise a Betwixt review}
 \usage{
 serialise_review(
+  review,
+  prefix,
+  filename,
+  title = NULL,
+  description = NULL,
+  reviewer_iri = NULL
+)
+
+serialize_review(
   review,
   prefix,
   filename,

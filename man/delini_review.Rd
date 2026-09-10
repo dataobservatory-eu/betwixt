@@ -62,5 +62,5 @@ delini_review
 
 }
 \seealso{
-\link{delini_range}, \code{\link[=betwixt_render]{betwixt_render()}}
+\link{delini_range}, \code{\link[=render_review]{render_review()}}
 }

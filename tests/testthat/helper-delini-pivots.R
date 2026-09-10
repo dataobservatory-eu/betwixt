@@ -49,11 +49,11 @@ delini_long <- delini |>
 
 ## Dual wide -----------------------------------------------------------------
 
-delini_dual_wide <- candidate_dataset(
+delini_dual_wide <- create_candidate_dataset(
   evidence_media_url = delini$evidence_media_url,
   evidence_text = delini$evidence_text,
   evidence_relation = rep("depicts", nrow(delini)),
-  evidence_relation_range = candidate_range(
+  evidence_relation_range = add_candidate_range(
     "depicts",
     "documents",
     "is evidence for",

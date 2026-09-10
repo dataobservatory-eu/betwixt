@@ -123,13 +123,13 @@ require(writexl)
 xlsx_file <- file.path(tempdir(), "muis-garments-review.xlsx")
 
 writexl::write_xlsx(
-  x=list(
+  x = list(
     candidate = wide[wide$plane == "candidate", ],
     reviewed = wide[wide$plane == "reviewed", ],
     status = wide[wide$plane == "status", ],
     long = long
   ),
-  path=xlsx_file
+  path = xlsx_file
 )
 
 xlsx_file

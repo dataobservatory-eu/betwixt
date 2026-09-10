@@ -11,7 +11,7 @@ test_that("subject definitions distinguish resolved entities", {
 
 
 test_that("URL candidate values are rendered as links", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example",
@@ -31,7 +31,7 @@ test_that("URL candidate values are rendered as links", {
 
 
 test_that("URL subjects are not automatically rendered as links", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example",
@@ -79,7 +79,7 @@ test_that("assertions preserve their semantic column identities", {
 # -------------------------------------------------------------------------
 
 test_that("descriptive fields preserve their candidate values", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example label",
@@ -104,7 +104,7 @@ test_that("descriptive fields preserve their candidate values", {
 
 
 test_that("assertions preserve their candidate values", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example",
@@ -128,7 +128,7 @@ test_that("assertions preserve their candidate values", {
 # -------------------------------------------------------------------------
 
 test_that("evidence_media_url is rendered as an image", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example",
@@ -146,7 +146,7 @@ test_that("evidence_media_url is rendered as an image", {
 
 
 test_that("evidence_url is rendered as a link without an image", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_url = "https://example.org/evidence.html",
     evidence_text = "Example evidence",
     label = "Example",
@@ -168,7 +168,7 @@ test_that("evidence_url is rendered as a link without an image", {
 
 
 test_that("multiple evidence URLs are rendered", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = paste(
       "https://example.org/001.jpg",
       "https://example.org/002.jpg",
@@ -195,7 +195,7 @@ test_that("multiple evidence URLs are rendered", {
 
 
 test_that("review can be rendered without evidence", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     subject = c("House", "Sash", "Bed")
   )
 
@@ -223,7 +223,7 @@ test_that("review can be rendered without evidence", {
 # -------------------------------------------------------------------------
 
 test_that("alternative descriptive columns are omitted when unused", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example",
@@ -239,7 +239,7 @@ test_that("alternative descriptive columns are omitted when unused", {
 
 
 test_that("alternative label can be rendered alone", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Tablet-woven sash",
@@ -258,7 +258,7 @@ test_that("alternative label can be rendered alone", {
 
 
 test_that("alternative label and description are rendered together", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Tablet-woven sash",
@@ -288,7 +288,7 @@ test_that("alternative label and description are rendered together", {
 # -------------------------------------------------------------------------
 
 test_that("row comment is not rendered by default", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example",
@@ -306,7 +306,7 @@ test_that("row comment is not rendered by default", {
 
 
 test_that("row comment is rendered when requested", {
-  x <- candidate_dataset(
+  x <- create_candidate_dataset(
     evidence_media_url = "https://example.org/evidence.jpg",
     evidence_text = "Example evidence",
     label = "Example",

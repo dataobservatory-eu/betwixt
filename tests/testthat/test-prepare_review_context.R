@@ -64,7 +64,7 @@ test_that("prepare_review_context() supports evidence relations", {
   dual_delini <- delini %>%
     dplyr::mutate(
       evidence_relation = "depicts",
-      evidence_relation_range = candidate_range("depicts", "documents")
+      evidence_relation_range = add_candidate_range("depicts", "documents")
     )
 
   context <- prepare_review_context(dual_delini)
@@ -97,7 +97,7 @@ test_that("prepare_review_context() supports evidence relations", {
 
 
 test_that("prepare_review_context() parses multiple evidence URLs", {
-  candidate <- candidate_dataset(
+  candidate <- create_candidate_dataset(
     evidence_media_url = paste(
       "https://example.com/001.jpg",
       "https://example.com/002.jpg",
@@ -135,7 +135,7 @@ test_that("prepare_review_context() parses multiple evidence URLs", {
 
 
 test_that("prepare_review_context() preserves alternative descriptive information", {
-  candidate <- candidate_dataset(
+  candidate <- create_candidate_dataset(
     evidence_media_url = "https://example.com/001.jpg",
     evidence_text = "Example evidence",
     label = "Tablet-woven sash",

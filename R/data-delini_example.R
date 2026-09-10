@@ -52,7 +52,7 @@
 #' `delini_review` is a compact demonstrator rather than a complete
 #' representation of the Delini Farmstead or its documentation.
 #'
-#' @seealso [delini_range], [betwixt_render()]
+#' @seealso [delini_range], [render_review()]
 #'
 #' @examples
 #' delini_review
@@ -106,7 +106,7 @@ NULL
 #' Betwixt may exclude that entry from the alternatives because the current
 #' value is rendered separately as the initially selected value.
 #'
-#' @seealso [delini_review], [betwixt_render()]
+#' @seealso [delini_review], [render_review()]
 #'
 #' @examples
 #' delini_range

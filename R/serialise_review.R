@@ -50,6 +50,11 @@ serialise_review <- function(
   )
 }
 
+
+#' @rdname serialise_review
+#' @export
+serialize_review <- serialise_review
+
 # Prefixes --------------------------------------------------------------------
 
 #' @keywords internal

@@ -58,7 +58,7 @@ delini
 ```
 
 ``` r
-betwixt_render(
+render_review(
   delini,
   cols = c(
     col_1 = "Subject",

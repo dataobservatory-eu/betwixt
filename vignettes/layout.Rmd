@@ -1,8 +1,8 @@
 ---
-title: "Review Layouts"
+title: "Review Representations and Projections"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Review Layouts}
+  %\VignetteIndexEntry{Review Representations and Projections}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,310 +18,127 @@ knitr::opts_chunk$set(
 library(betwixt)
 ```
 
-# Review layouts and semantic projections
+# Review representations and projections
 
-Betwixt supports the review of candidate semantic assertions before they are
-accepted into a stabilised semantic state. The same candidate knowledge can be
-presented in different tabular projections depending on what the reviewer needs
-to inspect.
+Betwixt separates the representation used to prepare a review task from the representations produced after human review. Candidate assertions are prepared in a wide tabular representation that can be created programmatically or imported from ordinary tabular data.
 
-This vignette introduces these projections through the `delini` example
-dataset. It distinguishes four related forms:
+The review task itself can be designed in different ways. In a **wide** review, evidence supports assertions about a subject. In a **dual-wide** review, the relation between the evidence and the subject is also brought inside the review boundary.
 
-- wide;
-- dual-wide;
-- long; and
-- dual-long.
+After human review, the resulting review state can be projected into wide review planes or into long-form atomic semantic assertions.
 
-These are not four different semantic models. They are different projections
-of the same underlying candidate assertions and their supporting information.
+```text
+candidate dataset
+       ↓
+ review design
+   ↙       ↘
+wide     dual-wide
+   ↘       ↙
+  human review
+       ↓
+ reviewed state
+   ↙       ↘
+wide       long
+projection projection
+```
 
-The wide projection is currently the primary browser-based review interface in
-Betwixt. The long projections are introduced here because they make the atomic
-claim structure explicit and clarify how the review representation relates to
-semantic graph statements.
+These distinctions serve different purposes. Wide and dual-wide concern **what the reviewer is asked to evaluate**. Wide and long projections concern **how the resulting review state is represented for subsequent use**.
 
-## The Delini example
+## The Dēliņi example
 
-The `delini` dataset provides a small heterogeneous cultural heritage example
-associated with the Delini farmstead at the Ethnographic Open-Air Museum of
-Latvia. It contains **three artefacts and two archival records**: the farmhouse,
-a tablet-woven sash, a bed, a record containing photographs of the farmhouse,
-and a floor plan prepared for its reconstruction.
+The `delini` dataset is a small cultural heritage example associated with the Dēliņi farmstead at the Ethnographic Open-Air Museum of Latvia. It contains five observations concerning three heritage artefacts and two documentary records.
 
-The example combines four kinds of information required for semantic review:
-evidence, human-readable description, candidate semantic assertions, and
-display-only context.
-
-```{r delini-dataset}
+```{r delini}
 data("delini")
 
 delini
 ```
 
-The columns belong to four functional groups:
+Each row combines several kinds of information required for a review task:
 
-| Role | Columns | Purpose |
-|---|---|---|
-| Evidence | `evidence_url`, `evidence_media_url`, `evidence_text` | Identifies the evidence resource, media presented to the reviewer, and its human-readable description |
-| Description | `label`, `description` | Identifies and describes the resource in human-readable form |
-| Candidate assertions | `col_1`, `col_2`, `col_3` and their range and definition columns | Contains the semantic assertions proposed for review |
-| Context | `context_1` | Provides information outside the current review boundary |
+- **evidence** identifies or presents material supporting the observation;
+- **description** provides human-readable information for the reviewer;
+- **candidate columns** contain semantic assertions proposed for review;
+- **context** provides useful information outside the current review boundary.
 
-In this review task, `evidence_url` identifies an evidence resource that the reviewer can open, while `evidence_media_url` identifies media that can be presented directly in the review interface. At least one of these must be present for each observation, and either may contain multiple pipe-separated URLs. `evidence_text` provides a short human-readable identification or description of the evidence. The semantic assertions begin with `col_1`, which identifies the **subject**; `col_2` proposes its type through **`instance of`**; and `col_3` proposes its **`heritage of`** association. These generic column names keep the candidate data structure independent of a particular ontology or presentation vocabulary.
+These roles are represented with ordinary columns rather than a specialised R object. This makes the candidate dataset suitable for exchange through tabular formats such as CSV and Excel.
 
-Candidate columns may be accompanied by a `_range` and a `_definition`. Ranges provide controlled or suggested values, while definitions provide resolvable semantic references where available.
+## Candidate columns
 
-The `delini` dataset is already in the **wide projection**: each row brings
-together evidence, description, a subject, several candidate assertions, and
-context. The other projections rearrange or extend this same candidate
-semantic material while preserving these distinctions.
-
-## Projections are views of candidate knowledge
-
-A semantic review task rarely needs to expose every aspect of a graph in its
-native graph representation. Betwixt therefore uses tabular projections to
-present a bounded part of candidate knowledge for a particular review task.
-
-A projection changes how candidate knowledge is arranged for inspection. It
-does not, by itself, change what the assertions mean.
-
-The Delini example can be represented in four closely related forms.
-
-## Wide projection
-
-The wide projection places a subject and several candidate assertions about it
-on the same row:
+A candidate column represents something that can be reviewed. In `delini`, the principal candidate columns are:
 
 ```text
-Evidence | Subject | instance of | heritage of | Context
+subject
+instance_of
+heritage_of
 ```
 
-Predicates are represented by columns and their candidate values by cells. This
-keeps related assertions visible together and is particularly suitable for
-curators and domain experts who review a described resource rather than a
-sequence of atomic graph statements.
-
-The wide projection therefore hides some graph mechanics without discarding
-semantic structure. It presents a bounded part of that structure in a
-task-oriented form. The `delini` dataset is represented in this wide form.
-
-
-## Dual-wide projection
-
-The dual-wide projection adds a reviewable relation between the evidence and
-the subject:
+A candidate column may be accompanied by two related columns:
 
 ```text
-Evidence | Evidence relation | Subject | instance of | heritage of | Context
+<name>
+<name>_range
+<name>_definition
 ```
 
-This is useful when the presence of evidence alone does not establish how that
-evidence relates to the subject. An image may, for example, **depict** an
-artefact, while an archival resource may **document** it.
-
-The evidence relation is a candidate assertion, not review provenance.
-Provenance instead records the review activity itself, including the reviewer,
-decisions, sequence, and timestamps.
-
-The evidence relation is optional: ordinary wide review can present supporting
-evidence without making its relation to the subject part of the review task.
-
-The dual-wide projection can therefore be derived directly from `delini` by
-adding the evidence relation and its controlled range:
-
-```{r delini-dual-wide}
-delini_dual_wide <- delini |>
-  dplyr::mutate(
-    evidence_relation = c(
-      "depicts", "depicts", "depicts", "documents", "documents"
-    ),
-    evidence_relation_range = candidate_range(
-      "depicts", "documents", "Other…"
-    ),
-    .after = evidence_text
-  )
-
-delini_dual_wide
-```
-
-The first three evidential resources depict the three artefacts, while the
-last two document the two archival records. All other candidate assertions
-remain unchanged.
-
-## Long projection
-
-The long projection makes the atomic semantic claim structure explicit. Instead of representing predicates as columns, each row contains one subject–predicate–value assertion:
+For example:
 
 ```text
-Evidence | Subject | Predicate | Value
+instance_of
+instance_of_range
+instance_of_definition
 ```
 
-The wide assertions concerning one subject therefore become multiple rows. In the Delini example, each resource has candidate `instance of` and `heritage of` assertions, so the five wide rows become ten atomic candidate claims.
+The candidate column contains the proposed value. Its `_range` column can provide controlled or suggested alternatives, while its `_definition` column can provide a semantic definition or reference associated with the candidate.
 
-The long projection can be derived directly from `delini`:
+For the `instance_of` candidate in `delini`, these columns distinguish the value proposed for a particular observation from the range available to the reviewer and the semantic resource defining the relation.
 
-```{r delini-long}
-delini_long <- delini |>
-  tidyr::pivot_longer(
-    cols = c(col_2, col_3),
-    names_to = "candidate_column",
-    values_to = "value"
-  ) |>
-  dplyr::mutate(
-    predicate = dplyr::recode(
-      candidate_column,
-      col_2 = "instance of",
-      col_3 = "heritage of"
-    ),
-    subject = col_1
-  ) |>
-  dplyr::select(
-    row_number,
-    evidence_url, evidence_media_url, evidence_text,
-    label, description,
-    subject, predicate, value,
-    context_1
-  )
+In R, these columns can be added programmatically with `add_candidate_column()`, `add_candidate_range()` and `add_candidate_definition()`. The tabular convention itself is independent of R: the same structure can be prepared manually in CSV or Excel and imported as a candidate dataset.
 
-delini_long
-```
+## Evidence, description and context
 
-Each original row now produces two rows with the same subject: one for `instance of` and one for `heritage of`. The semantic content is unchanged; only its tabular projection has changed.
+Evidence is deliberately kept distinct from the candidate assertions being reviewed. The Dēliņi example can provide an evidence resource through `evidence_url`, directly displayable media through `evidence_media_url`, and a short identification through `evidence_text`.
 
-This representation makes the boundary of an individual assertion explicit and is closer to the subject–predicate–value structure used in graph serialization. It is therefore useful for semantic modelling, review-task design, data stewardship, and inspection of atomic candidate claims.
+The `label` and `description` columns help the reviewer understand the resource but are not automatically reviewable assertions.
 
-For domain-expert review, however, repeatedly presenting the same resource across several atomic rows may be less natural than seeing its related properties together. Wide and long are therefore not merely cosmetic table layouts: they provide different views of the same candidate semantic material for different review tasks.
+Similarly, `context_1` provides information useful during review without bringing that information inside the current review boundary. In the Dēliņi example it identifies the institution holding the material.
 
-## Dual-long projection
+This distinction allows a review task to present rich supporting information without treating everything visible to the reviewer as a candidate assertion.
 
-The dual-long projection combines atomic semantic claims with an explicit, reviewable relation between the evidence and the subject:
+## Wide review
+
+The candidate dataset is deliberately wide. A single row keeps an observation, its evidence and several related candidate assertions together:
 
 ```text
-Evidence | Evidence relation | Subject | Predicate | Value
+Evidence | Subject | instance_of | heritage_of | Context
 ```
 
-It can be derived by pivoting the dual-wide projection in the same way as the ordinary wide projection:
+For domain experts this is often more natural than presenting every semantic assertion as a separate row. The reviewer can inspect the resource once and consider several proposed assertions about it together.
 
-```{r delini-dual-long}
-delini_dual_long <- delini_dual_wide |>
-  tidyr::pivot_longer(
-    cols = c(col_2, col_3),
-    names_to = "candidate_column",
-    values_to = "value"
-  ) |>
-  dplyr::mutate(
-    predicate = dplyr::recode(
-      candidate_column,
-      col_2 = "instance of",
-      col_3 = "heritage of"
-    ),
-    subject = col_1
-  ) |>
-  dplyr::select(
-    row_number,
-    evidence_url, evidence_media_url, evidence_text,
-    evidence_relation, evidence_relation_range,
-    label, description,
-    subject, predicate, value,
-    context_1
-  )
-
-delini_dual_long
-```
-
-Each row now exposes two distinct semantic relationships: the relation between the evidence and the subject, and one atomic assertion about that subject. As in the dual-wide projection, the evidence relation is a candidate assertion and remains distinct from review provenance.
-
-The four projections therefore preserve the same basic semantic material while
-varying two dimensions: whether assertions are arranged in wide or atomic-long
-form, and whether the evidence relation is implicit or explicitly reviewable.
-
-## Relationship between the four projections
-
-The four projections vary along two independent dimensions: **wide versus
-long** determines how semantic assertions are arranged, while **ordinary
-versus dual** determines whether the relation between evidence and subject is
-itself reviewable.
-
-| Projection | Assertion structure | Evidence relation |
-|---|---|---|
-| Wide | Multiple candidate predicates per row | Not reviewable |
-| Dual-wide | Multiple candidate predicates per row | Reviewable |
-| Long | One atomic candidate claim per row | Not reviewable |
-| Dual-long | One atomic candidate claim per row | Reviewable |
-
-Moving from wide to long rearranges the same candidate assertions into atomic
-subject–predicate–value rows. Moving from ordinary to dual adds an explicit
-candidate assertion relating the evidence to the subject.
-
-These projections therefore separate the **semantic content of the candidate
-knowledge** from its **representation for a particular review task**. The same
-candidate material can be projected differently without making one tabular
-representation canonical.
-
-## From review design to review execution
-
-Long and wide projections support different stages of semantic review. The long
-form exposes atomic subjects, predicates, values, ranges, and definitions,
-making it useful for semantic modelling and review-task design. Once the
-relevant claims and permitted choices have been bounded, they can be presented
-in wide form for domain-expert review.
+In an ordinary wide review, the evidence supports the review task but its relation to the subject is not itself reviewed.
 
 ```text
-semantic and review design
-          ↓
-     atomic claims
-          ↓
-   bounded review task
-          ↓
-    wide projection
-          ↓
-  domain-expert review
+Evidence ──────► Subject | instance_of | heritage_of
+  context           └──────── reviewable ──────────┘
 ```
 
-This is a division of cognitive work rather than a hierarchy of semantic
-validity. The wide projection preserves the candidate semantic structure while
-presenting related assertions in a form suited to the review task.
+### Rendering the wide review
 
-## Rendering the wide projection
-
-Betwixt currently provides browser-based rendering for the wide projection.
-The renderer adapts the candidate dataset to the review interface without
-changing its semantic contract.
-
-Evidence and descriptive information remain visible alongside the candidate assertions. Evidence media supplied through `evidence_media_url` can be presented directly in the interface, while evidence resources supplied through `evidence_url` are provided as links that the reviewer can open. An observation
-may contain either or both. Depending on the candidate data, reviewable values can be presented
-as resolved entities, editable unresolved entities, or controlled choices.
-Definitions can link to semantic resources, while controlled ranges constrain
-or guide the available values. Context remains visible but outside the review
-boundary.
-
-A URL appearing as evidence is not thereby part of the candidate assertion. The same URL may independently occur as a reviewable candidate value, for example as an access point, without conflating these two semantic roles.
-
-Reviewers can accept or modify candidate values, defer or reject assertions,
-and finalise reviewed rows. The interface also records review metadata,
-including the reviewer, project, review sequence, timestamps, and review
-status.
-
-A review can be saved as a draft and subsequently finalised. Draft and
-finalised files from the same review cycle retain the same sequence number, so
-the standalone HTML preserves both the review interface and its current review
-state.
+`render_review()` transforms the candidate dataset into a standalone browser-based review artefact.
 
 ```{r delini-wide-render}
-betwixt_render(
+wide_review_file <- render_review(
   delini,
   cols = c(
-    col_1 = "Subject",
-    col_2 = "instance of",
-    col_3 = "heritage of",
+    subject = "Subject",
+    instance_of = "instance of",
+    heritage_of = "heritage of",
     context_1 = "held by"
   ),
   subheadings = c(
-    col_2 = "wdt:P31",
-    col_3 = "controlled range"
+    instance_of = "type",
+    heritage_of = "cultural association"
   ),
-  title = "Delini semantic review",
+  title = "Dēliņi semantic review",
   description = "Review the proposed semantic assertions.",
   project_id = "delini",
   filename_stem = "delini-wide",
@@ -330,7 +147,174 @@ betwixt_render(
 )
 ```
 
-The wide projection is the browser-rendered review interface in the current
-Betwixt implementation. The other Delini projections demonstrate how the same
-candidate knowledge can be rearranged or extended without making any one
-tabular representation canonical.
+Rendering does not turn candidate values into accepted knowledge. It creates a human review environment in which proposed values can be corroborated, corrected, rejected or deferred.
+
+The resulting HTML combines the candidate assertions with the evidence and descriptive information needed to evaluate them. It also records the review state and provenance required to read the review back into Betwixt.
+
+## Dual-wide review
+
+Sometimes the relationship between evidence and subject is itself uncertain or semantically important. A photograph may **depict** an artefact, while an archival record may **document** it.
+
+A dual-wide review brings this relation inside the review boundary:
+
+```text
+Evidence ─relation─► Subject | instance_of | heritage_of
+          └────────────── reviewable ──────────────┘
+```
+
+For the Dēliņi example, we can create a second candidate dataset in which the evidence relation is explicitly reviewable.
+
+```{r delini-dual}
+delini_dual <- create_candidate_dataset(
+  evidence_url = delini$evidence_url,
+  evidence_media_url = delini$evidence_media_url,
+  evidence_text = delini$evidence_text,
+  label = delini$label,
+  description = delini$description,
+  subject = delini$subject,
+  subject_range = delini$subject_range,
+  subject_definition = delini$subject_definition,
+  evidence_relation = c(
+    "depicts", "depicts", "depicts", "documents", "documents"
+  ),
+  evidence_relation_range = add_candidate_range(
+    "depicts", "documents", "Other…"
+  )
+)
+
+delini_dual <- delini_dual |>
+  add_candidate_column(
+    name = "instance_of",
+    value = delini$instance_of,
+    range = delini$instance_of_range,
+    definition = delini$instance_of_definition
+  ) |>
+  add_candidate_column(
+    name = "heritage_of",
+    value = delini$heritage_of,
+    range = delini$heritage_of_range,
+    definition = delini$heritage_of_definition
+  )
+```
+
+The two candidate datasets contain the same assertions about the heritage resources. They differ in the boundary of the review task.
+
+In the dual-wide representation, `evidence_relation` is itself a candidate assertion. It remains distinct from review provenance, which records who performed the review, when the review took place, and what decisions were made.
+
+### Rendering the dual-wide review
+
+The same renderer is used for the dual-wide candidate dataset:
+
+```{r delini-dual-render}
+dual_review_file <- render_review(
+  delini_dual,
+  cols = c(
+    evidence_relation = "Evidence relation",
+    subject = "Subject",
+    instance_of = "instance of",
+    heritage_of = "heritage of",
+    context_1 = "held by"
+  ),
+  title = "Dēliņi dual-wide semantic review",
+  description = "Review the evidence relation and proposed assertions.",
+  project_id = "delini",
+  filename_stem = "delini-dual-wide",
+  sequence = 0L,
+  path = tempdir()
+)
+```
+
+Wide and dual-wide are therefore not different semantic models. They are different **review designs**. The wide review treats evidence as supporting material. The dual-wide review additionally asks the reviewer to evaluate how that evidence relates to the subject.
+
+## From review to reviewed state
+
+After a review has been saved, `read_review()` reads the standalone review artefact back into Betwixt.
+
+```r
+review <- read_review("delini-wide-finalised.html")
+```
+
+The resulting review object preserves the distinction between what was originally proposed and what resulted from human review.
+
+The reviewed state can subsequently be projected in two useful forms:
+
+```text
+                    ┌─ wide → candidate / reviewed / status
+reviewed state ─────┤
+                    └─ long → atomic semantic assertions
+```
+
+These are projections of the same reviewed state rather than alternative review layouts.
+
+## Wide review projection
+
+`project_review_wide()` exposes three related planes of the review:
+
+```r
+wide <- project_review_wide(review)
+```
+
+The **candidate** plane records the values originally proposed for review. The **reviewed** plane records the values resulting from human review. The **status** plane records the review outcome associated with each reviewable value.
+
+Conceptually:
+
+```text
+candidate   proposed value
+reviewed    value after human review
+status      review outcome
+```
+
+Keeping these planes distinct makes changes introduced through review explicit rather than overwriting the original candidate material.
+
+## Long assertion projection
+
+`project_review_long()` projects the reviewed state into atomic semantic assertions:
+
+```r
+long <- project_review_long(review)
+```
+
+Instead of keeping several candidate predicates on one wide row, the long projection represents individual assertions explicitly:
+
+```text
+subject | predicate | value | status
+```
+
+A wide review row can therefore produce several atomic assertions. The long representation makes the subject–predicate–value structure explicit and is suited to subsequent semantic processing and serialisation.
+
+The long projection does not introduce new knowledge. It projects the reviewed state into a representation in which the individual assertions and their review status are explicit.
+
+## Review design and semantic projection
+
+Betwixt therefore distinguishes two operations that can otherwise look superficially similar.
+
+**Review design** determines what is presented to the reviewer:
+
+```text
+wide       evidence supports the reviewed assertions
+dual-wide  evidence relation is itself reviewable
+```
+
+**Projection** determines how the resulting review state is represented:
+
+```text
+wide       candidate, reviewed and status planes
+long       atomic subject–predicate–value assertions
+```
+
+This separation allows the review interface to remain suited to human judgement while the resulting reviewed knowledge can be projected into forms suited to subsequent computational use.
+
+```text
+candidate assertions
+        ↓
+    review design
+        ↓
+    human review
+        ↓
+   reviewed state
+        ↓
+semantic projection
+        ↓
+subsequent processing
+and serialisation
+```

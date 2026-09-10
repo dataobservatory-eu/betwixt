@@ -237,7 +237,7 @@ The same candidate-review workflow used for ordinary semantic assertions can be 
 For example:
 
 ```{r, eval=FALSE}
-mapping <- candidate_dataset(
+mapping <- create_candidate_dataset(
   label = "FUDSS instance of → Wikidata instance of",
   subject = "https://reprexbase.eu/fu/prop/direct/P14"
 ) |>

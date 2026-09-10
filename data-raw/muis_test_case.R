@@ -70,7 +70,7 @@ review_input <- tibble::tribble(
 # Construct candidate dataset
 # -------------------------------------------------------------------
 
-candidates <- candidate_dataset(
+candidates <- create_candidate_dataset(
   evidence_media_url = review_input$thumbnail_url,
   evidence_url = review_input$page_url,
   evidence_text = review_input$label_en,
@@ -94,7 +94,7 @@ candidates <- candidate_dataset(
 # Render current wide review
 # -------------------------------------------------------------------
 
-betwixt_render(
+render_review(
   candidates,
   cols = c(
     subject = "Digital image",

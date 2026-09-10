@@ -17,7 +17,7 @@ Description: Provides a lightweight framework for constructing, reviewing, and
    particular review interface.
 URL: https://betwixt.dataobservatory.eu/
 BugReports: https://github.com/dataobservatory-eu/betwixt/issues
-License: GPL (>= 3) + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)

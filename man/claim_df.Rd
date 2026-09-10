@@ -3,10 +3,13 @@
 \name{print.claim_df}
 \alias{print.claim_df}
 \alias{claim_df}
+\alias{is_claim_df}
 \alias{is.claim_df}
 \title{Scoped semantic claims}
 \usage{
 \method{print}{claim_df}(x, ...)
+
+is_claim_df(x)
 
 is.claim_df(x)
 }

@@ -66,9 +66,15 @@ as_claim_df.data.frame <- function(x) {
   new_claim_df(x)
 }
 
+#' @rdname claim_df
+#' @export
+is_claim_df <- function(x) {
+  inherits(x, "claim_df")
+}
 
 #' @rdname claim_df
 #' @export
 is.claim_df <- function(x) {
-  inherits(x, "claim_df")
+  .Deprecated("is_claim_df")
+  is_claim_df(x)
 }

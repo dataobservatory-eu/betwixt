@@ -4,9 +4,9 @@
 #' Converts a Betwixt candidate dataset into a simple list structure that can
 #' subsequently be used to generate a review interface.
 #'
-#'
-#' Candidate columns are identified by accompanying `_range` and
-#' `_definition` columns. For example, the candidate column `instance_of`
+#' Candidate columns are identified by an accompanying `_range` or
+#' `_definition` column. A candidate may have either or both.
+#' For example, the candidate column `instance_of`
 #' is associated with `instance_of_range` and `instance_of_definition`.
 #'
 #' Pipe-separated values in `evidence_media_url` and `evidence_url` are parsed
@@ -25,32 +25,16 @@
 #' @noRd
 #' @keywords internal
 prepare_review_context <- function(candidate) {
-  # Validate the candidate dataset.
-  if (!is.data.frame(candidate)) {
-    stop("candidate must be a data frame.", call. = FALSE)
-  }
 
-  # Convert a canonical or legacy candidate range to a character vector.
+  # Validate the candidate dataset.
+  validate_candidate_dataset(candidate)
+
+  # Convert a pipe-separated value to a character vector.
   parse_range <- function(x) {
     if (is.na(x)) {
       return(character())
     }
     trimws(strsplit(x, "|", fixed = TRUE)[[1]])
-  }
-
-  # Check the columns required by every candidate dataset.
-  required <- c(
-    "row_number", "evidence_url", "evidence_media_url", "evidence_text",
-    "label", "description"
-  )
-
-  missing <- setdiff(required, names(candidate))
-
-  if (length(missing) > 0) {
-    stop(
-      "Missing required columns: ", paste(missing, collapse = ", "),
-      call. = FALSE
-    )
   }
 
   # Identify candidate and contextual columns.
@@ -60,21 +44,34 @@ prepare_review_context <- function(candidate) {
   range_names <- sub("_range$", "", range_cols)
   definition_names <- sub("_definition$", "", definition_cols)
 
-  candidate_cols <- intersect(range_names, definition_names)
-  context_cols <- grep("^context_[0-9]+$", names(candidate), value = TRUE)
+  candidate_cols <- union(range_names, definition_names)
+  candidate_cols <- candidate_cols[candidate_cols %in% names(candidate)]
+  context_cols <- grep("^context_", names(candidate), value = TRUE)
 
   # Determine whether the optional evidence relation is present.
   has_evidence_relation <- "evidence_relation" %in% names(candidate)
 
   # Prepare each candidate row for rendering.
   rows <- lapply(seq_len(nrow(candidate)), function(i) {
+
     # Prepare the reviewable candidate assertions.
     assertions <- lapply(candidate_cols, function(col) {
+      range_col <- paste0(col, "_range")
+      definition_col <- paste0(col, "_definition")
+
       list(
         name = col,
         value = candidate[[col]][i],
-        range = parse_range(candidate[[paste0(col, "_range")]][i]),
-        definition = candidate[[paste0(col, "_definition")]][i]
+        range = if (range_col %in% names(candidate)) {
+          parse_range(candidate[[range_col]][i])
+        } else {
+          character()
+        },
+        definition = if (definition_col %in% names(candidate)) {
+          candidate[[definition_col]][i]
+        } else {
+          NA_character_
+        }
       )
     })
 
@@ -84,22 +81,43 @@ prepare_review_context <- function(candidate) {
     })
 
     # Assemble the common rendering information for one row.
-    # Several evidence URL's may be pipe separated.
     row <- list(
       row_number = candidate$row_number[i],
-      evidence_url = parse_range(candidate$evidence_url[i]),
-      evidence_media_url = parse_range(candidate$evidence_media_url[i]),
-      evidence_text = candidate$evidence_text[i],
-      label = candidate$label[i],
-      description = candidate$description[i],
+      evidence_url = if ("evidence_url" %in% names(candidate)) {
+        parse_range(candidate$evidence_url[i])
+      } else {
+        character()
+      },
+      evidence_media_url = if ("evidence_media_url" %in% names(candidate)) {
+        parse_range(candidate$evidence_media_url[i])
+      } else {
+        character()
+      },
+      evidence_text = if ("evidence_text" %in% names(candidate)) {
+        candidate$evidence_text[i]
+      } else {
+        NA_character_
+      },
+      label = if ("label" %in% names(candidate)) {
+        candidate$label[i]
+      } else {
+        NA_character_
+      },
+      description = if ("description" %in% names(candidate)) {
+        candidate$description[i]
+      } else {
+        NA_character_
+      },
       alternative_label = if (
-        "alternative_label" %in% names(candidate)) {
+        "alternative_label" %in% names(candidate)
+      ) {
         candidate$alternative_label[i]
       } else {
         NA_character_
       },
       alternative_description = if (
-        "alternative_description" %in% names(candidate)) {
+        "alternative_description" %in% names(candidate)
+      ) {
         candidate$alternative_description[i]
       } else {
         NA_character_

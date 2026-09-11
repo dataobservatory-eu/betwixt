@@ -271,7 +271,7 @@ The candidate dataset defines the **input to review**. Reviewer decisions and co
 
 Instead, the standalone review records those interventions as review proceeds. The initial review generated above is sequence `0`: it contains the candidate state but no reviewer decisions.
 
-[Open the initial candidate review](examples/muis-garments-review.html)
+[Open the initial candidate review](https://usebetwixt.com/examples/muis-garments-review.html)
 
 ### Saving a review
 
@@ -279,7 +279,7 @@ Once reviewer interventions are recorded, the review has a state distinct from i
 
 Saving a draft preserves the current review state without finalising the review. The standalone HTML retains the original candidate values while also persisting current descriptive and assertion values, assertion qualifications, row finalisation, row comments, review-level comments, reviewer information, candidate provenance, and review lifecycle metadata.
 
-[Open the saved draft](examples/muis-garments-review_1-draft.html)
+[Open the saved draft](https://usebetwixt.com/examples/muis-garments-review_1-draft.html)
 
 ![](images/clipboard-1597491622.png)
 
@@ -289,15 +289,15 @@ The reviewer can reopen the saved HTML and continue working with the preserved s
 
 Finalising the review preserves the same information but marks the review activity as completed and records its completion time. It does not by itself promote reviewed assertions into a subsequent stabilised semantic state or apply them to an external knowledge system. A draft and a finalised review from the same review cycle therefore belong to the same sequence.
 
-[Open the finalised review](examples/muis-garments-review_1-finalised.html)
+[Open the finalised review](https://usebetwixt.com/examples/muis-garments-review_1-finalised.html)
 
 ![](images/clipboard-1303547488.png)
 
 The three files make the review lifecycle directly inspectable:
 
-1.  [candidate review — sequence 0](examples/muis-garments-review.html)
-2.  [saved draft — sequence 1](examples/muis-garments-review_1-draft.html)
-3.  [finalised review — sequence 1](examples/muis-garments-review_1-finalised.html)
+1.  [candidate review — sequence 0](https://usebetwixt.com/examples/muis-garments-review.html)
+2.  [saved draft — sequence 1](https://usebetwixt.com/examples/muis-garments-review_1-draft.html)
+3.  [finalised review — sequence 1](https://usebetwixt.com/examples/muis-garments-review_1-finalised.html)
 
 This separation is fundamental to Betwixt. The candidate dataset defines *what is proposed for review* and records the provenance of that candidate state. The saved review preserves that state while recording *what the reviewer did with those proposals* and the provenance of the review activity.
 

@@ -1,0 +1,504 @@
+---
+title: "Betwixt Implementation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Betwixt Implementation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Betwixt: Human Review for Semantic Stabilisation
+
+## Introduction
+
+Many contemporary data workflows produce semantic assertions that are plausible enough to use as candidates but not sufficiently warranted to be accepted without human judgement. A metadata reconciliation process may propose that two identifiers refer to the same entity. An AI system may classify an object. A statistical harmonisation process may propose that two variables represent the same concept. A knowledge graph federation may identify apparently corresponding entities or properties.
+
+The difficult part is often not generating such candidates. Automated systems can generate them at considerable scale. The difficult part is deciding which assertions should be relied upon, which should be corrected or rejected, and which require further evidence or expertise.
+
+Betwixt provides a lightweight intermediate layer for this problem. It prepares semantic assertions for bounded human review, records the resulting decisions, and preserves enough provenance to reconstruct how a reviewed semantic state was produced.
+
+The basic process is:
+
+```text
+candidate knowledge
+        ↓
+candidate dataset
+        ↓
+bounded review task
+        ↓
+human review
+        ↓
+reviewed state
+        ↓
+semantic projection
+        ↓
+subsequent use
+```
+
+The purpose of Betwixt is **semantic stabilisation, not workflow management**. It does not attempt to manage organisations, assign complex review processes, or determine the final ontology into which reviewed knowledge should be incorporated. It provides a small representation between the production of candidate knowledge and its subsequent semantic use.
+
+## Semantic stabilisation
+
+Betwixt starts from a distinction between a **candidate state** and a **reviewed state**.
+
+A candidate assertion is sufficiently plausible to warrant inspection but has not yet received the human judgement required for the intended use. Candidates may originate from human observation, statistical processing, metadata extraction, authority reconciliation, filesystem reconstruction, machine learning, large language models, or existing knowledge graphs.
+
+Human review creates a new semantic state. It does not overwrite the candidate state.
+
+This distinction is important because a correction is itself informative. If an automated process proposed one classification and a reviewer selected another, both states matter. The candidate records what was proposed; the reviewed state records what the reviewer concluded. Their relationship provides evidence about the stabilisation process itself.
+
+Betwixt therefore treats review as a state transition:
+
+```text
+candidate state
+      ↓
+    review
+      ↓
+reviewed state
+```
+
+The reviewed state can subsequently become the input to another process. It may be published, projected into another semantic system, compared with another review, or used to generate new candidates. Stabilisation is therefore not assumed to be final or universal.
+
+## Candidate datasets
+
+The reference implementation begins with a **candidate dataset**. This is an ordinary wide data frame in which each row provides the material required to review one or more related assertions.
+
+A simplified candidate dataset might contain:
+
+| row_number | subject | instance_of | heritage_of | context_collection |
+|-----------:|---------|-------------|-------------|--------------------|
+| 1 | Delini farmstead | farmhouse | Livonians | Open-Air Museum |
+| 2 | tablet-woven sash | sash | Livonians | Open-Air Museum |
+
+The `subject` identifies the object about which assertions are being proposed. Other reviewable columns contain candidate semantic values.
+
+Candidate columns can be accompanied by an optional controlled range and an optional semantic definition:
+
+```text
+instance_of
+instance_of_range
+instance_of_definition
+```
+
+The range constrains or suggests values that may be selected during review. The definition identifies the semantic meaning of the value or field where such an external definition is available.
+
+These additions make candidate datasets more explicit without requiring them to adopt a particular domain ontology before review.
+
+### Evidence and descriptive information
+
+Human judgement rarely operates on an isolated semantic assertion. Reviewers may need a photograph, document, source record, description, identifier, or other evidence before they can make a useful decision.
+
+Candidate datasets can therefore carry evidential and descriptive information alongside the assertions under review. For example:
+
+```text
+evidence_url
+evidence_media_url
+evidence_text
+label
+description
+```
+
+These fields make it possible to present a bounded review task without requiring the reviewer to reconstruct the original data-processing environment.
+
+The distinction between evidence and assertion is important. A photograph shown to the reviewer may support a proposed classification, but the photograph is not thereby transformed into the classification being reviewed. Betwixt keeps the reviewable semantic assertion and the material used to evaluate it conceptually separate.
+
+### Context
+
+Some information is necessary for interpreting a row but should not itself become a reviewed assertion. Betwixt represents this explicitly through `context_*` columns:
+
+```text
+context_year
+context_unit
+context_held_by
+```
+
+Context is inherited by the assertions generated from the corresponding row, but it does not receive review status and does not become a semantic assertion merely because it was visible during review.
+
+This distinction prevents an important category error. A reviewer who evaluates an assertion while seeing that an object is held by a particular institution has not necessarily reviewed the institutional attribution itself.
+
+Betwixt therefore separates three things that are often conflated:
+
+```text
+evidence      what helps the reviewer decide
+context       what helps the reviewer interpret the assertion
+assertion     what the reviewer is actually asked to evaluate
+```
+
+## Bounded human review
+
+A candidate dataset is transformed into a bounded review task. The reference implementation renders this task as a standalone HTML document that can be opened in an ordinary web browser.
+
+```text
+candidate dataset
+       ↓
+ standalone HTML
+       ↓
+  human review
+       ↓
+ saved review
+```
+
+The review document contains the candidate values together with the evidence, definitions, controlled ranges, and context needed for judgement. The reviewer can inspect the proposed assertions, modify values where appropriate, qualify decisions, save intermediate work, and finalise the review.
+
+The standalone design is intentional. Human review should not require access to the R session, database, knowledge graph, AI system, or other infrastructure that produced the candidates. The review artefact can therefore cross technical and institutional boundaries while retaining the information necessary to interpret the task.
+
+This also keeps the semantic model independent of the interface. The current implementation uses standalone browser-based review, but the candidate and reviewed states are not defined by HTML. Other interfaces can implement the same model.
+
+## Review status
+
+Review status belongs to the **atomic assertion being evaluated**.
+
+The current implementation distinguishes five statuses:
+
+| status | interpretation |
+|--------|----------------|
+| `pending` | the assertion has not yet reached a final review outcome |
+| `corroborated` | the candidate assertion is retained by the review |
+| `corrected` | the reviewed assertion differs from the candidate |
+| `rejected` | the candidate assertion is not retained |
+| `deferred` | the assertion requires further evidence or judgement |
+
+These statuses describe the result of a particular review activity. They should not be interpreted as universal statements about truth.
+
+A corroborated assertion is sufficiently warranted for the purpose of the review. A deferred assertion may become reviewable when new evidence or expertise becomes available. A corrected assertion preserves the distinction between what was proposed and what was ultimately retained.
+
+This makes review outcomes reproducible without pretending that semantic knowledge becomes permanently settled.
+
+## Candidate and reviewed states
+
+A completed Betwixt review preserves both candidate and reviewed states.
+
+Conceptually:
+
+```text
+candidate dataset
+      │
+      │ human review
+      ↓
+reviewed dataset
+```
+
+The candidate dataset remains the source from which the reviewed dataset was derived. The reviewed state therefore does not erase its semantic history.
+
+This separation is particularly important when candidate assertions originate from automated or AI-assisted systems. If only the final value were retained, it would be impossible to determine whether the reviewer corroborated an automated proposal, corrected it, rejected it, or could not resolve it.
+
+Betwixt instead makes this relationship explicit.
+
+## Wide and long projections
+
+The same review can be represented in different tabular forms without changing its review semantics.
+
+The **wide projection** remains close to the structure used during human review. Candidate, reviewed, and status states are represented as aligned planes:
+
+| row_number | plane | subject | instance_of | heritage_of |
+|-----------:|-------|---------|-------------|-------------|
+| 1 | candidate | Delini farmstead | farmhouse | Livonians |
+| 1 | reviewed | Delini farmstead | farmhouse | Livonians |
+| 1 | status | corroborated | corroborated | corroborated |
+
+This form is convenient for inspection because related assertions remain together in a familiar tabular structure.
+
+The **long projection** decomposes the same material into atomic assertions:
+
+| row_number | plane | subject | predicate | value | status |
+|-----------:|-------|---------|-----------|-------|--------|
+| 1 | candidate | Delini farmstead | instance_of | farmhouse | corroborated |
+| 1 | reviewed | Delini farmstead | instance_of | farmhouse | corroborated |
+| 1 | candidate | Delini farmstead | heritage_of | Livonians | corroborated |
+| 1 | reviewed | Delini farmstead | heritage_of | Livonians | corroborated |
+
+The long representation makes the atomic structure explicit:
+
+```text
+subject → predicate → value
+```
+
+Unlike the wide representation, it does not require a separate status plane. Status can be attached directly to each candidate or reviewed assertion.
+
+Row-scoped `context_*` columns remain inherited context in the long projection. They are repeated where necessary to keep each assertion interpretable, but they do not become predicates and do not acquire review status.
+
+Wide and long are therefore not different semantic models. They are complementary projections of the same review.
+
+## An intermediate semantic representation
+
+Betwixt deliberately stops short of treating reviewed assertions as final domain knowledge.
+
+Consider the following long-form assertion:
+
+```text
+subject    = "fuds:Q7328"
+predicate  = "instance_of"
+value      = "farmhouse"
+```
+
+The strings may eventually correspond to RDF resources, Wikibase entities, database keys, controlled vocabulary terms, or another semantic representation. Betwixt does not require those decisions to have been completed before human review can take place.
+
+This is reflected in the Betwixt ontology. `btx:Assertion` represents an intermediate semantic assertion independently of a domain ontology. Its subject, predicate, and value can remain lexical while their semantic identities are still being stabilised.
+
+For example:
+
+```turtle
+@prefix btx: <https://usebetwixt.com/ns/> .
+
+<reviewed-1/assertion/12>
+    a btx:Assertion ;
+    btx:subject "bed (PLM 7201)" ;
+    btx:predicate "heritage_of" ;
+    btx:value "Do not know" ;
+    btx:status btx:Deferred .
+```
+
+This is an unusual ontology by design. Betwixt is not an ontology of cultural heritage, archives, statistics, music, or another substantive domain. It is an ontology of the **intermediate semantic state produced through review**.
+
+The lexical representation is therefore not a failed attempt at RDF modelling. It allows human judgement to occur before all components of an assertion have been resolved into the identifiers and ontological commitments required by a target system.
+
+The dedicated ontology vignette describes `btx:Assertion`, review statuses, mappings, provenance, and RDF serialisation in more detail.
+
+## Provenance
+
+Betwixt distinguishes the provenance of **candidate preparation** from the provenance of **human review**.
+
+```text
+candidate preparation activity
+          ↓
+    candidate dataset
+          ↓
+      review activity
+          ↓
+     reviewed dataset
+```
+
+A data manager or another responsible agent may prepare the candidate dataset. This process can involve extraction, transformation, reconciliation, automated inference, or AI-assisted processing.
+
+A reviewer subsequently evaluates the resulting candidate assertions.
+
+These are different activities and Betwixt records them separately.
+
+Candidate provenance can identify the responsible data manager, project, generation time, and software involved in preparing the candidate dataset. Review provenance can identify the reviewer and the start, save, and completion times of the review.
+
+This separation matters because the reviewer should not implicitly become responsible for how the candidates were generated, and the person preparing the candidates should not implicitly become responsible for the review decisions.
+
+The RDF representation follows the same distinction using PROV-O activities and agents.
+
+## Human attention as a scarce resource
+
+The purpose of making candidate assertions explicit is not to require humans to review every possible semantic fact manually.
+
+Human expertise is scarce. Automated systems are increasingly capable of extracting observations, generating classifications, suggesting correspondences, and identifying likely semantic relationships. The useful role of human review is therefore to concentrate attention where judgement changes the reliability of the resulting knowledge.
+
+Betwixt supports this by separating candidate generation from review. Candidate-producing systems can operate at scale, while review tasks can be bounded around uncertain, consequential, exceptional, or contested assertions.
+
+The number of observations therefore need not correspond one-to-one with the number of independent human decisions.
+
+For example, an automated process may classify hundreds of similar records with high confidence while identifying a smaller set of ambiguous cases. Betwixt can represent the proposed classifications while allowing human effort to concentrate on the cases where semantic stabilisation is actually required.
+
+This principle is more general than any particular review interface. Betwixt provides a representation in which scarce human judgement can be inserted into otherwise automated semantic production.
+
+## Relation to tidy data
+
+One intellectual precedent for Betwixt is the tidy data paradigm.
+
+Tidy data reduced a large body of database and statistical modelling practice to a small set of conventions that made analytical work easier to reason about. Rows represent observations, columns represent variables, and tables provide a predictable structure for transformation and analysis.
+
+Within an analyst's own environment, however, much semantic information remains implicit. A variable name may be perfectly understandable to its creator while remaining ambiguous to another researcher or automated system. A code may have an obvious interpretation only because of surrounding analytical context.
+
+These assumptions become problematic when data cross organisational, temporal, disciplinary, or computational boundaries.
+
+Betwixt addresses a related problem at the boundary between semantic production and human judgement. Candidate datasets retain the practical advantages of tabular data while making the assertions, evidence, definitions, context, and provenance required for review more explicit.
+
+The comparison is therefore not:
+
+```text
+tidy data versus RDF
+```
+
+but rather:
+
+```text
+tidy data       → practical structure for observations
+Betwixt         → practical structure for semantic review
+RDF/domain KG   → subsequent semantic representation
+```
+
+Betwixt does not replace tidy data or RDF. It occupies the intermediate space where semantic assumptions need to become explicit enough for human judgement.
+
+## From review to semantic projection
+
+A reviewed Betwixt assertion is still an intermediate object. Subsequent processing determines how it should be represented in a target information system.
+
+For example, a reviewed assertion may be projected into:
+
+- an RDF knowledge graph;
+- a Wikibase statement;
+- a relational database;
+- an archival description;
+- a statistical data model;
+- a metadata record;
+- or another candidate dataset for a later review stage.
+
+This separation is deliberate:
+
+```text
+review
+  ↓
+reviewed intermediate assertion
+  ↓
+interpretation and mapping
+  ↓
+target semantic representation
+```
+
+The target projection can apply datatype coercion, identifier reconciliation, ontology mappings, validation rules, and other domain-specific requirements without making those requirements prerequisites for the review itself.
+
+This allows the review model to remain small while supporting heterogeneous downstream systems.
+
+## Bounded federation
+
+The separation between review and final semantic projection becomes particularly useful when independently governed knowledge systems need to interoperate.
+
+Suppose one knowledge graph contains a local assertion:
+
+```text
+local entity → local property → local value
+```
+
+and another graph represents an apparently corresponding statement using different identifiers and ontology terms.
+
+Traditional integration approaches may attempt to establish universal equivalence between the entities, properties, or classes involved. Such equivalence is often stronger than the actual evidence warrants.
+
+Betwixt allows the proposed correspondence itself to become reviewable material.
+
+The process becomes:
+
+```text
+local assertion
+      ↓
+candidate correspondence
+      ↓
+human review
+      ↓
+reviewed correspondence
+      ↓
+bounded projection
+```
+
+A reviewed correspondence may be sufficient for a particular research question, exchange, or federation without asserting that the two underlying semantic systems are universally equivalent.
+
+This preserves local governance. Neither knowledge graph has to adopt the other's ontology, identifiers, or modelling decisions. Betwixt does not need to assert global `owl:sameAs` or `owl:equivalentProperty` relationships merely to enable useful interoperability.
+
+Instead, the federation establishes enough reviewed semantic correspondence to warrant a declared projection.
+
+The boundary records the conditions under which that transformation is considered justified.
+
+This is what makes the projection **bounded**.
+
+When no satisfactory correspondence can be established, `deferred` is a legitimate outcome. Semantic difference does not have to be eliminated merely because two systems need to exchange some knowledge.
+
+The dedicated bounded-federation vignette develops this use case in detail.
+
+## Relation to existing approaches
+
+Betwixt complements rather than replaces existing data and semantic technologies.
+
+| Approach | Primary concern |
+|----------|-----------------|
+| Tidy data | structure of observations |
+| Frictionless data | packaging and exchange |
+| Metadata standards | description of resources |
+| RDF | graph representation |
+| Domain ontologies | formal domain semantics |
+| PROV-O | provenance |
+| Betwixt | human review of intermediate semantic assertions |
+
+The distinction is especially important for knowledge graphs. Betwixt does not reject graph representations; it postpones domain-specific graph commitments until the assertions required for those commitments have been sufficiently stabilised.
+
+Similarly, Betwixt does not replace validation. A SHACL shape, database constraint, or datatype validator can determine whether a representation satisfies formal requirements. Human review addresses a different question: whether the semantic assertion itself is sufficiently warranted for the intended purpose.
+
+Betwixt therefore occupies a deliberately narrow position between candidate semantic production and subsequent formalisation.
+
+## Reference implementation
+
+The R implementation exposes the semantic process through a small set of operations.
+
+Candidate datasets can be constructed programmatically:
+
+```{r, eval=FALSE}
+candidate <- create_candidate_dataset(
+  label = "Delini farmstead",
+  subject = "fuds:Q7328"
+) |>
+  add_candidate_column(
+    name = "instance_of",
+    value = "farmhouse"
+  )
+```
+
+They can also be prepared externally using spreadsheets, databases, OpenRefine, Python, or other tools. The candidate dataset is deliberately an ordinary tabular object rather than a proprietary storage format.
+
+A review document is rendered with:
+
+```{r, eval=FALSE}
+render_review(candidate)
+```
+
+A saved review is reconstructed with:
+
+```{r, eval=FALSE}
+review <- read_review("review-finalised.html")
+```
+
+The review can then be projected:
+
+```{r, eval=FALSE}
+wide <- project_review_wide(review)
+long <- project_review_long(review)
+```
+
+or serialised as RDF:
+
+```{r, eval=FALSE}
+ttl <- serialise_review(
+  review,
+  prefix = "https://example.org/reviews/",
+  filename = "review.ttl"
+)
+```
+
+These operations correspond directly to the conceptual model:
+
+```text
+candidate dataset
+       ↓
+ render_review()
+       ↓
+ human review
+       ↓
+  read_review()
+       ↓
+review object
+   ↙       ↘
+wide       long
+             ↓
+            RDF
+```
+
+The implementation is intentionally small because the important object is not the software interface itself. It is the reproducible transition between candidate and reviewed semantic states.
+
+## Conclusion
+
+Betwixt provides a lightweight intermediate representation for human review in semantic data workflows.
+
+Its central distinction is between candidate knowledge and reviewed knowledge. Candidate assertions remain preserved rather than being overwritten by review. Evidence and context support human judgement without automatically becoming reviewed assertions. Review status belongs to atomic assertions. Candidate preparation and human review retain separate provenance. Wide and long representations provide complementary projections of the same semantic state.
+
+Most importantly, Betwixt does not require semantic uncertainty to be eliminated before review can begin. Assertions can remain intermediate and lexical while humans evaluate whether they are sufficiently warranted. Domain-specific interpretation, ontology alignment, datatype coercion, and final semantic projection can occur afterwards.
+
+This makes Betwixt useful in workflows where semantic knowledge is produced by heterogeneous combinations of people, databases, algorithms, machine learning systems, and knowledge graphs.
+
+The objective is not to create another universal ontology or review platform. It is to provide a small, portable layer in which semantic decisions become **explicit, reviewable, reproducible, and revisable**.

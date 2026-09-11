@@ -12,12 +12,6 @@ navbar:
     right: [github]
 
 reference:
-  - title: Claim objects
-    contents:
-      - claim
-      - claim_df
-      - as_claim_df
-
   - title: Rendering
     contents:
       - create_candidate_dataset
@@ -39,8 +33,6 @@ reference:
 
   - title: Datasets
     contents:
-      - delini_review
-      - delini_range
       - delini
       - small_countries_dataset
       - w3c_life_expectancy

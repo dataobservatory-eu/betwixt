@@ -276,6 +276,7 @@ serialise_reviewer <- function(
   filename,
   reviewer_iri = NULL
 ) {
+  stem <- tools::file_path_sans_ext(filename)
   reviewer <- review$provenance$reviewer
 
   if (is.null(reviewer_iri)) {

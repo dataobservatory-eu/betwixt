@@ -49,7 +49,6 @@
 #' head(long)
 #' @importFrom dplyr select left_join transmute arrange row_number bind_rows
 #' @importFrom tidyr pivot_longer
-#' @importFrom rlang .data
 #' @export
 project_review_long <- function(review) {
   wide <- project_review_wide(review)

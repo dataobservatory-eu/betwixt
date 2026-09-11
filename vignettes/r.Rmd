@@ -17,3 +17,32 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(betwixt)
 ```
+
+
+The reference implementation of Betwixt is written in R and follows [tidy data](https://tidyr.tidyverse.org/articles/tidy-data.html) and [tidyverse](https://tidyverse.org/) principles. These principles also inform the design of Betwixt itself: candidate and reviewed semantic states are represented as ordinary tabular data that can be inspected, transformed, combined, and projected using familiar data-management operations.
+
+The R implementation covers the complete Betwixt workflow:
+
+```text
+source data
+    ↓
+candidate generation
+    ↓
+render_review()
+    ↓
+human review
+    ↓
+read_review()
+    ↓
+reviewed state
+    ↓
+post-processing and serialisation
+```
+
+The review interface itself is based on standard **HTML, JavaScript, and CSS**. R prepares the candidate data and renders the standalone review document, but the human review does not require a running R session or server.
+
+The main advantage of the R implementation is that both sides of the review can form part of a reproducible computational workflow. Candidate datasets can be generated programmatically from source data, and reviewed states can subsequently be analysed, transformed, validated, projected, or serialised.
+
+Not every Betwixt use case requires this complete programmatic environment. For users who prepare candidate data interactively in **Excel, OpenRefine, or similar tabular tools**, we plan a minimal standalone Go implementation concentrating on rendering and reading Betwixt review documents.
+
+The R package therefore serves both as a usable implementation and as the reference implementation against which compatible implementations in other programming languages can be developed.

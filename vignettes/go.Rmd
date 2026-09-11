@@ -1,0 +1,63 @@
+---
+title: "A Minimal Betwixt Implementation in Go"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A Minimal Betwixt Implementation in Go}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+A minimal Go implementation of Betwixt is planned for workflows that do not require programmatic candidate generation.
+
+In the R implementation, candidate datasets can be constructed reproducibly from source data using functions such as `create_candidate_dataset()` and `add_candidate_column()`. This is useful in research and data-processing pipelines where candidate generation itself forms part of a reproducible computational workflow.
+
+Many practical review tasks begin elsewhere. A data manager may prepare candidate data in Excel, LibreOffice, OpenRefine, a collection-management system, or another tabular environment. In these cases, Betwixt does not need to reproduce the process that created the candidate dataset. It only needs to accept a candidate dataset that follows the Betwixt tabular conventions.
+
+A minimal Go implementation can therefore concentrate on two operations:
+
+```text
+candidate dataset
+       ↓
+ render_review()
+       ↓
+standalone HTML
+       ↓
+ human review
+       ↓
+  read_review()
+       ↓
+reviewed data
+```
+
+The equivalent of `render_review()` would read a candidate dataset, validate its structure, and create the standalone Betwixt review document. The equivalent of `read_review()` would reconstruct the candidate state, reviewed state, review status, context, and provenance from a saved review.
+
+This makes Go particularly suitable for a small standalone Betwixt application. A compiled executable could provide the review round trip without requiring R, Python, a package environment, or a server.
+
+Such an implementation would be especially useful for people who prepare and clean data interactively in **Excel or OpenRefine**:
+
+```text
+Excel / OpenRefine
+        ↓
+candidate dataset
+        ↓
+   Betwixt Go
+        ↓
+standalone review
+        ↓
+   human review
+        ↓
+   Betwixt Go
+        ↓
+reviewed dataset
+```
+
+Interoperability with the R implementation should be defined by the exchanged artefacts rather than by identical internal code. A candidate dataset accepted by R should also be usable by Go, and a review rendered by one implementation should be readable by the other.
+
+The initial Go implementation can therefore remain deliberately small. Reproducing Betwixt's programmatic candidate-generation API is not a requirement. The priority is a portable implementation of the **candidate dataset → review → reviewed dataset** round trip.

@@ -1,8 +1,8 @@
 ---
-title: "Python Minimal Implementation for Betwixt"
+title: "Implementing Betwixt in Python"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Python Minimal Implementation for Betwixt}
+  %\VignetteIndexEntry{Reimplementing Betwixt in Python}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,5 +13,26 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+Betwixt is intended as a portable semantic review model rather than an R-specific workflow. The current reference implementation is written in R, but its main objects are ordinary tabular data, standalone HTML review documents, and RDF serialisations.
 
-The aim of Betwixt is to serve as a reference implementation. Currently on the R implementation is being developed.
+A Python implementation could therefore begin by reproducing the same transformations:
+
+```         
+candidate dataset
+       ↓
+standalone review
+       ↓
+reviewed state
+       ↓
+wide / long projections
+       ↓
+RDF serialisation
+```
+
+The simplest starting point would be to reproduce the candidate dataset conventions with `pandas`, including reviewable columns, optional `_range` and `_definition` metadata, and display-only `context_*` columns.
+
+The next step would be to reproduce the standalone HTML review and ensure that a review created by the R implementation can be read by Python, and vice versa. Compatibility should be defined by the exchanged artefacts and their semantics rather than by reproducing the internal structure of the R package.
+
+Finally, a Python implementation could reproduce the wide and long projections and serialise the reviewed assertions using the Betwixt ontology and PROV-O.
+
+The R source code can therefore be treated as a reference for behaviour, while the Betwixt candidate dataset, review artefact, projections, and RDF vocabulary provide the interoperability contract.

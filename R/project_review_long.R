@@ -49,116 +49,92 @@
 #' head(long)
 #' @importFrom dplyr select left_join transmute arrange row_number bind_rows
 #' @importFrom tidyr pivot_longer
+#' @importFrom rlang .data
 #' @export
 project_review_long <- function(review) {
   wide <- project_review_wide(review)
 
   candidate <- wide[wide$plane == "candidate", ]
   reviewed <- wide[wide$plane == "reviewed", ]
+  status <- wide[wide$plane == "status", ]
 
   # Combine candidate and reviewed states.
   states <- dplyr::bind_rows(candidate, reviewed)
 
-  status <- wide[wide$plane == "status", ]
-
-  # Descriptive variables
+  # Identify descriptive and context columns.
   descriptive <- intersect(
-    c("label", "description", "alternative_label", "alternative_description"),
-    names(states)
-  )
-
-  # Context variables
-  context_cols <- grep("^context_", names(states), value = TRUE)
-
-  # Project descriptive fields as atomic assertions.
-  descriptions <- states |>
-    dplyr::select(
-      row_number, dplyr::all_of(context_cols), plane, subject,
-      dplyr::all_of(descriptive)
-    ) |>
-    tidyr::pivot_longer(
-      cols = dplyr::all_of(descriptive),
-      names_to = "predicate",
-      values_to = "value"
-    )
-
-  description_status <- status |>
-    dplyr::select(row_number, dplyr::all_of(descriptive)) |>
-    tidyr::pivot_longer(
-      cols = dplyr::all_of(descriptive),
-      names_to = "predicate",
-      values_to = "status"
-    )
-
-  descriptions <- dplyr::left_join(
-    descriptions,
-    description_status,
-    by = c("row_number", "predicate")
-  )
-
-  # Semantic statements from each predicate column -----------------------------
-  # Define columns that are not predicate columns
-  reserved <- grepl(
-    paste0(
-      "^(row_number|plane|evidence_|label$|description$|alternative_label$|",
-      "alternative_description$|context_|subject$|subject_)"
+    c(
+      "label", "description", "alternative_label",
+      "alternative_description"
     ),
     names(states)
   )
+  context_cols <- grep("^context_", names(states), value = TRUE)
 
-  predicate_cols <- names(states)[!reserved]
-
-  # Combine the semantic triplet into one atomic assertion.
-  semantic <- states |>
-    dplyr::select(
-      row_number, dplyr::all_of(context_cols), plane, subject,
-      dplyr::all_of(predicate_cols)
-    ) |>
+  # Project descriptive fields as atomic assertions.
+  description_cols <- c(
+    "row_number", context_cols, "plane", "subject", descriptive
+  )
+  descriptions <- states |>
+    dplyr::select(dplyr::all_of(description_cols)) |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(predicate_cols),
-      names_to = "predicate",
-      values_to = "value"
+      cols = dplyr::all_of(descriptive),
+      names_to = "predicate", values_to = "value"
     )
 
-  # Add status to semantic assertions ----------------------------------------
-
-  semantic_status <- status |>
-    dplyr::select(row_number, dplyr::all_of(predicate_cols)) |>
+  description_status <- status |>
+    dplyr::select(dplyr::all_of(c("row_number", descriptive))) |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(predicate_cols),
-      names_to = "predicate",
-      values_to = "status"
+      cols = dplyr::all_of(descriptive),
+      names_to = "predicate", values_to = "status"
     )
 
-  semantic <- dplyr::left_join(
-    semantic,
-    semantic_status,
+  descriptions <- dplyr::left_join(
+    descriptions, description_status,
     by = c("row_number", "predicate")
   )
 
+  # Identify semantic predicate columns.
+  reserved <- grepl(
+    paste0(
+      "^(row_number|plane|evidence_|label$|description$|",
+      "alternative_label$|alternative_description$|context_|",
+      "subject$|subject_)"
+    ),
+    names(states)
+  )
+  predicate_cols <- names(states)[!reserved]
 
-  # Long add descriptions as statements --------------------------------------
-  # This is a long projections and the dataset expands in rows, not columns
-  x <- dplyr::bind_rows(descriptions, semantic) |>
-    dplyr::arrange(row_number)
-
-  # Assertion number
-  # The long projection has rows per assertion, more numerous than wide rows
-  x |>
-    dplyr::mutate(
-      # add assertion number and constants
-      assertion_number = dplyr::row_number(),
-      reviewer = review$provenance$reviewer,
-      generated_at = review$provenance$ended_at
-    ) |>
-    dplyr::select(
-      # reorganise the output
-      assertion_number, row_number, dplyr::all_of(context_cols),
-      plane, subject, predicate, value,
-      status, reviewer, generated_at
+  # Project semantic fields as atomic assertions.
+  semantic_cols <- c(
+    "row_number", context_cols, "plane", "subject", predicate_cols
+  )
+  semantic <- states |>
+    dplyr::select(dplyr::all_of(semantic_cols)) |>
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(predicate_cols),
+      names_to = "predicate", values_to = "value"
     )
 
-  x |>
+  # Add review status to semantic assertions.
+  semantic_status <- status |>
+    dplyr::select(dplyr::all_of(c("row_number", predicate_cols))) |>
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(predicate_cols),
+      names_to = "predicate", values_to = "status"
+    )
+
+  semantic <- dplyr::left_join(
+    semantic, semantic_status,
+    by = c("row_number", "predicate")
+  )
+
+  # Combine descriptive and semantic assertions.
+  x <- dplyr::bind_rows(descriptions, semantic) |>
+    dplyr::arrange(.data$row_number)
+
+  # Add assertion identity and provenance.
+  x <- x |>
     dplyr::mutate(
       assertion_number = dplyr::row_number(),
       reviewer = review$provenance$reviewer,
@@ -174,14 +150,18 @@ project_review_long <- function(review) {
       software_agent = review$provenance$software_agent,
       software_version = review$provenance$software_version,
       project_id = review$provenance$project_id
-    ) |>
-    dplyr::select(
-      assertion_number, row_number, dplyr::all_of(context_cols),
-      plane, subject, predicate, value, status,
-      reviewer, reviewer_email, reviewer_iri,
-      started_at, saved_at, ended_at,
-      data_manager, data_manager_email, data_manager_iri,
-      candidate_generated_at, software_agent, software_version,
-      project_id
     )
+
+  # Set the canonical long-form column order.
+  output_cols <- c(
+    "assertion_number", "row_number", context_cols,
+    "plane", "subject", "predicate", "value", "status",
+    "reviewer", "reviewer_email", "reviewer_iri",
+    "started_at", "saved_at", "ended_at",
+    "data_manager", "data_manager_email", "data_manager_iri",
+    "candidate_generated_at", "software_agent", "software_version",
+    "project_id"
+  )
+
+  dplyr::select(x, dplyr::all_of(output_cols))
 }

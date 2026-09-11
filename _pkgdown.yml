@@ -41,7 +41,7 @@ articles:
   - title: Concepts
     navbar: Concepts
     contents:
-      - scoped-claims
+      - implementation
       - layout
       - betwixt-vocabulary
 
@@ -56,6 +56,7 @@ articles:
     navbar: Implementations
     contents:
       - r
+      - go
       - python
 
 authors:

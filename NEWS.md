@@ -1,3 +1,20 @@
+# betwixt 0.0.8
+
+## Review representation, provenance, and RDF
+
+* Added the Betwixt vocabulary for representing intermediate semantic assertions, review statuses, mappings, and provenance without requiring adoption of a domain ontology.
+
+* Improved provenance handling throughout the review round trip, keeping candidate preparation and human review as distinct activities and preserving data-manager, reviewer, project, software, and timestamp metadata.
+
+* Added `project_review_wide()` for representing candidate, reviewed, and status states as aligned tabular planes while preserving row-scoped context.
+
+* Added `project_review_long()` for projecting reviews into atomic subject–predicate–value assertions with assertion-level review status, inherited context, and provenance.
+
+* Added RDF serialisation of candidate and reviewed states using the Betwixt vocabulary and PROV-O, preserving the derivation of reviewed datasets from their candidate state.
+
+* Added `serialise_review()` as the canonical RDF serialisation interface, with `serialize_review()` provided as an American-English alias.
+
+
 # betwixt 0.0.7
 
 ## Candidate-data contract and portability

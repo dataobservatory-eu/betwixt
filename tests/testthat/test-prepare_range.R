@@ -4,67 +4,38 @@ test_that("prepare_range returns an empty list for NULL", {
     type = "value"
   )
 
-  expect_identical(
-    result,
-    list()
-  )
+  expect_identical(result, list())
 })
 
 test_that("prepare_range selects a range type", {
-  result <- prepare_range(
-    range = delini_range,
-    type = "subject"
-  )
-
-  expect_true(
-    length(result) > 0
-  )
-
-  expect_true(
-    all(vapply(
-      result,
-      function(x) is.list(x),
-      logical(1)
-    ))
-  )
-})
-
-test_that("prepare_range orders values by rank", {
   range <- data.frame(
-    type = c(
-      "value",
-      "value"
-    ),
-    rank = c(
-      2,
-      1
-    ),
-    label = c(
-      "second",
-      "first"
-    ),
+    type = c("subject", "value"),
+    rank = c(1, 1),
+    label = c("subject one", "value one"),
     namespace = NA_character_,
     url = NA_character_
   )
 
-  result <- prepare_range(
-    range = range,
-    type = "value"
+  result <- prepare_range(range, type = "subject")
+
+  expect_length(result, 1)
+  expect_identical(result[[1]]$label, "subject one")
+})
+
+test_that("prepare_range orders values by rank", {
+  range <- data.frame(
+    type = c("value", "value"),
+    rank = c(2, 1),
+    label = c("second", "first"),
+    namespace = NA_character_,
+    url = NA_character_
   )
 
-  labels <- vapply(
-    result,
-    function(x) x$label,
-    character(1)
-  )
+  result <- prepare_range(range = range, type = "value")
 
-  expect_identical(
-    labels,
-    c(
-      "first",
-      "second"
-    )
-  )
+  labels <- vapply(result, function(x) x$label, character(1))
+
+  expect_identical(labels, c("first", "second"))
 })
 
 test_that("prepare_range constructs display labels", {
@@ -81,14 +52,8 @@ test_that("prepare_range constructs display labels", {
     type = "value"
   )
 
-  expect_identical(
-    result[[1]]$display_label,
-    "AAT:farmhouse"
-  )
-
-  expect_true(
-    result[[1]]$has_url
-  )
+  expect_identical(result[[1]]$display_label, "AAT:farmhouse")
+  expect_true(result[[1]]$has_url)
 })
 
 test_that("prepare_range recognises other", {
@@ -233,11 +198,7 @@ test_that("prepare_range excludes the current value", {
     current = "farmhouse"
   )
 
-  labels <- vapply(
-    result,
-    function(x) x$label,
-    character(1)
-  )
+  labels <- vapply(result, function(x) x$label, character(1))
 
   expect_identical(
     labels,
@@ -260,11 +221,7 @@ test_that("prepare_range excludes current value within a wide field", {
       "instance_of",
       "inventory_number"
     ),
-    rank = c(
-      1,
-      2,
-      1
-    ),
+    rank = c(1, 2, 1),
     label = c(
       "farmhouse",
       "image",

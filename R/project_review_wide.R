@@ -38,19 +38,17 @@ project_review_wide <- function(review) {
   candidate <- review$candidate
   reviewed <- review$reviewed
 
-  # Find descriptive and explicitly qualified semantic assertions.
+  # Identify descriptive and qualified semantic assertions.
   descriptive <- intersect(
-    c(
-      "label", "description", "alternative_label",
-      "alternative_description"
-    ),
+    c("label", "description", "alternative_label",
+      "alternative_description"),
     names(candidate)
   )
   q_cols <- grep("_qualification$", names(reviewed), value = TRUE)
   semantic <- sub("_qualification$", "", q_cols)
   cols <- unique(c(descriptive, semantic))
 
-  # Derive the review state of each assertion.
+  # Derive the review status of each assertion.
   status <- candidate
   status[cols] <- lapply(cols, function(x) {
     q_col <- paste0(x, "_qualification")
@@ -78,14 +76,17 @@ project_review_wide <- function(review) {
   reviewed <- reviewed[keep]
   status <- status[keep]
 
+  # Combine the three planes and place plane after row_number.
   result <- dplyr::bind_rows(
-    candidate |> dplyr::mutate(plane = "candidate"),
-    reviewed |> dplyr::mutate(plane = "reviewed"),
-    status |> dplyr::mutate(plane = "status")
-  ) |>
-    dplyr::relocate(plane, .after = row_number)
+    dplyr::mutate(candidate, plane = "candidate"),
+    dplyr::mutate(reviewed, plane = "reviewed"),
+    dplyr::mutate(status, plane = "status")
+  )
+  result <- dplyr::relocate(
+    result, dplyr::all_of("plane"),
+    .after = dplyr::all_of("row_number")
+  )
 
   attr(result, "provenance") <- review$provenance
-
   result
 }

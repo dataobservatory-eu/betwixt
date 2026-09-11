@@ -10,7 +10,7 @@
 WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![devel-version](https://img.shields.io/badge/devel%20version-0.0.7-blue.svg)](https://github.com/dataobservatory-eu/betwixt)
 [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
-
+[![R-CMD-check](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Betwixt is a lightweight framework for constructing, representing, and
@@ -77,6 +77,7 @@ render_review(
   sequence = 0L,
   path = tempdir()
 )
+#> Review rendered: C:\Users\DANIEL~1\AppData\Local\Temp\RtmpKK1xJB/delini-wide.html
 ```
 
 The resulting standalone HTML review presents the evidence and

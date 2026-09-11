@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 
 [![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![devel-version](https://img.shields.io/badge/devel%20version-0.0.7-blue.svg)](https://github.com/dataobservatory-eu/betwixt) [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
-
+[![R-CMD-check](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Betwixt is a lightweight framework for constructing, representing, and reviewing candidate semantic claims in tabular data. It provides a pragmatic review layer in which candidate knowledge can be organised into bounded review tasks and presented for human judgement.
@@ -36,8 +36,7 @@ pak::pak("dataobservatory-eu/betwixt")
 
 ## Example
 
-The `delini` dataset provides a small cultural heritage example containing
-candidate semantic assertions prepared for human review:
+The `delini` dataset provides a small cultural heritage example containing candidate semantic assertions prepared for human review:
 
 ```{r example}
 library(betwixt)

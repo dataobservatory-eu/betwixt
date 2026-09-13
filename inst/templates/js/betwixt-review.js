@@ -67,6 +67,22 @@
     return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   }
 
+    // Build a lookup from the initial candidate-definition pairs.
+  const definitions = new Map();
+
+  document.querySelectorAll(".semantic-cell").forEach(cell => {
+    const definition = cell.querySelector(".definition-link");
+
+    if (!definition) {
+      return;
+    }
+
+    const key =
+      `${cell.dataset.column}::${cell.dataset.candidate}`;
+
+    definitions.set(key, definition.href);
+  });
+
   // Attach review controls to each row.
   rows.forEach(row => {
     row.querySelectorAll("[data-qualify]").forEach(button => {
@@ -82,11 +98,12 @@
       });
     });
 
-    row.querySelectorAll(".candidate-select").forEach(select => {
+        row.querySelectorAll(".candidate-select").forEach(select => {
       const cell = select.closest(".semantic-cell");
       const writeIn = cell.querySelector(".write-in");
+      const definition = cell.querySelector(".definition-link");
 
-      const updateWriteIn = () => {
+      const updateSelection = () => {
         const show = select.value === "__other__";
 
         writeIn.style.display = show ? "block" : "none";
@@ -98,10 +115,24 @@
         if (show) {
           writeIn.focus();
         }
+
+        if (definition) {
+          const key =
+            `${cell.dataset.column}::${select.value}`;
+
+          const href = definitions.get(key);
+
+          if (href) {
+            definition.href = href;
+            definition.style.display = "";
+          } else {
+            definition.style.display = "none";
+          }
+        }
       };
 
-      select.addEventListener("change", updateWriteIn);
-      updateWriteIn();
+      select.addEventListener("change", updateSelection);
+      updateSelection();
     });
 
     const check = row.querySelector(".finalise-check");

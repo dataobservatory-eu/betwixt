@@ -55,14 +55,7 @@ review_context_html <- function(
   row_comment = FALSE
 ) {
   # Escape text before inserting it into HTML.
-  escape_html <- function(x) {
-    x <- as.character(x)
-    x <- gsub("&", "&amp;", x, fixed = TRUE)
-    x <- gsub("<", "&lt;", x, fixed = TRUE)
-    x <- gsub(">", "&gt;", x, fixed = TRUE)
-    x <- gsub('"', "&quot;", x, fixed = TRUE)
-    x
-  }
+  # See escape_html() in utils.R
 
   # Return a presentation label or fall back to the column name.
   column_label <- function(x, labels) {
@@ -74,14 +67,7 @@ review_context_html <- function(
   }
 
   # Render one review qualification control.
-  qualification_html <- function() {
-    paste0(
-      '<div class="qualify">',
-      '<button data-qualify="defer">Defer</button>',
-      '<button data-qualify="reject">Reject</button>',
-      "</div>"
-    )
-  }
+  # See qualification_html() in utils.R
 
   # Create the optional reviewer comment
   row_comment_header <- if (row_comment) {
@@ -91,98 +77,8 @@ review_context_html <- function(
   }
 
   # Render one reviewable assertion.
-  assertion_html <- function(assertion) {
-    value <- escape_html(assertion$value)
-    has_definition <- !is.na(assertion$definition) &&
-      nzchar(assertion$definition)
-    is_url <- grepl(
-      "^https?://",
-      as.character(assertion$value),
-      ignore.case = TRUE
-    )
+  # See assertion_html()
 
-    if (length(assertion$range) == 0) {
-      # Link a resolved entity, link a URL value, or allow creation of an
-      # unresolved one.
-      if (has_definition) {
-        control <- paste0(
-          '<a class="entity-link" href="',
-          escape_html(assertion$definition),
-          '" target="_blank" rel="noopener">',
-          value,
-          "</a>"
-        )
-      } else if (is_url && assertion$name != "subject") {
-        control <- paste0(
-          '<a class="entity-link" href="',
-          escape_html(assertion$value),
-          '" target="_blank" rel="noopener">',
-          value,
-          "</a>"
-        )
-      } else {
-        control <- paste0(
-          '<input class="subject-input" type="text" value="',
-          value,
-          '">',
-          '<button type="button" class="create-item">',
-          "Create new item",
-          "</button>"
-        )
-      }
-    } else {
-      options <- vapply(assertion$range, function(option) {
-        selected <- if (identical(option, assertion$value)) {
-          " selected"
-        } else {
-          ""
-        }
-
-        option_value <- if (identical(option, "Other\u2026")) {
-          "__other__"
-        } else {
-          escape_html(option)
-        }
-
-        paste0(
-          '<option value="', option_value, '"', selected, ">",
-          escape_html(option),
-          "</option>"
-        )
-      }, character(1))
-
-      control <- paste0(
-        '<select class="candidate-select">',
-        paste(options, collapse = ""),
-        "</select>",
-        '<input class="write-in" placeholder="Enter another value">'
-      )
-    }
-
-    definition <- ""
-
-    # Controlled assertions retain a separate definition link.
-    if (length(assertion$range) > 0 && has_definition) {
-      definition <- paste0(
-        '<a class="definition-link" href="',
-        escape_html(assertion$definition),
-        '" target="_blank" rel="noopener">Definition</a>'
-      )
-    }
-
-    # Preserve the assertion identity and original candidate value.
-    paste0(
-      '<td class="semantic-cell" data-column="',
-      escape_html(assertion$name),
-      '" data-qualification="none" data-candidate="',
-      value,
-      '">',
-      control,
-      definition,
-      qualification_html(),
-      "</td>"
-    )
-  }
 
   # Render one display-only context value.
   context_html <- function(item) {

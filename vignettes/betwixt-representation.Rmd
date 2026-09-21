@@ -1,0 +1,579 @@
+---
+title: "Betwixt Representation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Betwixt Representation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(betwixt)
+```
+
+## Introduction
+
+The design of Betwixt starts from the principles of [tidy data](https://vita.had.co.nz/papers/tidy-data.pdf) introduced by Wickham and implemented throughout the [tidyverse](https://tidyverse.org/). Tidy data provides a simple and powerful relational discipline: variables are represented by columns, observations by rows, and different types of observational units by tables. This organisation makes data transformation, visualisation and modelling easier to express as reproducible computational operations.
+
+The [`dataset`](https://dataset.dataobservatory.eu/) package builds on these principles for statistical data that must remain interpretable beyond the computational environment in which they were originally prepared. Its semantic dataset representation makes variable definitions and other metadata explicit, and its data-cube perspective distinguishes the dimensions, measures and attributes associated with statistical observations. This is particularly important when datasets originate from different sources, waves or computational environments: two columns can have identical names and compatible storage types without necessarily representing the same statistical concept.
+
+Betwixt addresses a related problem at the boundary between *semantic knowledge production and review*. Candidate knowledge may be produced by different analysts, software systems, AI agents or computational environments and subsequently presented for review in another environment. Some of the semantic decisions required to combine these outputs cannot safely be reduced to syntactic operations such as matching column names or identifiers. They may require an explicit judgement about observational-unit identity, variable meaning, or the relationship between a supplied resource and the subject of an assertion.
+
+The Betwixt representation therefore retains the basic discipline of tidy data while introducing a small number of deliberate extensions for semantic review. Serialised `input` objects establish the boundary between producing and reviewing environments; `context_*` attributes carry information needed to interpret an observation without themselves becoming objects of review; candidate and final columns expose semantic state transitions; and identified dimensions provide coordinates that can be used both to organise observations and, when promoted to subject identity, to compose further knowledge.
+
+This vignette explains these representational choices and their relationship to tidy data, data cubes and simple graph representations. Its purpose is not to introduce an alternative general-purpose data model. Rather, it describes a bounded tabular representation intended to make semantic decisions inspectable, reviewable and reproducible when knowledge crosses computational boundaries.
+
+## From `evidence` to `input`
+
+Earlier versions of Betwixt used terms such as `evidence_url`, `evidence_media_url`, and `evidence_text`. These names made a semantic commitment that is not always warranted. A resource supplied to a review process is not necessarily evidence for the assertion being reviewed. It may be a candidate dataset, source document, image, previous semantic state, generated output, or another artefact whose role has yet to be established.
+
+Betwixt therefore uses **input** as the more neutral term.
+
+An input is a **serialised artefact supplied to a Betwixt review process**. Examples include:
+
+```text
+candidate.csv
+candidate.xlsx
+eurobarometer794.sav
+https://example.com/delini001.jpg
+archive.wacz
+```
+
+`input` describes the artefact's operational role in the review process rather than asserting what kind of thing it is or what evidential role it has.
+
+This also establishes an important boundary. Betwixt does not need a special input such as `[current environment]`. Candidate production may take place programmatically in an R, Python, AI-agent, or other computational environment, but Betwixt begins after a serialisation boundary:
+
+```text
+[current computational environment]
+        ↓
+candidate production
+        ↓
+serialisation
+        ↓
+candidate.csv
+        ↓
+read_to_betwixt()
+        ↓
+Betwixt review
+```
+
+The serialised candidate is therefore a reproducible handover object between knowledge production and review.
+
+## Computational-environment boundaries
+
+The conventional tidy-data workflow normally takes place within a single analytical environment. An analyst reads or constructs data, understands what its variables and observational units mean, tidies them, and applies deterministic transformations.
+
+A great deal of semantic knowledge can consequently remain implicit. If an analyst creates a variable called `CPI`, she may know whether it means Consumer Price Index or Corruption Perceptions Index. That knowledge need not be represented computationally for her own pipeline to execute.
+
+This assumption becomes unsafe when data cross computational or organisational boundaries.
+
+Betwixt is designed for situations in which:
+
+- candidates may originate in multiple computational environments;
+- different analysts or agents may produce them;
+- inputs may have different modalities and serialisation formats;
+- candidate production and candidate review need not use the same software;
+- human judgement may be required before a deterministic transformation can continue.
+
+For example:
+
+```text
+AI agent A ───────→ serialised candidate A ──┐
+AI agent B ───────→ serialised candidate B ──┤
+Python pipeline ──→ serialised candidate C ──┤
+R workflow ───────→ serialised candidate D ──┤
+Excel user ───────→ serialised candidate E ──┘
+                                             ↓
+                                  Betwixt review environment
+                                             ↓
+                                   stabilised semantic state
+```
+
+The review always takes place in a particular computational environment, but the reviewed inputs need not have originated there.
+
+This is particularly important for human review. Tidyverse-style pipelines are deterministic once their transformations have been specified. Semantic preparation, however, often contains an exploratory phase in which a human determines what observations mean, whether two variables correspond, or whether two identifiers refer sufficiently to the same thing.
+
+Betwixt brings this otherwise implicit semantic labour into the reproducible workflow.
+
+## Wide and dual-wide representations
+
+A conventional wide table can be represented schematically as:
+
+```text
+subject | p1 | p2 | p3 | context_*
+```
+
+The `subject` identifies the observational unit. Columns `p1`, `p2`, and `p3` represent variables or properties concerning that subject.
+
+For example:
+
+```text
+subject | name | location | architect | context_source
+S1      | ...  | L1       | P1        | ...
+```
+
+Semantically, this corresponds approximately to a star:
+
+```text
+             name
+              ↑
+location ←── S1 ──→ architect
+```
+
+Betwixt's dual-wide representation introduces candidate and final states so that proposed and reviewed values can be inspected together.
+
+It may additionally place the serialised input beside the assertion:
+
+```text
+input | input_predicate | subject | candidate_p1 | final_p1 | ... | context_*
+```
+
+Conceptually:
+
+```text
+input ── input_predicate ──▶ subject ── predicate ──▶ value
+```
+
+The input relation and domain assertion could be normalised into separate tables:
+
+```text
+INPUT RELATION
+
+input             predicate    subject
+delini001.jpg     depicts      granary
+```
+
+and:
+
+```text
+DOMAIN RELATION
+
+subject     predicate    value
+granary     part_of      farmstead
+```
+
+Betwixt deliberately projects these together for review:
+
+```text
+input          input_predicate   subject   candidate_predicate   candidate_value
+delini001.jpg  depicts           granary   part_of               farmstead
+```
+
+This is therefore a **bounded denormalisation at the review boundary**.
+
+`input_predicate` is important because adjacency alone does not establish why the input and subject belong together. It explicitly records the semantic relationship that warrants placing the input beside observations concerning that subject.
+
+## Long and dual-long representations
+
+The long representation makes the assertion structure explicit:
+
+```text
+subject | predicate | value | context_*
+```
+
+Instead of encoding predicates in column names:
+
+```text
+subject | location | architect | date
+```
+
+the predicates become observations in their own column:
+
+```text
+subject | predicate | value
+S1      | location  | L1
+S1      | architect | P1
+S1      | date      | 1890
+```
+
+This removes much of the semantic ambiguity inherent in wide column names.
+
+The corresponding input-aware form is:
+
+```text
+input | input_predicate | subject | predicate | value | context_*
+```
+
+The dual-long review projection repeats the assertion fields for candidate and final states, for example:
+
+```text
+input
+input_predicate
+subject
+candidate_predicate
+candidate_value
+final_predicate
+final_value
+context_*
+```
+
+The essential semantic chain nevertheless remains:
+
+```text
+input → subject → value
+        predicate
+```
+
+with `input_predicate` expressing the relationship between the serialised input and the subject.
+
+## Input and context
+
+`input` and `context_*` serve related but distinct purposes.
+
+The input identifies the serialised artefact crossing into the review environment:
+
+```text
+input = eurobarometer794.sav
+```
+
+or:
+
+```text
+input = https://example.com/delini001.jpg
+```
+
+`context_*` columns contain information derived from that input and made available to the reviewer:
+
+```text
+input = eurobarometer794.sav
+
+context_wave = "79.4"
+context_question = "QA12"
+context_label = "..."
+```
+
+or:
+
+```text
+input = delini001.jpg
+
+context_filename = "delini001.jpg"
+context_collection = "Dēliņi"
+context_caption = "..."
+```
+
+The crucial distinction is that **context columns are not themselves under review**. They are attributes carried into the review observation to assist interpretation.
+
+If a contextual value itself needs to become the subject of semantic review, it should cease to be merely `context_*` and be represented as a candidate assertion or promoted coordinate.
+
+Thus:
+
+```text
+serialised input
+      ↓
+extraction / projection
+      ↓
+context_* attributes
+      ↓
+review observation
+```
+
+The input remains the reproducible artefact; context is a review-oriented projection derived from it.
+
+## Relationship to tidy-data principles
+
+Tidy data separates variables into columns, observations into rows, and different types of observational units into tables.
+
+Betwixt follows this logic but operates at a boundary where some of the semantic assumptions normally held implicitly by an analyst must become explicit.
+
+There are two principal sources of ambiguity.
+
+### Observational-unit ambiguity
+
+Two identifiers or labels do not necessarily identify the same observational unit.
+
+A syntactically valid join can therefore be semantically invalid.
+
+```text
+A$CPI == B$CPI
+```
+
+does not establish that the two variables mean the same thing.
+
+Similarly, lexical equality between identifiers does not necessarily establish sufficient identity for joining observations from independently governed sources.
+
+### Variable ambiguity
+
+Wide-format column names also carry implicit semantics.
+
+```text
+subject | CPI
+```
+
+does not tell an external reviewer whether `CPI` means Consumer Price Index, Corruption Perceptions Index, or something else.
+
+Long form makes this dimension explicit:
+
+```text
+subject | predicate | value
+```
+
+Hence:
+
+- `subject` makes the observational unit explicit;
+- `predicate` makes the variable/property explicit;
+- `value` contains what is asserted.
+
+Betwixt's dual-wide representation deliberately departs from strict normalisation because the **unit of work is now a review observation**. Information required to determine semantic identity is placed beside the candidate assertion so that the reviewer does not need to reconstruct the computational environment in which the candidate was produced.
+
+The resulting denormalisation is therefore bounded and purposeful rather than arbitrary.
+
+## Relationship to data-cube vocabulary
+
+The data-cube distinction between dimensions, measures and attributes provides another useful interpretation of Betwixt tables.
+
+These roles are treated pragmatically rather than as intrinsic properties of variables.
+
+### Measures
+
+Measures or observed values are things asserted about an observational unit.
+
+```text
+subject | predicate | value
+```
+
+The value occupies the observed position of the assertion.
+
+### Attributes
+
+Attributes accompany an observation and assist its interpretation without themselves becoming observations under review.
+
+Betwixt `context_*` columns naturally correspond to this role.
+
+```text
+context_label
+context_source_page
+context_note
+```
+
+They are carried with the review observation but excluded from the review algebra.
+
+### Dimensions
+
+A dimension is an observational coordinate **promoted to subject identity because further knowledge may need to organise around it**.
+
+For example:
+
+```text
+country | sex   | year | value
+France  | woman | 2025 | 42
+```
+
+`France`, `woman`, and `2025` become particularly useful as dimensions when observations need to be sliced or grouped by them, or when additional knowledge needs to attach to them:
+
+```text
+France ── member_of ──▶ European Union
+France ── capital ─────▶ Paris
+```
+
+Thus dimensions can be understood as **promoted subjects**.
+
+The same underlying information can therefore play different pragmatic roles:
+
+```text
+attribute
+    → carried with an observation
+
+measure
+    → asserted about an observational unit
+
+dimension
+    → promoted to identified coordinate/subject
+      around which observations or further knowledge can organise
+```
+
+These roles are not necessarily permanent. A contextual attribute can later be promoted if it becomes important as a coordinate or join point.
+
+## Relationship to simple graph representations
+
+The long representation corresponds directly to a labelled directed edge:
+
+```text
+subject ── predicate ──▶ value
+```
+
+Multiple rows produce branching:
+
+```text
+A ──p1──▶ B
+A ──p2──▶ C
+A ──p3──▶ D
+```
+
+A value in one assertion may become a subject elsewhere:
+
+```text
+A ──p1──▶ B
+          │
+          p2
+          ↓
+          C
+```
+
+represented tabularly as:
+
+```text
+A | p1 | B
+B | p2 | C
+```
+
+Graph depth therefore does not require increasingly wide tables. It emerges by composing bounded assertions through subject identity.
+
+The input-aware representation adds one preceding relation:
+
+```text
+input ── input_predicate ──▶ subject ── predicate ──▶ value
+```
+
+Individual review tables consequently remain structurally simple while their composition can produce considerably richer graphs.
+
+Blank nodes provide a useful boundary case. A blank node can represent local graph structure without requiring persistent identity. If composition is required at that point, sufficient subject identity must be established. This follows directly from the rule that composition occurs through subject identity rather than requiring a separate blank-node rule.
+
+A broader research hypothesis follows:
+
+> A useful class of semantic graphs may be decomposable into atomic assertions and reconstructed through composition on warranted subject identity, while retaining bounded tabular structures suitable for human review.
+
+Betwixt does not currently need to establish that this covers every possible graph. Implementation across real use cases can reveal the boundaries of the representable graph class and any additional primitives that are genuinely required.
+
+## Planes and their coordinates
+
+Semantic knowledge production can be represented using parallel planes rather than mixing all information into one table or graph.
+
+At minimum, two planes are important.
+
+### Domain plane
+
+The domain plane contains the assertions themselves:
+
+```text
+assertion_id | subject | predicate | value
+A001         | granary | part_of   | farmstead
+A002         | granary | built_in  | 1890
+```
+
+### Provenance plane
+
+The provenance plane records how those assertions or semantic states came about:
+
+```text
+assertion_id | activity | agent | input | ...
+A001         | R017     | ...   | ...   | ...
+A002         | R018     | ...   | ...   | ...
+```
+
+The planes remain distinct but connected through stable coordinates.
+
+For Betwixt/review these coordinates can include:
+
+```text
+project_id
+table_id
+table_state
+row_id
+assertion_id
+```
+
+Their roles are different:
+
+- `project_id` identifies the larger review/knowledge-production context;
+- `table_id` identifies a particular table or review object;
+- `table_state` identifies an ordinal state of that table;
+- `row_id` identifies the review row within the table structure;
+- `assertion_id` identifies the assertion slot across states.
+
+The coordinates allow domain assertions and provenance records to remain connected without inserting provenance metadata into the domain assertions themselves.
+
+A review operation can therefore be understood as a state transition:
+
+```text
+Domain S₀ ───────────────▶ Domain S₁
+     │                         │
+     └── Provenance activity ──┘
+```
+
+Programmatic and human review can use the same model. The difference is how the review decision is produced, not how the resulting state and provenance are represented.
+
+## Coordinates for slicing, grouping and joining
+
+Coordinates serve two related but distinct purposes.
+
+### Slicing and grouping
+
+Dimensions establish coordinates along which a collection of observations can be selected or aggregated.
+
+For example:
+
+```text
+country | sex   | year | value
+France  | woman | 2025 | 42
+France  | man   | 2025 | 39
+Germany | woman | 2025 | 44
+```
+
+can be sliced or grouped by `country`, `sex`, or `year`.
+
+This is the familiar data-cube role of dimensions.
+
+### Joining and semantic composition
+
+When a coordinate is given subject identity, it can also become a semantic composition point.
+
+For example:
+
+```text
+OBSERVATIONS
+
+country | sex   | value
+France  | woman | 42
+```
+
+can connect to:
+
+```text
+COUNTRIES
+
+subject | predicate | value
+France  | capital   | Paris
+France  | member_of | European Union
+```
+
+The important principle is not merely equality of lexical values. The operation requires **sufficient observational-unit identity to warrant the join**.
+
+This need not imply a universal ontological assertion such as:
+
+```text
+A:France owl:sameAs B:France
+```
+
+In bounded federation, a reviewer may determine only that two identifiers have sufficient identity **for the particular operation being performed**.
+
+Thus the progression is:
+
+```text
+coordinate
+    ↓
+promoted subject identity
+    ↓
+potential composition point
+    ↓
+warranted identity for an operation
+    ↓
+join
+```
+
+This connects slicing, grouping and semantic composition without making them identical operations.
+
+A dimension becomes useful analytically because observations can be organised along it. It becomes useful semantically because further knowledge can attach at the same identified coordinate.
+
+The resulting principle is compact:
+
+> **Measures terminate assertions, attributes accompany observations, and dimensions open further structure by promoting observational coordinates to subject identity.**
+
+This provides a common conceptual bridge between tidy data, data cubes, semantic graphs and bounded federation. It also suggests a route towards controlled graph-to-table projections: individual tables remain bounded and human-reviewable, while richer semantic structures emerge through composition on warranted subject identity.

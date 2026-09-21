@@ -58,6 +58,12 @@ Review-wide information such as reviewer identity and IRI, lifecycle
 timestamps, and the review-level comment is returned separately in
 \code{provenance}.
 
+The reconstructed review can be projected into assertion-oriented forms with
+\code{\link[=project_review_wide]{project_review_wide()}} and \code{\link[=project_review_long]{project_review_long()}}. The wide projection
+preserves the candidate, reviewed, and status planes, while the long
+projection represents individual semantic assertions as subject-predicate-value
+records.
+
 Betwixt review files preserve both original candidate values and the current
 reviewed values in machine-readable HTML attributes and controls.
 \code{read_review()} uses these persisted values to reconstruct the two states

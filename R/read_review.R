@@ -17,6 +17,12 @@
 #' timestamps, and the review-level comment is returned separately in
 #' `provenance`.
 #'
+#' The reconstructed review can be projected into assertion-oriented forms with
+#' [project_review_wide()] and [project_review_long()]. The wide projection
+#' preserves the candidate, reviewed, and status planes, while the long
+#' projection represents individual semantic assertions as subject-predicate-value
+#' records.
+#'
 #' @param path A single character string giving the path to a standalone
 #'   Betwixt review HTML file.
 #'

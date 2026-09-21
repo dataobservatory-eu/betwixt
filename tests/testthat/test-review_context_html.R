@@ -362,7 +362,7 @@ test_that("candidate provenance is retained in HTML", {
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",
-    project_id = "example-project"
+    table_id = "example-project"
   )
 
   html <- review_context_html(prepare_review_context(x))
@@ -371,7 +371,7 @@ test_that("candidate provenance is retained in HTML", {
   expect_match(html, 'value="Daniel Antal"', fixed = TRUE)
   expect_match(html, 'data-provenance="data_manager_iri"', fixed = TRUE)
   expect_match(html, 'data-provenance="data_manager_email"', fixed = TRUE)
-  expect_match(html, 'data-provenance="project_id"', fixed = TRUE)
+  expect_match(html, 'data-provenance="table_id"', fixed = TRUE)
   expect_match(html, 'data-provenance="generated_at"', fixed = TRUE)
   expect_match(html, 'data-provenance="software_agent"', fixed = TRUE)
   expect_match(html, 'data-provenance="software_version"', fixed = TRUE)

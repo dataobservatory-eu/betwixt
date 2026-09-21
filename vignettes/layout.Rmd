@@ -140,7 +140,7 @@ wide_review_file <- render_review(
   ),
   title = "Dēliņi semantic review",
   description = "Review the proposed semantic assertions.",
-  project_id = "delini",
+  table_id = "delini",
   filename_stem = "delini-wide",
   sequence = 0L,
   path = tempdir()
@@ -174,10 +174,10 @@ delini_dual <- create_candidate_dataset(
   subject = delini$subject,
   subject_range = delini$subject_range,
   subject_definition = delini$subject_definition,
-  input_relation = c(
+  input_predicate = c(
     "depicts", "depicts", "depicts", "documents", "documents"
   ),
-  input_relation_range = add_candidate_range(
+  input_predicate_range = add_candidate_range(
     "depicts", "documents", "Other…"
   )
 )
@@ -199,7 +199,7 @@ delini_dual <- delini_dual |>
 
 The two candidate datasets contain the same assertions about the heritage resources. They differ in the boundary of the review task.
 
-In the dual-wide representation, `input_relation` is itself a candidate assertion. It remains distinct from review provenance, which records who performed the review, when the review took place, and what decisions were made.
+In the dual-wide representation, `input_predicate` is itself a candidate assertion. It remains distinct from review provenance, which records who performed the review, when the review took place, and what decisions were made.
 
 ### Rendering the dual-wide review
 
@@ -209,7 +209,7 @@ The same renderer is used for the dual-wide candidate dataset:
 dual_review_file <- render_review(
   delini_dual,
   cols = c(
-    input_relation = "Evidence relation",
+    input_predicate = "Evidence relation",
     subject = "Subject",
     instance_of = "instance of",
     heritage_of = "heritage of",
@@ -217,7 +217,7 @@ dual_review_file <- render_review(
   ),
   title = "Dēliņi dual-wide semantic review",
   description = "Review the evidence relation and proposed assertions.",
-  project_id = "delini",
+  table_id = "delini",
   filename_stem = "delini-dual-wide",
   sequence = 0L,
   path = tempdir()

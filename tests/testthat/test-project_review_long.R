@@ -26,7 +26,7 @@ test_that("long projection creates atomic assertions in both states", {
       "started_at", "saved_at", "ended_at",
       "data_manager", "data_manager_email", "data_manager_iri",
       "candidate_generated_at", "software_agent", "software_version",
-      "project_id"
+      "table_id"
     )
   )
 
@@ -153,7 +153,7 @@ test_that("long projection materialises candidate provenance", {
   expect_equal(unique(x$candidate_generated_at), p$generated_at)
   expect_equal(unique(x$software_agent), p$software_agent)
   expect_equal(unique(x$software_version), p$software_version)
-  expect_equal(unique(x$project_id), p$project_id)
+  expect_equal(unique(x$table_id), p$table_id)
 })
 
 

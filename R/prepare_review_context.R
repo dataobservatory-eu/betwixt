@@ -38,7 +38,6 @@
 #' @noRd
 #' @keywords internal
 prepare_review_context <- function(candidate) {
-
   # Validate the candidate dataset.
   validate_candidate_dataset(candidate)
 
@@ -50,7 +49,7 @@ prepare_review_context <- function(candidate) {
       data_manager = "",
       data_manager_iri = "",
       data_manager_email = "",
-      project_id = "",
+      table_id = "",
       generated_at = NA_character_,
       software_agent = "Betwixt",
       software_version = betwixt_version() # see utils.R
@@ -77,7 +76,7 @@ prepare_review_context <- function(candidate) {
   context_cols <- grep("^context_", names(candidate), value = TRUE)
 
   # Determine whether the optional evidence relation is present.
-  has_input_predicate  <- "input_predicate" %in% names(candidate)
+  has_input_predicate <- "input_predicate" %in% names(candidate)
 
   # Prepare each candidate row for rendering.
   rows <- lapply(seq_len(nrow(candidate)), function(i) {
@@ -154,7 +153,7 @@ prepare_review_context <- function(candidate) {
     )
 
     # Add the optional reviewable evidence relation.
-    if (has_input_predicate ) {
+    if (has_input_predicate) {
       row$input_predicate <- candidate$input_predicate[i]
 
       if ("input_predicate_range" %in% names(candidate)) {
@@ -171,7 +170,7 @@ prepare_review_context <- function(candidate) {
   list(
     candidate_columns = candidate_cols,
     context_columns = context_cols,
-    has_input_predicate  = has_input_predicate ,
+    has_input_predicate = has_input_predicate,
     rows = rows,
     provenance = provenance
   )

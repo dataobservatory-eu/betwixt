@@ -24,7 +24,7 @@
 #'
 #' \describe{
 #'   \item{metadata}{
-#'     Review-level metadata including `title`, `description`, `project_id`,
+#'     Review-level metadata including `title`, `description`, `table_id`,
 #'     `sequence`, and `status`.
 #'   }
 #'   \item{provenance}{
@@ -34,8 +34,8 @@
 #'   }
 #'   \item{candidate}{
 #'     A data frame reconstructing the candidate state presented for review.
-#'     It contains row number, evidence fields, descriptive fields, and
-#'     candidate semantic assertion values.
+#'     It contains row number, the fields related to the inputs, the
+#'     descriptive fields, and candidate semantic assertion values.
 #'   }
 #'   \item{reviewed}{
 #'     A data frame reconstructing the persisted reviewed state. It contains
@@ -44,8 +44,9 @@
 #'   }
 #' }
 #'
-#' Empty optional evidence fields and comments are returned as `NA_character_`.
-#' `row_number` is returned as integer and `reviewed$finalised` as logical.
+#' Empty optional fields describing the inputs and comments are returned
+#' as `NA_character_`. `row_number` is returned as integer and
+#' `reviewed$finalised` as logical.
 #'
 #' @details
 #' Betwixt review files preserve both original candidate values and the current
@@ -167,7 +168,7 @@ read_review <- function(path) {
   row_nodes <- xml2::xml_find_all(review_table, ".//tbody/tr")
 
   rows <- lapply(row_nodes, function(row) {
-    # Read evidence.
+    # Read the input links, this needs to be changed later.
     media_xpath <- './/a[contains(@class, "evidence-media-link")]'
     url_xpath <- './/a[contains(@class, "evidence-link")]'
     text_xpath <- './/div[contains(@class, "media-id")]'
@@ -323,7 +324,7 @@ read_review <- function(path) {
     description = xml2::xml_text(
       xml2::xml_find_first(document, description_xpath)
     ),
-    project_id = input_value("project-id"),
+    table_id = input_value("project-id"),
     sequence = as.integer(input_value("review-sequence")),
     status = input_value("review-status")
   )
@@ -334,7 +335,7 @@ read_review <- function(path) {
     data_manager = candidate_provenance_value("data_manager"),
     data_manager_iri = candidate_provenance_value("data_manager_iri"),
     data_manager_email = candidate_provenance_value("data_manager_email"),
-    project_id = candidate_provenance_value("project_id"),
+    table_id = candidate_provenance_value("table_id"),
     generated_at = candidate_provenance_value("generated_at"),
     software_agent = candidate_provenance_value("software_agent"),
     software_version = candidate_provenance_value("software_version"),

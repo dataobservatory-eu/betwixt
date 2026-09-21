@@ -7,7 +7,8 @@ test_that("create_candidate_template() creates the default schema", {
   expect_equal(nrow(x), 0L)
   expect_true(is.integer(x$row_number))
   expect_named(x, c(
-    "row_number", "input_url", "input_media_url", "input_description",
+    "row_number", "input_url", "input_media_url", "input_label",
+    "input_description",
     "label", "description", "subject", "subject_range", "subject_definition"
   ))
 })
@@ -19,6 +20,7 @@ test_that("optional standard columns can be omitted", {
   x <- create_candidate_template(
     input_url = FALSE,
     input_media_url = FALSE,
+    input_label = FALSE,
     input_description = FALSE,
     label = FALSE,
     description = FALSE,
@@ -43,10 +45,10 @@ test_that("alternative descriptive columns can be included", {
 # Evidence relation ------------------------------------------------------
 
 test_that("evidence relation adds its candidate columns", {
-  x <- create_candidate_template(input_relation = TRUE)
+  x <- create_candidate_template(input_predicate = TRUE)
 
-  expect_true("input_relation" %in% names(x))
-  expect_true("input_relation_range" %in% names(x))
+  expect_true("input_predicate" %in% names(x))
+  expect_true("input_predicate_range" %in% names(x))
 })
 
 

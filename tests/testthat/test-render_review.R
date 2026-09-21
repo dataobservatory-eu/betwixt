@@ -18,7 +18,7 @@ test_that("render_review() writes an initial Delini review", {
     title = "Delini semantic review",
     description = "Review the proposed semantic assertions.",
     filename_stem = "delini_wide",
-    project_id = "delini",
+    table_id = "delini",
     sequence = 0L,
     path = path
   )
@@ -119,7 +119,7 @@ test_that("reviewer identity survives the HTML round trip", {
     title = "Delini review",
     reviewer_name = "Daniel Antal",
     reviewer_iri = "https://example.org/d123",
-    project_id = "delini",
+    table_id = "delini",
     filename_stem = stem,
     path = dirname(path)
   )
@@ -127,7 +127,7 @@ test_that("reviewer identity survives the HTML round trip", {
   review <- read_review(path)
 
   expect_equal(review$metadata$title, "Delini review")
-  expect_equal(review$metadata$project_id, "delini")
+  expect_equal(review$metadata$table_id, "delini")
   expect_equal(review$provenance$reviewer, "Daniel Antal")
   expect_equal(review$provenance$reviewer_iri, "https://example.org/d123")
 })
@@ -144,7 +144,7 @@ test_that("candidate provenance survives rendering", {
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",
-    project_id = "example-project"
+    table_id = "example-project"
   )
 
   html <- render_review(candidate)
@@ -158,7 +158,7 @@ test_that("candidate provenance survives rendering", {
   expect_match(html, 'value="Daniel Antal"', fixed = TRUE)
   expect_match(html, 'data-provenance="data_manager_iri"', fixed = TRUE)
   expect_match(html, 'data-provenance="data_manager_email"', fixed = TRUE)
-  expect_match(html, 'data-provenance="project_id"', fixed = TRUE)
+  expect_match(html, 'data-provenance="table_id"', fixed = TRUE)
   expect_match(html, 'data-provenance="generated_at"', fixed = TRUE)
   expect_match(html, 'data-provenance="software_version"', fixed = TRUE)
 })
@@ -276,7 +276,7 @@ test_that("empty candidate provenance is not displayed", {
 
   # Machine-readable provenance remains present.
   expect_match(html, 'data-provenance="data_manager"', fixed = TRUE)
-  expect_match(html, 'data-provenance="project_id"', fixed = TRUE)
+  expect_match(html, 'data-provenance="table_id"', fixed = TRUE)
 })
 
 

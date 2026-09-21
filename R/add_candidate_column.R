@@ -55,11 +55,11 @@
 #' @importFrom dplyr mutate
 #' @export
 add_candidate_column <- function(
-    x,
-    name,
-    value,
-    range = NA_character_,
-    definition = NA_character_
+  x,
+  name,
+  value,
+  range = NA_character_,
+  definition = NA_character_
 ) {
   x[[name]] <- value
   x[[paste0(name, "_range")]] <- range

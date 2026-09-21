@@ -107,7 +107,7 @@ render_review(
   reviewer_name = "Daniel Antal",
   reviewer_iri = "https://orcid.org/0000-0001-7513-6760",
   review_comment = TRUE,
-  project_id = "muis-garments",
+  table_id = "muis-garments",
   filename_stem = "muis-garments-review",
   sequence = 0L,
   path = here::here("inst", "examples")
@@ -118,6 +118,3 @@ file.copy(
   to = here::here("tests", "testthat", "fixtures", "muis-garments-review.html"),
   overwrite = TRUE
 )
-
-
-

@@ -160,7 +160,7 @@ candidates <- create_candidate_dataset(
   data_manager_name = "Daniel Antal",
   data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
   data_manager_email = "daniel@example.org",
-  project_id = "muis-garments"
+  table_id = "muis-garments"
 )
 ```
 
@@ -244,7 +244,7 @@ render_review(
   reviewer_name = "Daniel Antal",
   reviewer_iri = "https://orcid.org/0000-0001-7513-6760",
   review_comment = TRUE,
-  project_id = "muis-garments",
+  table_id = "muis-garments",
   filename_stem = "muis-garments-review",
   sequence = 0L,
   path = "."

@@ -252,7 +252,7 @@ test_that("candidate provenance survives context preparation", {
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",
-    project_id = "example-project"
+    table_id = "example-project"
   )
 
   original <- attr(x, "provenance")

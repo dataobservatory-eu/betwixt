@@ -1,36 +1,51 @@
 #' Prepare a Betwixt review context
 #'
 #' @description
-#' Converts a Betwixt candidate dataset into a simple list structure that can
-#' subsequently be used to generate a review interface.
+#' Prepares a validated Betwixt candidate dataset for rendering as a review
+#' interface.
 #'
-#' Candidate columns are identified by an accompanying `_range` or
+#' The function separates the serialised candidate dataset into its rendering
+#' roles: input information, subject presentation, reviewable assertions,
+#' display-only context, and dataset-level provenance.
+#'
+#' Candidate assertions are identified by the Betwixt candidate-column
+#' contract: an assertion-bearing column accompanied by a `_range` or
 #' `_definition` column. A candidate may have either or both.
-#' For example, the candidate column `instance_of`
-#' is associated with `instance_of_range` and `instance_of_definition`.
 #'
-#' Pipe-separated values in `input_media_url` and `input_url` are parsed
-#' into character vectors. Each review row may therefore contain zero, one, or
-#' multiple evidence media URLs and evidence resource URLs for subsequent
-#' rendering.
+#' `input_url` and `input_media_url` may contain pipe-separated resources and
+#' are parsed into character vectors for rendering. `input_label` and
+#' `input_description` remain distinct in the candidate dataset but are
+#' temporarily combined for presentation by the current renderer.
 #'
-#' @param candidate A Betwixt candidate dataset.
+#' When present, `input_predicate` represents a reviewable candidate relation
+#' directed from the input to the subject. It is distinct from provenance and
+#' from display-only `context_*` columns.
 #'
-#' @return A list containing the candidate column names, context column names,
-#'   whether an evidence relation is present, and row-wise review data. Each
-#'   row contains parsed evidence media and resource URLs, primary and
-#'   alternative descriptive information, reviewable assertions, and
-#'   display-only context.
+#' @param candidate A validated Betwixt candidate dataset.
+#'
+#' @return A renderer-ready list containing the reviewable candidate columns,
+#'   display-only context columns, the presence of an input predicate,
+#'   row-wise rendering data, and dataset-level provenance. Each row contains
+#'   parsed input resources, subject presentation information, reviewable
+#'   assertions, and contextual information.
+#'
+#' @details
+#' This function prepares a rendering projection and does not modify the
+#' serialised candidate dataset. In particular, combining `input_label` and
+#' `input_description` for presentation does not alter their separate semantic
+#' representation in the source data.
 #'
 #' @noRd
 #' @keywords internal
 prepare_review_context <- function(candidate) {
+
   # Validate the candidate dataset.
   validate_candidate_dataset(candidate)
 
   provenance <- attr(candidate, "provenance")
 
   if (is.null(provenance)) {
+    # If there is no provenance at least at Betwixt version number
     provenance <- list(
       data_manager = "",
       data_manager_iri = "",
@@ -40,10 +55,6 @@ prepare_review_context <- function(candidate) {
       software_agent = "Betwixt",
       software_version = betwixt_version() # see utils.R
     )
-  }
-
-  if (is.null(provenance)) {
-    provenance <- list()
   }
 
   # Convert a pipe-separated value to a character vector.
@@ -66,7 +77,7 @@ prepare_review_context <- function(candidate) {
   context_cols <- grep("^context_", names(candidate), value = TRUE)
 
   # Determine whether the optional evidence relation is present.
-  has_evidence_relation <- "input_relation" %in% names(candidate)
+  has_input_predicate  <- "input_predicate" %in% names(candidate)
 
   # Prepare each candidate row for rendering.
   rows <- lapply(seq_len(nrow(candidate)), function(i) {
@@ -143,12 +154,12 @@ prepare_review_context <- function(candidate) {
     )
 
     # Add the optional reviewable evidence relation.
-    if (has_evidence_relation) {
-      row$input_relation <- candidate$input_relation[i]
+    if (has_input_predicate ) {
+      row$input_predicate <- candidate$input_predicate[i]
 
-      if ("input_relation_range" %in% names(candidate)) {
-        row$input_relation_range <- parse_range(
-          candidate$input_relation_range[i]
+      if ("input_predicate_range" %in% names(candidate)) {
+        row$input_predicate_range <- parse_range(
+          candidate$input_predicate_range[i]
         )
       }
     }
@@ -160,7 +171,7 @@ prepare_review_context <- function(candidate) {
   list(
     candidate_columns = candidate_cols,
     context_columns = context_cols,
-    has_evidence_relation = has_evidence_relation,
+    has_input_predicate  = has_input_predicate ,
     rows = rows,
     provenance = provenance
   )

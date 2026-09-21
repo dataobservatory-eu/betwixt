@@ -8,7 +8,7 @@ test_that("prepare_review_context() prepares delini", {
     c("subject", "instance_of", "heritage_of")
   )
   expect_equal(context$context_columns, "context_1")
-  expect_false(context$has_evidence_relation)
+  expect_false(context$has_input_predicate)
   expect_length(context$rows, nrow(delini))
 
   row <- context$rows[[1]]
@@ -22,8 +22,8 @@ test_that("prepare_review_context() prepares delini", {
   expect_equal(row$description, delini$description[1])
   expect_true(is.na(row$alternative_label))
   expect_true(is.na(row$alternative_description))
-  expect_null(row$input_relation)
-  expect_null(row$input_relation_range)
+  expect_null(row$input_predicate)
+  expect_null(row$input_predicate_range)
 })
 
 
@@ -147,28 +147,28 @@ test_that("alternative descriptive information is preserved", {
 test_that("prepare_review_context() supports evidence relations", {
   dual_delini <- delini %>%
     dplyr::mutate(
-      input_relation = "depicts",
-      input_relation_range = add_candidate_range("depicts", "documents")
+      input_predicate = "depicts",
+      input_predicate_range = add_candidate_range("depicts", "documents")
     )
 
   context <- prepare_review_context(dual_delini)
 
-  expect_true(context$has_evidence_relation)
+  expect_true(context$has_input_predicate)
   expect_length(context$rows, nrow(dual_delini))
-  expect_equal(context$rows[[1]]$input_relation, "depicts")
+  expect_equal(context$rows[[1]]$input_predicate, "depicts")
   expect_equal(
-    context$rows[[1]]$input_relation_range,
+    context$rows[[1]]$input_predicate_range,
     c("depicts", "documents")
   )
 
   relations <- vapply(
     context$rows,
-    function(row) row$input_relation,
+    function(row) row$input_predicate,
     character(1)
   )
   expect_true(all(relations == "depicts"))
 
-  ranges <- lapply(context$rows, function(row) row$input_relation_range)
+  ranges <- lapply(context$rows, function(row) row$input_predicate_range)
   expected <- c("depicts", "documents")
   expect_true(all(vapply(ranges, identical, logical(1), expected)))
 })

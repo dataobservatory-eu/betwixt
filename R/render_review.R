@@ -68,6 +68,7 @@ render_review <- function(
   review_comment = FALSE,
   path = NULL
 ) {
+
   # Validate the review sequence.
   if (length(sequence) != 1L ||
     is.na(sequence) ||
@@ -75,6 +76,16 @@ render_review <- function(
     sequence != as.integer(sequence)) {
     stop(
       "sequence must be a single non-negative integer.",
+      call. = FALSE
+    )
+  }
+
+  # Subject is a required column
+  if (!"subject" %in% names(candidate)) {
+    stop(
+      "`render_review()` requires a `subject` column. ",
+      "Each candidate row must identify the subject of the assertions ",
+      "being reviewed.",
       call. = FALSE
     )
   }

@@ -212,6 +212,14 @@ test_that("render_review() validates sequence", {
 })
 
 
+test_that("render_review() requires a subject", {
+  data(delini)
+  delini_no_subject <- delini
+  delini_no_subject$subject <- NULL
+
+  expect_error(render_review(delini_no_subject), "must identify the subject")
+})
+
 # -------------------------------------------------------------------------
 # Presentation
 # -------------------------------------------------------------------------

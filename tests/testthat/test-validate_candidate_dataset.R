@@ -53,6 +53,28 @@ test_that("row_number must be integer", {
   )
 })
 
+test_that("input descriptive columns must be character", {
+  x <- create_candidate_template()
+  x$input_label <- integer()
+
+  expect_error(
+    validate_candidate_dataset(x),
+    "Column.*must be character.*input_label"
+  )
+})
+
+test_that("input descriptive columns must be character", {
+  for (col in c("input_label", "input_description")) {
+    x <- create_candidate_template()
+    x[[col]] <- integer()
+
+    expect_error(
+      validate_candidate_dataset(x),
+      paste0("Column.*must be character.*", col)
+    )
+  }
+})
+
 test_that("standard descriptive columns must be character", {
   x <- create_candidate_template()
   x$label <- integer()
@@ -141,9 +163,7 @@ test_that("row_number must be positive", {
 
 # URLs -------------------------------------------------------------------
 
-# URLs -------------------------------------------------------------------
-
-test_that("pipe-separated evidence URLs are accepted", {
+test_that("pipe-separated input URLs are accepted", {
   x <- data.frame(
     row_number = 1L,
     subject = "Q121",
@@ -153,7 +173,7 @@ test_that("pipe-separated evidence URLs are accepted", {
   expect_invisible(validate_candidate_dataset(x))
 })
 
-test_that("invalid evidence URLs are rejected", {
+test_that("invalid input URLs are rejected", {
   x <- data.frame(
     row_number = 1L,
     subject = "Q121",
@@ -167,7 +187,7 @@ test_that("invalid evidence URLs are rejected", {
 })
 
 
-test_that("invalid evidence media URLs are rejected", {
+test_that("invalid input media URLs are rejected", {
   x <- data.frame(
     row_number = 1L,
     subject = "Q121",

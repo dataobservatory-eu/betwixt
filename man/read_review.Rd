@@ -15,7 +15,7 @@ A named list with four elements:
 
 \describe{
 \item{metadata}{
-Review-level metadata including \code{title}, \code{description}, \code{project_id},
+Review-level metadata including \code{title}, \code{description}, \code{table_id},
 \code{sequence}, and \code{status}.
 }
 \item{provenance}{

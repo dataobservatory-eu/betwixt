@@ -96,7 +96,7 @@ project_review_long <- function(review) {
   # Identify semantic predicate columns.
   reserved <- grepl(
     paste0(
-      "^(row_number|plane|input_|label$|description$|",
+      "^(row_number|plane|evidence_|label$|description$|",
       "alternative_label$|alternative_description$|context_|",
       "subject$|subject_)"
     ),
@@ -148,7 +148,7 @@ project_review_long <- function(review) {
       candidate_generated_at = review$provenance$generated_at,
       software_agent = review$provenance$software_agent,
       software_version = review$provenance$software_version,
-      project_id = review$provenance$project_id
+      table_id = review$provenance$table_id
     )
 
   # Set the canonical long-form column order.
@@ -159,7 +159,7 @@ project_review_long <- function(review) {
     "started_at", "saved_at", "ended_at",
     "data_manager", "data_manager_email", "data_manager_iri",
     "candidate_generated_at", "software_agent", "software_version",
-    "project_id"
+    "table_id"
   )
 
   dplyr::select(x, dplyr::all_of(output_cols))

@@ -13,7 +13,7 @@ render_review(
   filename_stem = "betwixt-review",
   reviewer_name = "",
   reviewer_iri = "",
-  project_id = "",
+  table_id = "",
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
@@ -41,7 +41,7 @@ files. Review sequences greater than \code{0} append the sequence number.}
 \item{reviewer_iri}{Character string containing an IRI identifying the
 reviewer, such as an ORCID, ISNI, or Wikidata URI.}
 
-\item{project_id}{Character string identifying the review project.}
+\item{table_id}{Character string identifying the review project.}
 
 \item{sequence}{A single non-negative integer identifying the review
 sequence. The initial candidate review has sequence \code{0}.}

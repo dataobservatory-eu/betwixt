@@ -14,6 +14,7 @@ export(validate_candidate_dataset)
 importFrom(dplyr,
   arrange,
   bind_rows,
+  case_when,
   left_join,
   mutate,
   row_number,

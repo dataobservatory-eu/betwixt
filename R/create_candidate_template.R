@@ -13,14 +13,22 @@
 #' before rendering.
 #' @param input_url Include the `input_url` column.
 #' @param input_media_url Include the `input_media_url` column.
-#' @param input_description Include the `input_description` column.
-#' @param label Include the `label` column.
-#' @param description Include the `description` column.
-#' @param alternative_label Include the `alternative_label` column.
+#' @param input_label Include `input_label` column for an optional character
+#' vector containing short human-readable labels identifying the inputs.
+#' @param input_description Include the `input_description` column for
+#' optionally adding the human-readable descriptions of the inputs.
+#' @param label Include the `label` column for the optional
+#' human-readable labels for the subjects presented for review.
+#' @param description Include the `description` column
+#' for the optional description of the subjects presented for review.
+#' @param alternative_label Include the `alternative_label` column for the
+#'  optional, alternative human-readable descriptions of the subjects presented
+#'  for review, for example as a translation, a more detailed description, or a
+#'  description intended for a different user group.
 #' @param alternative_description Include the `alternative_description`
 #'   column.
-#' @param input_relation Include the `input_relation` and
-#'   `input_relation_range` columns.
+#' @param input_predicate Include the `input_predicate` and
+#'   `input_predicate_range` columns.
 #' @param subject_range Include the `subject_range` column.
 #' @param subject_definition Include the `subject_definition` column.
 #' @param columns Optional character vector naming additional reviewable
@@ -41,17 +49,19 @@
 #'   context = "held_by"
 #' )
 #'
+#' @seealso [create_candidate_dataset()]
 #' @importFrom stats setNames
 #' @export
 create_candidate_template <- function(
   input_url = TRUE,
   input_media_url = TRUE,
+  input_label = TRUE,
   input_description = TRUE,
   label = TRUE,
   description = TRUE,
   alternative_label = FALSE,
   alternative_description = FALSE,
-  input_relation = FALSE,
+  input_predicate = FALSE,
   subject_range = TRUE,
   subject_definition = TRUE,
   columns = NULL,
@@ -61,9 +71,10 @@ create_candidate_template <- function(
     "row_number",
     if (input_url) "input_url",
     if (input_media_url) "input_media_url",
+    if (input_label) "input_label",
     if (input_description) "input_description",
-    if (input_relation) {
-      c("input_relation", "input_relation_range")
+    if (input_predicate) {
+      c("input_predicate", "input_predicate_range")
     },
     if (label) "label",
     if (description) "description",

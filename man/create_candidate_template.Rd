@@ -7,12 +7,13 @@
 create_candidate_template(
   input_url = TRUE,
   input_media_url = TRUE,
+  input_label = TRUE,
   input_description = TRUE,
   label = TRUE,
   description = TRUE,
   alternative_label = FALSE,
   alternative_description = FALSE,
-  input_relation = FALSE,
+  input_predicate = FALSE,
   subject_range = TRUE,
   subject_definition = TRUE,
   columns = NULL,
@@ -24,19 +25,28 @@ create_candidate_template(
 
 \item{input_media_url}{Include the \code{input_media_url} column.}
 
-\item{input_description}{Include the \code{input_description} column.}
+\item{input_label}{Include \code{input_label} column for an optional character
+vector containing short human-readable labels identifying the inputs.}
 
-\item{label}{Include the \code{label} column.}
+\item{input_description}{Include the \code{input_description} column for
+optionally adding the human-readable descriptions of the inputs.}
 
-\item{description}{Include the \code{description} column.}
+\item{label}{Include the \code{label} column for the optional
+human-readable labels for the subjects presented for review.}
 
-\item{alternative_label}{Include the \code{alternative_label} column.}
+\item{description}{Include the \code{description} column
+for the optional description of the subjects presented for review.}
+
+\item{alternative_label}{Include the \code{alternative_label} column for the
+optional, alternative human-readable descriptions of the subjects presented
+for review, for example as a translation, a more detailed description, or a
+description intended for a different user group.}
 
 \item{alternative_description}{Include the \code{alternative_description}
 column.}
 
-\item{input_relation}{Include the \code{input_relation} and
-\code{input_relation_range} columns.}
+\item{input_predicate}{Include the \code{input_predicate} and
+\code{input_predicate_range} columns.}
 
 \item{subject_range}{Include the \code{subject_range} column.}
 
@@ -73,4 +83,7 @@ create_candidate_template(
   context = "held_by"
 )
 
+}
+\seealso{
+\code{\link[=create_candidate_dataset]{create_candidate_dataset()}}
 }

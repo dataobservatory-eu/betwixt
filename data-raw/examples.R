@@ -7,7 +7,7 @@ candidate <- create_candidate_template(
   input_media_url = TRUE,
   input_url = TRUE,
   input_description = TRUE,
-  input_relation = TRUE,
+  input_predicate = TRUE,
   label = TRUE,
   description = TRUE,
   subject_range = TRUE,
@@ -58,8 +58,8 @@ candidate$context_collection <- character()
 # review input
 
 review_input <- tibble::tribble(
-  ~input_media_url, ~input_url, ~input_description, ~input_relation,
-  ~input_relation_range, ~subject, ~subject_definition, ~subject_range,
+  ~input_media_url, ~input_url, ~input_description, ~input_predicate,
+  ~input_predicate_range, ~subject, ~subject_definition, ~subject_range,
   ~label, ~description,
   ~represents, ~represented_instance_of, ~instance_of, ~context_collection,
   "https://example.com/image.jpg", "https://example.com/record/1",
@@ -79,7 +79,7 @@ controlled_vocab_relations <- "depicts | depicted by | documents | documented by
 
 review_input <- tibble::tribble(
   ~input_media_url, ~input_url, ~input_description,
-  ~input_relation, ~input_relation_range,
+  ~input_predicate, ~input_predicate_range,
   ~label, ~description,
   ~subject, ~subject_definition, ~subject_range,
   ~represents, ~represents_range,
@@ -289,8 +289,8 @@ represented_by_definition_values <- c(
 
 
 delini_dataset <- readxl::read_excel("delini_import_dataset.xlsx") %>%
-  mutate (row_number = as.integer(seq_along(.data$subject))) %>%
-  mutate ( label = trimws(label), description = trimws(description))
+  mutate(row_number = as.integer(seq_along(.data$subject))) %>%
+  mutate(label = trimws(label), description = trimws(description))
 
 names(delini_dataset)
 delini_dataset$label
@@ -302,7 +302,7 @@ render_review(
   description = "Review the proposed semantic assertions.",
   reviewer_name = "Daniel Antal",
   reviewer_iri = "https://orcid.org/0000-0002-1825-0097",
-  project_id = "delini-filled",
+  table_id = "delini-filled",
   row_comment = TRUE,
   review_comment = TRUE,
   filename_stem = "delini-test-review",
@@ -310,18 +310,12 @@ render_review(
 )
 
 
-
 x2$curated_member_of_range
 
-x2 %>% select(label, starts_with("instance_of"), starts_with("curated")) %>%
-  pivot_longer(-any_of('label'))
+x2 %>%
+  select(label, starts_with("instance_of"), starts_with("curated")) %>%
+  pivot_longer(-any_of("label"))
 
 browseURL(
   here::here("delini-two-row-test.html")
 )
-
-
-
-
-
-

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![devel-version](https://img.shields.io/badge/devel%20version-0.0.8-blue.svg)](https://github.com/dataobservatory-eu/betwixt) [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
+[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![devel-version](https://img.shields.io/badge/devel%20version-0.0.82-blue.svg)](https://github.com/dataobservatory-eu/betwixt) [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
 [![R-CMD-check](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -103,7 +103,7 @@ render_review(
   description = "Review the proposed semantic assertions.",
   reviewer_name = "Jane Doe",
   reviewer_iri = "https://orcid.org/0000-0002-1825-0097",
-  project_id = "delini",
+  table_id = "delini",
   filename_stem = "delini-review",
   path = tempdir() # your working directory
 )

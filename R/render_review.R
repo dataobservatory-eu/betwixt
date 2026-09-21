@@ -25,7 +25,7 @@
 #' @param reviewer_name Character string containing the initial reviewer name.
 #' @param reviewer_iri Character string containing an IRI identifying the
 #'   reviewer, such as an ORCID, ISNI, or Wikidata URI.
-#' @param project_id Character string identifying the review project.
+#' @param table_id Character string identifying the review table.
 #' @param sequence A single non-negative integer identifying the review
 #'   sequence. The initial candidate review has sequence `0`.
 #' @param row_comment Logical. If `TRUE`, adds an optional reviewer comment
@@ -62,13 +62,12 @@ render_review <- function(
   filename_stem = "betwixt-review",
   reviewer_name = "",
   reviewer_iri = "",
-  project_id = "",
+  table_id = "",
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
   path = NULL
 ) {
-
   # Validate the review sequence.
   if (length(sequence) != 1L ||
     is.na(sequence) ||
@@ -161,8 +160,8 @@ render_review <- function(
     if (nzchar(provenance$data_manager_iri)) {
       paste0("IRI: ", escape_html(provenance$data_manager_iri))
     },
-    if (nzchar(provenance$project_id)) {
-      paste0("Project: ", escape_html(provenance$project_id))
+    if (nzchar(provenance$table_id)) {
+      paste0("Project: ", escape_html(provenance$table_id))
     },
     if (!is.na(provenance$generated_at) &&
       nzchar(provenance$generated_at)) {
@@ -235,7 +234,7 @@ render_review <- function(
     "<label>Project ID",
     '<input id="project-id" class="project-id-input" ',
     'type="text" value="',
-    escape_html(project_id), '" readonly>',
+    escape_html(table_id), '" readonly>',
     "</label>\n",
     "<label>Sequence",
     '<input id="review-sequence" type="number" value="',

@@ -473,7 +473,7 @@ The planes remain distinct but can be connected through stable coordinates.
 For Betwixt/review, the principal structural coordinates are:
 
 ```text
-project_id
+table_id
 table_id
 table_state
 row_id
@@ -482,7 +482,7 @@ assertion_id
 
 These coordinates operate at different levels.
 
-- `project_id` identifies the larger review or knowledge-production context.
+- `table_id` identifies the larger review or knowledge-production context.
 - `table_id` identifies a particular table within that context.
 - `table_state` identifies an ordinal state of the table. State `0` is the input state from which subsequent review states are derived.
 - `row_id` identifies an observational row. It is assigned in state `0` and inherited unchanged by subsequent states.

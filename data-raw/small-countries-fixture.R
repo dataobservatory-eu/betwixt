@@ -27,7 +27,7 @@ candidates <- create_candidate_dataset(
   data_manager_name = "Daniel Antal",
   data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
   data_manager_email = "daniel@example.org",
-  project_id = "GDP_review"
+  table_id = "GDP_review"
 ) |>
   add_candidate_column(
     name = "country_code",
@@ -79,7 +79,7 @@ render_review(
   filename_stem = "small_countries_dataset_extended",
   reviewer_name = "Jane Doe",
   reviewer_iri = "https://orcid.org/0000-0002-1825-0097",
-  project_id = "GDP_review",
+  table_id = "GDP_review",
   sequence = 0L,
   path = here::here("inst", "examples")
 )

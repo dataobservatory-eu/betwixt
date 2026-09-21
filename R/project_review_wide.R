@@ -40,8 +40,10 @@ project_review_wide <- function(review) {
 
   # Identify descriptive and qualified semantic assertions.
   descriptive <- intersect(
-    c("label", "description", "alternative_label",
-      "alternative_description"),
+    c(
+      "label", "description", "alternative_label",
+      "alternative_description"
+    ),
     names(candidate)
   )
   q_cols <- grep("_qualification$", names(reviewed), value = TRUE)

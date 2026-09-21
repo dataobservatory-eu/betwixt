@@ -37,8 +37,8 @@ validate_candidate_dataset <- function(x) {
   }
 
   character_cols <- c(
-    "input_url", "input_media_url", "input_description",
-    "input_relation", "label", "description",
+    "input_url", "input_media_url", "input_label", "input_description",
+    "input_predicate", "label", "description",
     "alternative_label", "alternative_description", "subject"
   )
 

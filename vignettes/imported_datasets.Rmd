@@ -119,7 +119,7 @@ render_review(
   filename_stem = "small_countries_dataset_extended",
   reviewer_name = "Jane Doe",
   reviewer_iri = "https://orcid.org/0000-0002-1825-0097",
-  project_id = "GDP_review",
+  table_id = "GDP_review",
   path = tempdir() # replace it with your working directory path
 )
 ```

@@ -20,22 +20,12 @@
 #'
 #' @return A data frame with one row per candidate or reviewed assertion and
 #'   columns `assertion_number`, `row_id`, zero or more `context_*` columns,
-#'   `plane`, `subject`, `predicate`, `value`, `status`, `reviewer`, and
-#'   `generated_at`.
+#'   `plane`, `subject`, `predicate`, `value`, `status`, and provenance fields.
 #'
 #' @details
 #' The long projection contains one row for each atomic assertion in both the
-#' candidate and reviewed states. Consequently, its expected number of rows is
-#'
-#' \deqn{
-#' n_{\\mathrm{long}} =
-#' (n_{\\mathrm{candidate}} + n_{\\mathrm{reviewed}})
-#' (n_{\\mathrm{descriptive}} + n_{\\mathrm{semantic}})
-#' }
-#'
-#' when each wide row contains the same set of reviewable fields. The status
-#' plane supplies the review status of these assertions but does not itself
-#' generate additional long-form rows.
+#' candidate and reviewed states. The status plane supplies the review status
+#' of these assertions but does not itself generate additional long-form rows.
 #'
 #' @examples
 #' review_html <- render_review(delini)
@@ -47,7 +37,8 @@
 #' long <- project_review_long(review)
 #'
 #' head(long)
-#' @importFrom dplyr select left_join transmute arrange row_number bind_rows
+#'
+#' @importFrom dplyr arrange bind_rows left_join mutate row_number select
 #' @importFrom tidyr pivot_longer
 #' @export
 project_review_long <- function(review) {
@@ -56,84 +47,84 @@ project_review_long <- function(review) {
   candidate <- wide[wide$plane == "candidate", ]
   reviewed <- wide[wide$plane == "reviewed", ]
   status <- wide[wide$plane == "status", ]
-
-  # Combine candidate and reviewed states.
   states <- dplyr::bind_rows(candidate, reviewed)
 
-  # Identify descriptive and context columns.
+  # Identify descriptive, contextual, and semantic columns.
   descriptive <- intersect(
-    c(
-      "label", "description", "alternative_label",
-      "alternative_description"
-    ),
+    c("label", "description", "alternative_label",
+      "alternative_description"),
     names(states)
   )
   context_cols <- grep("^context_", names(states), value = TRUE)
 
-  # Project descriptive fields as atomic assertions.
-  description_cols <- c(
-    "row_id", context_cols, "plane", "subject", descriptive
+  reserved <- grepl(
+    paste0(
+      "^(row_id$|plane$|input_|context_|comment$|row_comment$|",
+      "finalised$|outcome$|label$|description$|alternative_label$|",
+      "alternative_description$|subject$|subject_|.*_range$|",
+      ".*_definition$|.*_qualification$)"
+    ),
+    names(states)
   )
+  predicate_cols <- names(states)[!reserved]
+
+  # Project descriptive assertions and inherit their status.
   descriptions <- states |>
-    dplyr::select(dplyr::all_of(description_cols)) |>
+    dplyr::select(
+      dplyr::all_of(c(
+        "row_id", context_cols, "plane", "subject", descriptive
+      ))
+    ) |>
     tidyr::pivot_longer(
       cols = dplyr::all_of(descriptive),
-      names_to = "predicate", values_to = "value"
+      names_to = "predicate",
+      values_to = "value"
     )
 
   description_status <- status |>
     dplyr::select(dplyr::all_of(c("row_id", descriptive))) |>
     tidyr::pivot_longer(
       cols = dplyr::all_of(descriptive),
-      names_to = "predicate", values_to = "status"
+      names_to = "predicate",
+      values_to = "status"
     )
 
   descriptions <- dplyr::left_join(
-    descriptions, description_status,
+    descriptions,
+    description_status,
     by = c("row_id", "predicate")
   )
 
-  # Identify semantic predicate columns.
-  reserved <- grepl(
-    paste0(
-      "^(row_id|plane|evidence_|label$|description$|",
-      "alternative_label$|alternative_description$|context_|",
-      "subject$|subject_)"
-    ),
-    names(states)
-  )
-  predicate_cols <- names(states)[!reserved]
-
-  # Project semantic fields as atomic assertions.
-  semantic_cols <- c(
-    "row_id", context_cols, "plane", "subject", predicate_cols
-  )
+  # Project semantic assertions and inherit their status.
   semantic <- states |>
-    dplyr::select(dplyr::all_of(semantic_cols)) |>
+    dplyr::select(
+      dplyr::all_of(c(
+        "row_id", context_cols, "plane", "subject", predicate_cols
+      ))
+    ) |>
     tidyr::pivot_longer(
       cols = dplyr::all_of(predicate_cols),
-      names_to = "predicate", values_to = "value"
+      names_to = "predicate",
+      values_to = "value"
     )
 
-  # Add review status to semantic assertions.
   semantic_status <- status |>
     dplyr::select(dplyr::all_of(c("row_id", predicate_cols))) |>
     tidyr::pivot_longer(
       cols = dplyr::all_of(predicate_cols),
-      names_to = "predicate", values_to = "status"
+      names_to = "predicate",
+      values_to = "status"
     )
 
   semantic <- dplyr::left_join(
-    semantic, semantic_status,
+    semantic,
+    semantic_status,
     by = c("row_id", "predicate")
   )
 
-  # Combine descriptive and semantic assertions.
+  # Combine assertions and attach review provenance.
   x <- dplyr::bind_rows(descriptions, semantic) |>
-    dplyr::arrange(.data$row_id)
-
-  # Add assertion identity and provenance.
-  x <- x |>
+    dplyr::arrange(.data$row_id) |>
     dplyr::mutate(
       assertion_number = dplyr::row_number(),
       reviewer = review$provenance$reviewer,
@@ -151,7 +142,6 @@ project_review_long <- function(review) {
       table_id = review$provenance$table_id
     )
 
-  # Set the canonical long-form column order.
   output_cols <- c(
     "assertion_number", "row_id", context_cols,
     "plane", "subject", "predicate", "value", "status",

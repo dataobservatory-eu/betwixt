@@ -38,23 +38,10 @@ project_review_wide <- function(review) {
   candidate <- review$candidate
   reviewed <- review$reviewed
 
-  # Add table and state coordinates.
-  coordinates <- list(
-    project_id = review$metadata$project_id,
-    table_id = review$metadata$table_id,
-    sequence = review$metadata$sequence
-  )
-
-  candidate <- dplyr::mutate(candidate, !!!coordinates)
-  reviewed <- dplyr::mutate(reviewed, !!!coordinates)
-  status <- dplyr::mutate(status, !!!coordinates)
-
   # Identify descriptive and qualified semantic assertions.
   descriptive <- intersect(
-    c(
-      "label", "description", "alternative_label",
-      "alternative_description"
-    ),
+    c("label", "description", "alternative_label",
+      "alternative_description"),
     names(candidate)
   )
 
@@ -99,9 +86,8 @@ project_review_wide <- function(review) {
 
   result <- dplyr::relocate(
     result,
-    dplyr::all_of(c("project_id", "table_id", "sequence", "row_id", "plane"),
-      .after = dplyr::all_of("row_id")
-    )
+    dplyr::all_of("plane"),
+    .after = dplyr::all_of("row_id")
   )
 
   attr(result, "provenance") <- review$provenance

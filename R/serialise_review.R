@@ -1,6 +1,12 @@
 #' Serialise a Betwixt review
 #'
-#' Serialises a reviewed Betwixt dataset as RDF Turtle.
+#' Serialises a reviewed Betwixt dataset as RDF Turtle. The serialisation
+#' preserves the candidate and reviewed datasets, review status, provenance,
+#' and available Betwixt assertion coordinates.
+#'
+#' Each assertion is represented as a [btx:Assertion](https://usebetwixt.com/ns/).
+#' `row_id` is serialised as `btx:rowId`. When `assertion_id` is available,
+#' it is serialised as `btx:assertionId`.
 #'
 #' @param review A Betwixt review object returned by [read_review()].
 #' @param prefix Base IRI for generated resources.
@@ -313,8 +319,6 @@ serialise_assertions <- function(x, prefix, filename, dataset) {
 
 # Assertion -------------------------------------------------------------------
 
-#' @keywords internal
-#' @noRd
 serialise_assertion <- function(x, prefix, filename, dataset, number) {
   stem <- tools::file_path_sans_ext(filename)
   iri <- paste0(prefix, stem, "/", dataset, "/assertion/", number)
@@ -322,7 +326,18 @@ serialise_assertion <- function(x, prefix, filename, dataset, number) {
   lines <- c(
     turtle_iri(iri),
     "    a btx:Assertion",
-    paste0("    ; btx:rowNumber ", x$row_id),
+    paste0("    ; btx:rowId ", x$row_id)
+  )
+
+  if ("assertion_id" %in% names(x)) {
+    lines <- c(
+      lines,
+      paste0("    ; btx:assertionId ", x$assertion_id)
+    )
+  }
+
+  lines <- c(
+    lines,
     paste0("    ; btx:subject ", turtle_literal(x$subject)),
     paste0("    ; btx:predicate ", turtle_literal(x$predicate)),
     paste0("    ; btx:value ", turtle_literal(x$value))

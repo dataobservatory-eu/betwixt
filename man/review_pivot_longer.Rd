@@ -10,7 +10,7 @@ review_pivot_longer(x)
 \item{x}{A Betwixt candidate or reviewed data frame.}
 }
 \value{
-A tibble with columns \code{row_id}, \code{assertion_id}, \code{role},
+A tibble with columns \code{row_id}, \code{assertion_id}, \code{component},
 \code{subject}, \code{predicate}, and \code{value}.
 }
 \description{
@@ -24,7 +24,7 @@ in the canonical long projection.
 
 Dataset identity is represented with \code{row_id = 0}. Domain assertions,
 input-to-subject relations, contextual statements, and row comments are
-assigned distinct roles.
+assigned distinct components.
 
 Range and definition columns describe candidate fields and are not
 themselves projected as assertions. Review-state columns such as

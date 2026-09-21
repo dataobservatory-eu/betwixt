@@ -418,3 +418,96 @@ test_that("turtle_iri() rejects invalid IRIs", {
   expect_error(turtle_iri("https://example.org/a b"), "not permitted")
   expect_error(turtle_iri("https://example.org/<Q1>"), "not permitted")
 })
+
+
+test_that("serialise_review() serialises available assertion coordinates", {
+  review <- read_review(
+    "fixtures/small_countries_dataset_extended_1-finalised.html"
+  )
+
+  ttl <- serialise_review(
+    review,
+    prefix = "https://example.org/",
+    filename = "review.ttl"
+  )
+
+  expect_match(ttl, "btx:rowId [0-9]+")
+  expect_false(grepl("btx:rowNumber", ttl, fixed = TRUE))
+  expect_false(grepl("btx:assertionId", ttl, fixed = TRUE))
+})
+
+
+test_that("serialise_assertion() serialises assertion_id when available", {
+  x <- data.frame(
+    row_id = 1L,
+    assertion_id = 3L,
+    subject = "Q1",
+    predicate = "label",
+    value = "Example",
+    status = "corroborated"
+  )
+
+  ttl <- serialise_assertion(
+    x,
+    prefix = "https://example.org/",
+    filename = "review.ttl",
+    dataset = "reviewed-1",
+    number = 1L
+  )
+
+  expect_match(ttl, "btx:rowId 1", fixed = TRUE)
+  expect_match(ttl, "btx:assertionId 3", fixed = TRUE)
+})
+
+## Assertion identification -------------------------------------------------
+
+test_that("serialise_assertion() serialises review status", {
+  x <- data.frame(
+    row_id = 1L,
+    assertion_id = 1L,
+    subject = "Q1",
+    predicate = "label",
+    value = "Example",
+    status = "corroborated"
+  )
+
+  ttl <- serialise_assertion(
+    x,
+    prefix = "https://example.org/",
+    filename = "review.ttl",
+    dataset = "reviewed-1",
+    number = 1L
+  )
+
+  expect_match(ttl, "btx:rowId 1")
+  expect_match(ttl, "btx:assertionId 1")
+  expect_match(ttl, 'btx:subject "Q1"', fixed = TRUE)
+  expect_match(ttl, 'btx:predicate "label"', fixed = TRUE)
+  expect_match(ttl, 'btx:value "Example"', fixed = TRUE)
+  expect_match(ttl, "btx:status btx:Corroborated", fixed = TRUE)
+})
+
+
+test_that("serialise_assertion() serialises alignment as an assertion", {
+  x <- data.frame(
+    row_id = 1L,
+    assertion_id = 3L,
+    subject = "assertion-1",
+    predicate = "btx:alignedWith",
+    value = "assertion-2",
+    status = "corroborated"
+  )
+
+  ttl <- serialise_assertion(
+    x,
+    prefix = "https://example.org/",
+    filename = "alignment.ttl",
+    dataset = "reviewed-1",
+    number = 3L
+  )
+
+  expect_match(ttl, 'btx:subject "assertion-1"', fixed = TRUE)
+  expect_match(ttl, 'btx:predicate "btx:alignedWith"', fixed = TRUE)
+  expect_match(ttl, 'btx:value "assertion-2"', fixed = TRUE)
+  expect_match(ttl, "btx:status btx:Corroborated", fixed = TRUE)
+})

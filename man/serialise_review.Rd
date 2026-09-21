@@ -40,7 +40,14 @@ serialize_review(
 A character string containing RDF Turtle.
 }
 \description{
-Serialises a reviewed Betwixt dataset as RDF Turtle.
+Serialises a reviewed Betwixt dataset as RDF Turtle. The serialisation
+preserves the candidate and reviewed datasets, review status, provenance,
+and available Betwixt assertion coordinates.
+}
+\details{
+Each assertion is represented as a \href{https://usebetwixt.com/ns/}{btx:Assertion}.
+\code{row_id} is serialised as \code{btx:rowId}. When \code{assertion_id} is available,
+it is serialised as \code{btx:assertionId}.
 }
 \examples{
 path <- system.file(

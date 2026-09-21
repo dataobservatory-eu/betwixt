@@ -12,8 +12,7 @@ project_review_long(review)
 \value{
 A data frame with one row per candidate or reviewed assertion and
 columns \code{assertion_number}, \code{row_id}, zero or more \verb{context_*} columns,
-\code{plane}, \code{subject}, \code{predicate}, \code{value}, \code{status}, \code{reviewer}, and
-\code{generated_at}.
+\code{plane}, \code{subject}, \code{predicate}, \code{value}, \code{status}, and provenance fields.
 }
 \description{
 Projects a Betwixt review into one row per atomic assertion in the candidate
@@ -33,17 +32,8 @@ not become assertions and do not receive review status.
 }
 \details{
 The long projection contains one row for each atomic assertion in both the
-candidate and reviewed states. Consequently, its expected number of rows is
-
-\deqn{
-n_{\\mathrm{long}} =
-(n_{\\mathrm{candidate}} + n_{\\mathrm{reviewed}})
-(n_{\\mathrm{descriptive}} + n_{\\mathrm{semantic}})
-}
-
-when each wide row contains the same set of reviewable fields. The status
-plane supplies the review status of these assertions but does not itself
-generate additional long-form rows.
+candidate and reviewed states. The status plane supplies the review status
+of these assertions but does not itself generate additional long-form rows.
 }
 \examples{
 review_html <- render_review(delini)
@@ -55,4 +45,5 @@ review <- read_review(path)
 long <- project_review_long(review)
 
 head(long)
+
 }

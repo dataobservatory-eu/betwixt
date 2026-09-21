@@ -8,9 +8,8 @@
 
 <https://usebetwixt.com/ns/>
     a owl:Ontology ;
-    owl:versionInfo "0.0.7" ;
-    rdfs:label "Betwixt vocabulary" ;
-    rdfs:comment "A minimal intermediate vocabulary for reviewed semantic assertions and their bounded semantic mappings." .
+    owl:versionInfo "0.0.9" ;
+    rdfs:label "Betwixt vocabulary" .
 
 # Assertion -------------------------------------------------------------------
 
@@ -46,12 +45,26 @@ btx:assertion
     rdfs:label "assertion" ;
     rdfs:comment "Associates a resource with an assertion contained in it." .
 
-btx:rowNumber
+btx:alignedWith
+    a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range btx:Assertion ;
+    rdfs:label "aligned with" ;
+    rdfs:comment "Relates two assertions whose semantic commitments are considered corresponding for a bounded purpose, without asserting global identity or equivalence." .
+
+btx:rowId
     a owl:DatatypeProperty ;
     rdfs:domain btx:Assertion ;
     rdfs:range xsd:integer ;
-    rdfs:label "row number" ;
+    rdfs:label "row identifier" ;
     rdfs:comment "The row coordinate from which the assertion was projected." .
+
+btx:assertionId
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:integer ;
+    rdfs:label "assertion identifier" ;
+    rdfs:comment "The sequential coordinate of the assertion in the canonical Betwixt projection." .
 
 # Review status ---------------------------------------------------------------
 

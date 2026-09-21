@@ -442,9 +442,9 @@ A broader research hypothesis follows:
 
 Betwixt does not currently need to establish that this covers every possible graph. Implementation across real use cases can reveal the boundaries of the representable graph class and any additional primitives that are genuinely required.
 
-## Planes and their coordinates
+## Planes and stable coordinates
 
-Semantic knowledge production can be represented using parallel planes rather than mixing all information into one table or graph.
+Semantic knowledge production can be represented using parallel planes rather than mixing domain knowledge, review state and provenance into a single table or graph.
 
 At minimum, two planes are important.
 
@@ -453,24 +453,24 @@ At minimum, two planes are important.
 The domain plane contains the assertions themselves:
 
 ```text
-assertion_id | subject | predicate | value
-A001         | granary | part_of   | farmstead
-A002         | granary | built_in  | 1890
+assertion_id       | subject | predicate | value
+delini-002-3-1     | granary | part_of   | farmstead
+delini-002-3-2     | granary | built_in  | 1890
 ```
 
 ### Provenance plane
 
-The provenance plane records how those assertions or semantic states came about:
+The provenance plane records how assertions and semantic states came about:
 
 ```text
-assertion_id | activity | agent | input | ...
-A001         | R017     | ...   | ...   | ...
-A002         | R018     | ...   | ...   | ...
+assertion_id       | activity | agent | input | ...
+delini-002-3-1     | R017     | ...   | ...   | ...
+delini-002-3-2     | R018     | ...   | ...   | ...
 ```
 
-The planes remain distinct but connected through stable coordinates.
+The planes remain distinct but can be connected through stable coordinates.
 
-For Betwixt/review these coordinates can include:
+For Betwixt/review, the principal structural coordinates are:
 
 ```text
 project_id
@@ -480,17 +480,98 @@ row_id
 assertion_id
 ```
 
-Their roles are different:
+These coordinates operate at different levels.
 
-- `project_id` identifies the larger review/knowledge-production context;
-- `table_id` identifies a particular table or review object;
-- `table_state` identifies an ordinal state of that table;
-- `row_id` identifies the review row within the table structure;
-- `assertion_id` identifies the assertion slot across states.
+- `project_id` identifies the larger review or knowledge-production context.
+- `table_id` identifies a particular table within that context.
+- `table_state` identifies an ordinal state of the table. State `0` is the input state from which subsequent review states are derived.
+- `row_id` identifies an observational row. It is assigned in state `0` and inherited unchanged by subsequent states.
+- `assertion_id` identifies an atomic assertion derived from an assertion-bearing position within an observational row.
 
-The coordinates allow domain assertions and provenance records to remain connected without inserting provenance metadata into the domain assertions themselves.
+The distinction between `row_id` and the physical row number of a particular table state is essential. At state `0` they may initially coincide:
 
-A review operation can therefore be understood as a state transition:
+```text
+table_state = 0
+
+row_id | subject
+1      | S1
+2      | S2
+3      | S3
+4      | S4
+```
+
+Suppose all assertions associated with `row_id = 3` are rejected. A later state may contain:
+
+```text
+table_state = 1
+
+row_id | subject
+1      | S1
+2      | S2
+4      | S4
+```
+
+The third physical row is now `row_id = 4`. It must not be renumbered to `3`.
+
+State `0` therefore establishes the stable row coordinates of the table. Filtering, sorting, accepting, rejecting or otherwise transforming later states may change which rows are present and in which order they are displayed, but these operations do not redefine `row_id`.
+
+This allows the provenance plane to refer to observations or assertions that no longer occur in a later domain state.
+
+### Assertion coordinates
+
+In a wide representation, an observational row can contain several assertions. Their values occupy cells at the intersection of a stable row and an assertion-bearing column:
+
+```text
+row_id | subject | located_in | built_in | material
+5      | S1      | Latvia     | 1890     | wood
+```
+
+Conceptually, these are three atomic assertions:
+
+```text
+row 5 × statement 1
+row 5 × statement 2
+row 5 × statement 3
+```
+
+A long projection makes these assertions explicit:
+
+```text
+row_id | subject | predicate  | value
+5      | S1      | located_in | Latvia
+5      | S1      | built_in   | 1890
+5      | S1      | material   | wood
+```
+
+The representation has changed, but the underlying assertion coordinates need not change.
+
+In wide form, the statement coordinate can be calculated from the ordered assertion-bearing columns. In long form, it can be calculated from the ordered statements belonging to the observational row. This provides an implementation-independent rule that does not depend on a particular R reshaping operation.
+
+An `assertion_id` can therefore be derived from stable table, row and statement coordinates:
+
+```text
+table_id + row_id + statement_id
+```
+
+For example:
+
+```text
+delini-002-5-1
+delini-002-5-2
+delini-002-5-3
+```
+
+The `assertion_id` identifies the atomic assertion position rather than its physical position in a particular serialisation.
+
+Consequently, an assertion such as:
+
+```text
+delini-002-5-2
+```
+
+can remain identifiable in the provenance plane even if it is rejected during review and omitted from subsequent domain states.
+
+A review operation can therefore be understood as a state transition over stable coordinates:
 
 ```text
 Domain S₀ ───────────────▶ Domain S₁
@@ -498,15 +579,15 @@ Domain S₀ ───────────────▶ Domain S₁
      └── Provenance activity ──┘
 ```
 
-Programmatic and human review can use the same model. The difference is how the review decision is produced, not how the resulting state and provenance are represented.
+State transitions change what is asserted or accepted at these coordinates; they do not redefine the coordinates established by the input state.
 
-## Coordinates for slicing, grouping and joining
+Programmatic and human review can use the same model. The difference is how a review decision is produced, not how the resulting domain state and provenance are represented.
 
-Coordinates serve two related but distinct purposes.
+## Semantic coordinates for slicing, grouping and joining
 
-### Slicing and grouping
+The stable structural coordinates above identify tables, observations and assertions through the review process. They should be distinguished from the **semantic coordinates represented by dimensions within the data itself**.
 
-Dimensions establish coordinates along which a collection of observations can be selected or aggregated.
+Dimensions establish observational coordinates along which data can be sliced, grouped or connected to further knowledge.
 
 For example:
 
@@ -517,34 +598,85 @@ France  | man   | 2025 | 39
 Germany | woman | 2025 | 44
 ```
 
-can be sliced or grouped by `country`, `sex`, or `year`.
+`country`, `sex` and `year` can be used to slice or group the observations:
 
-This is the familiar data-cube role of dimensions.
+```text
+country = France
+sex = woman
+year = 2025
+```
+
+This is the familiar analytical role of dimensions in a data cube.
+
+Dimensions can also have a semantic role. Treating something as a dimension promotes its values to identified observational coordinates around which further knowledge can be organised.
+
+For example, `France` can become the subject of additional assertions:
+
+```text
+France | capital   | Paris
+France | member_of | European Union
+```
+
+The same coordinate can therefore support both analytical operations and semantic composition:
+
+```text
+                    France
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+    slice / group             join / compose
+          │                       │
+ observations about        further knowledge
+      France                  about France
+```
+
+This gives dimensions a pragmatic interpretation.
+
+A value need not be treated as a dimension merely because it is categorical. It becomes useful as a dimension when we want either to organise observations along that coordinate or to attach further knowledge at that coordinate.
+
+This distinguishes dimensions from measures and attributes:
+
+```text
+measure
+    → something observed or asserted
+
+attribute
+    → something carried with an observation
+
+dimension
+    → an observational coordinate promoted so that
+      observations or further knowledge can organise around it
+```
+
+Betwixt `context_*` columns naturally correspond to attributes. They accompany the review observation and help the reviewer interpret it, but they are not themselves under review and do not automatically become semantic join coordinates.
+
+If an attribute later needs to participate in slicing, grouping or semantic composition, it can be promoted to a dimension. Similarly, a value occurring in one assertion may become an identified subject elsewhere when further knowledge needs to attach to it.
 
 ### Joining and semantic composition
 
-When a coordinate is given subject identity, it can also become a semantic composition point.
+Promotion to a dimension creates a potential composition point, but it does not by itself establish that independently governed representations identify the same thing.
 
 For example:
 
 ```text
-OBSERVATIONS
+TABLE A
 
-country | sex   | value
-France  | woman | 42
+country | value
+A:France | 42
 ```
 
-can connect to:
+and:
 
 ```text
-COUNTRIES
+TABLE B
 
-subject | predicate | value
-France  | capital   | Paris
-France  | member_of | European Union
+subject  | predicate | value
+B:France | capital   | Paris
 ```
 
-The important principle is not merely equality of lexical values. The operation requires **sufficient observational-unit identity to warrant the join**.
+cannot necessarily be joined merely because both identifiers are labelled `France`.
+
+The operation requires sufficient observational-unit identity to warrant the join.
 
 This need not imply a universal ontological assertion such as:
 
@@ -552,28 +684,28 @@ This need not imply a universal ontological assertion such as:
 A:France owl:sameAs B:France
 ```
 
-In bounded federation, a reviewer may determine only that two identifiers have sufficient identity **for the particular operation being performed**.
+In bounded federation, a reviewer may determine only that the correspondence is sufficient for the particular operation being performed.
 
-Thus the progression is:
+The progression is therefore:
 
 ```text
-coordinate
-    ↓
-promoted subject identity
-    ↓
+value
+  ↓
+promoted observational coordinate
+  ↓
+dimension / subject identity
+  ↓
 potential composition point
-    ↓
-warranted identity for an operation
-    ↓
+  ↓
+identity sufficient for a particular operation
+  ↓
 join
 ```
 
-This connects slicing, grouping and semantic composition without making them identical operations.
-
-A dimension becomes useful analytically because observations can be organised along it. It becomes useful semantically because further knowledge can attach at the same identified coordinate.
+This connects data-cube slicing and grouping with semantic composition without treating them as the same operation.
 
 The resulting principle is compact:
 
 > **Measures terminate assertions, attributes accompany observations, and dimensions open further structure by promoting observational coordinates to subject identity.**
 
-This provides a common conceptual bridge between tidy data, data cubes, semantic graphs and bounded federation. It also suggests a route towards controlled graph-to-table projections: individual tables remain bounded and human-reviewable, while richer semantic structures emerge through composition on warranted subject identity.
+Structural Betwixt coordinates and semantic data-cube coordinates therefore serve complementary purposes. The former preserve identity through serialisation and review states; the latter organise the knowledge represented within those states and provide potential points of semantic composition.

@@ -287,92 +287,13 @@ represented_by_definition_values <- c(
   "https://reprexbase.eu/fu/Item:Q5578"
 )
 
-delini_dataset_filled <-
-  readxl::read_excel("delini_farmstead_import_filled.xlsx")
 
-collections <-
-  delini_dataset_filled %>%
-  dplyr::filter(instance_of == "collection") %>%
-  select(label, starts_with("subject"))
+delini_dataset <- readxl::read_excel("delini_import_dataset.xlsx") %>%
+  mutate (row_number = as.integer(seq_along(.data$subject))) %>%
+  mutate ( label = trimws(label), description = trimws(description))
 
-collection_labels <- c(unique(collections$label), "Other…")
-instance_labels <- c(
-  unique(delini_dataset_filled$instance_of),
-  "shirt", "garment", "textile",  "Other…")
-
-delini_dataset_render <-
-  delini_dataset_filled %>%
-  mutate(
-    row_number = as.integer(1:nrow(delini_dataset_filled))
-  ) %>%
-  mutate(
-    subject = dplyr::case_when(
-      instance_of == "collection" ~ label,
-      .default = subject
-    )
-  ) %>%
-  mutate(
-    subject_range = paste(
-      unique(subject),
-      collapse = " | "
-    )
-  ) %>%
-  mutate(
-    instance_of_range = paste(
-      instance_labels,
-      collapse = " | "
-    )
-  ) %>%
-  mutate(
-    curated_member_of = dplyr::case_when(
-      curated_member_of == collections$subject[1] ~ collections$label[1],
-      curated_member_of == collections$subject[2] ~ collections$label[2],
-      curated_member_of == collections$subject[3] ~ collections$label[3],
-      curated_member_of == collections$subject[4] ~ collections$label[4],
-      .default = "Not applicable"
-    )
-  ) %>%
-  mutate(
-    curated_member_of_range = paste(
-      collection_labels,
-      collapse = " | "
-    )
-  ) %>%
-  mutate(
-    evidence_text = "If you are unsure, you can visit the link"
-  ) %>%
-  mutate(
-    creator = ifelse(
-      instance_of == "photograph",
-      "Daniel Antal",
-      ""
-    )
-  ) %>%
-  mutate(
-    represents = .env$represents_values,
-    represents_range = .env$represents_range_values,
-    represents_definition =
-      .env$represents_definition_values
-  ) %>%
-  mutate(
-    represented_by = .env$represented_by_values,
-    represented_by_range = .env$represented_by_range_values,
-    represented_by_definition =
-      .env$represented_by_definition_values
-  )  %>%
-  relocate(
-    represented_by,
-    .after = represents_definition
-  ) %>%
-  relocate(
-    represented_by_range,
-    .after = represented_by
-  ) %>%
-  relocate(
-    represented_by_definition,
-    .after = represented_by_range
-  ) %>%
-  select(-starts_with("represented_instance_of"))
+names(delini_dataset)
+delini_dataset$label
 
 library(dplyr)
 render_review(
@@ -400,98 +321,7 @@ browseURL(
 )
 
 
-test <- delini_dataset_filled %>%
-  mutate(
-    curated_member_of = dplyr::case_when(
-      curated_member_of == collections$subject[1] ~ collections$label[1],
-      curated_member_of == collections$subject[2] ~ collections$label[2],
-      curated_member_of == collections$subject[3] ~ collections$label[3],
-      curated_member_of == collections$subject[4] ~ collections$label[4],
-      .default = curated_member_of
-    )
-  ) %>%
-  mutate(
-    curated_member_of_range = paste(
-      collections$label,
-      collapse = " | "
-    )
-  )
-
-test
-
-test %>%
-  select(
-    curated_member_of,
-    curated_member_of_range,
-    curated_member_of_definition
-  ) %>%
-  distinct() %>%
-  print(width = Inf)
-
-delini_dataset_render %>% select (
-  starts_with ("instance_of"), starts_with ("curated_member")
-)
-
-context <- prepare_review_context(test)
-
-lapply(
-  context$rows,
-  function(row) {
-    row$assertions[
-      vapply(
-        row$assertions,
-        function(x) identical(x$name, "curated_member_of"),
-        logical(1)
-      )
-    ]
-  }
-)
 
 
-review <- read_review("delini-review_1-finalised.html")
-wide <- project_review_wide(review)
 
 
-library(dplyr)
-sample_n(wide, 10)
-wide %>% select(-evidence_media_url)
-
-
-long <- project_review_long(review)
-long
-
-ttl <- serialise_review(
-  review,
-  prefix = "https://example.org/reviews/",
-  filename = "delini-review_1-finalised.ttl"
-)
-cat(ttl)
-
-writeLines(ttl, con = "delini-review_1-finalised.ttl" )
-
-
-x <- create_candidate_dataset(
-  evidence_media_url = "https://placehold.co/300x200",
-  evidence_text = "Minimal rendering test",
-  label = "Example object",
-  description = "Testing range plus definition",
-  subject = "[example object]"
-) |>
-  add_candidate_column(
-    name = "instance_of",
-    value = "Farmhouse",
-    range = add_candidate_range(
-      "Farmhouse",
-      "Dwelling",
-      "Building"
-    ),
-    definition = "https://example.org/farmhouse"
-  )
-
-render_review(
-  x,
-  file = "minimal-definition-range",
-  path = here::here()
-)
-
-browseURL("minimal-definition-range.html")

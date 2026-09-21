@@ -119,7 +119,8 @@ test_that("reviewer identity survives the HTML round trip", {
     title = "Delini review",
     reviewer_name = "Daniel Antal",
     reviewer_iri = "https://example.org/d123",
-    table_id = "delini",
+    table_id = "delini-table",
+    project_id = "betwixt-examples",
     filename_stem = stem,
     path = dirname(path)
   )
@@ -127,7 +128,8 @@ test_that("reviewer identity survives the HTML round trip", {
   review <- read_review(path)
 
   expect_equal(review$metadata$title, "Delini review")
-  expect_equal(review$metadata$table_id, "delini")
+  expect_equal(review$metadata$table_id, "delini-table")
+  expect_equal(review$metadata$project_id, "betwixt-examples")
   expect_equal(review$provenance$reviewer, "Daniel Antal")
   expect_equal(review$provenance$reviewer_iri, "https://example.org/d123")
 })

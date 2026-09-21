@@ -24,7 +24,7 @@ validate_candidate_dataset <- function(x) {
     stop("`x` must be a data frame.", call. = FALSE)
   }
 
-  required <- c("row_number", "subject")
+  required <- c("row_id", "subject")
   missing <- setdiff(required, names(x))
 
   if (length(missing)) {
@@ -56,20 +56,20 @@ validate_candidate_dataset <- function(x) {
 
 
   # Row number validation ----------------------------------------------------
-  if (!is.integer(x$row_number)) {
-    stop("`row_number` must be integer.", call. = FALSE)
+  if (!is.integer(x$row_id)) {
+    stop("`row_id` must be integer.", call. = FALSE)
   }
 
-  if (anyNA(x$row_number)) {
-    stop("`row_number` cannot contain missing values.", call. = FALSE)
+  if (anyNA(x$row_id)) {
+    stop("`row_id` cannot contain missing values.", call. = FALSE)
   }
 
-  if (anyDuplicated(x$row_number)) {
-    stop("`row_number` must be unique.", call. = FALSE)
+  if (anyDuplicated(x$row_id)) {
+    stop("`row_id` must be unique.", call. = FALSE)
   }
 
-  if (any(x$row_number < 1L)) {
-    stop("`row_number` must contain positive integers.", call. = FALSE)
+  if (any(x$row_id < 1L)) {
+    stop("`row_id` must contain positive integers.", call. = FALSE)
   }
 
   # URL validation -------------------------------------------------------

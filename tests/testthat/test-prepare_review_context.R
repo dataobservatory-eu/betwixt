@@ -13,7 +13,7 @@ test_that("prepare_review_context() prepares delini", {
 
   row <- context$rows[[1]]
 
-  expect_equal(row$row_number, delini$row_number[1])
+  expect_equal(row$row_id, delini$row_id[1])
   expect_equal(row$input_media_url, delini$input_media_url[1])
   expect_length(row$input_media_url, 1)
   expect_length(row$input_url, 0)
@@ -52,7 +52,7 @@ test_that("prepare_review_context() prepares assertions", {
 
 test_that("candidate definition works without a range", {
   candidate <- delini[, c(
-    "row_number", "subject", "subject_definition",
+    "row_id", "subject", "subject_definition",
     "instance_of", "instance_of_definition"
   )]
 
@@ -65,7 +65,7 @@ test_that("candidate definition works without a range", {
 
 test_that("candidate range works without a definition", {
   candidate <- delini[, c(
-    "row_number", "subject", "subject_range",
+    "row_id", "subject", "subject_range",
     "instance_of", "instance_of_range"
   )]
 
@@ -105,7 +105,7 @@ test_that("named context columns are recognised", {
 
 test_that("optional descriptive columns may be absent", {
   candidate <- delini[, c(
-    "row_number", "subject", "subject_range", "subject_definition"
+    "row_id", "subject", "subject_range", "subject_definition"
   )]
 
   row <- prepare_review_context(candidate)$rows[[1]]
@@ -252,7 +252,8 @@ test_that("candidate provenance survives context preparation", {
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",
-    table_id = "example-project"
+    table_id = "example-table",
+    project_id = "example-project"
   )
 
   original <- attr(x, "provenance")

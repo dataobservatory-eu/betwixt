@@ -45,7 +45,7 @@
 #' }
 #'
 #' Empty optional fields describing the inputs and comments are returned
-#' as `NA_character_`. `row_number` is returned as integer and
+#' as `NA_character_`. `row_id` is returned as integer and
 #' `reviewed$finalised` as logical.
 #'
 #' @details
@@ -254,7 +254,7 @@ read_review <- function(path) {
     row_comment <- node_text(xml2::xml_find_first(row, comment_xpath))
 
     candidate <- c(
-      row_number = xml2::xml_attr(row, "data-row"),
+      row_id = xml2::xml_attr(row, "data-row"),
       input_url = input_url,
       input_media_url = input_media_url,
       input_description = input_description,
@@ -264,7 +264,7 @@ read_review <- function(path) {
     )
 
     reviewed <- c(
-      row_number = xml2::xml_attr(row, "data-row"),
+      row_id = xml2::xml_attr(row, "data-row"),
       input_url = input_url,
       input_media_url = input_media_url,
       input_description = input_description,
@@ -291,8 +291,8 @@ read_review <- function(path) {
   )
 
   # Restore field types and missing values.
-  candidate$row_number <- as.integer(candidate$row_number)
-  reviewed$row_number <- as.integer(reviewed$row_number)
+  candidate$row_id <- as.integer(candidate$row_id)
+  reviewed$row_id <- as.integer(reviewed$row_id)
   reviewed$finalised <- reviewed$finalised == "true"
 
   candidate$input_url[candidate$input_url == ""] <- NA_character_
@@ -324,7 +324,8 @@ read_review <- function(path) {
     description = xml2::xml_text(
       xml2::xml_find_first(document, description_xpath)
     ),
-    table_id = input_value("project-id"),
+    project_id = input_value("project-id"),
+    table_id = input_value("table-id"),
     sequence = as.integer(input_value("review-sequence")),
     status = input_value("review-status")
   )

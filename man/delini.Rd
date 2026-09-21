@@ -7,7 +7,7 @@
 \format{
 A data frame with 5 rows and 16 variables:
 \describe{
-\item{row_number}{Integer row identifier.}
+\item{row_id}{Integer row identifier.}
 \item{input_url}{Optional URL of an evidential resource.}
 \item{input_media_url}{URL of the evidential media resource.}
 \item{input_description}{Short human-readable identifier for the evidence.}

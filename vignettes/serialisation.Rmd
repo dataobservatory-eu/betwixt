@@ -109,7 +109,7 @@ long <- project_review_long(review)
 long
 ```
 
-Each row now represents one reviewed assertion with its subject, predicate, value, and review status. The original `row_number` is retained as a coordinate linking the assertion back to the wide review layout, while `assertion_number` provides a unique identifier within the projection.
+Each row now represents one reviewed assertion with its subject, predicate, value, and review status. The original `row_id` is retained as a coordinate linking the assertion back to the wide review layout, while `assertion_number` provides a unique identifier within the projection.
 
 The wide and long forms therefore represent the same reviewed knowledge for different purposes: the wide form preserves the human review layout, while the long form exposes individual semantic assertions for further processing and serialisation.
 

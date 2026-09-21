@@ -20,7 +20,7 @@ test_that("long projection creates atomic assertions in both states", {
   expect_identical(
     names(x),
     c(
-      "assertion_number", "row_number", "context_held_by",
+      "assertion_number", "row_id", "context_held_by",
       "plane", "subject", "predicate", "value", "status",
       "reviewer", "reviewer_email", "reviewer_iri",
       "started_at", "saved_at", "ended_at",
@@ -38,7 +38,7 @@ test_that("long projection creates atomic assertions in both states", {
 test_that("long projection preserves Betwixt row coordinates", {
   x <- project_review_long(read_review(muis_final_path))
 
-  expect_equal(as.integer(table(x$row_number)), rep(10L, 3))
+  expect_equal(as.integer(table(x$row_id)), rep(10L, 3))
   expect_equal(as.integer(table(x$plane)), c(15L, 15L))
   expect_equal(length(unique(x$assertion_number)), nrow(x))
 })
@@ -63,7 +63,7 @@ test_that("long projection preserves descriptive assertions", {
   x <- project_review_long(read_review(muis_final_path))
 
   assertion <- x[
-    x$row_number == 1 & x$predicate == "alternative_label",
+    x$row_id == 1 & x$predicate == "alternative_label",
   ]
 
   expect_equal(nrow(assertion), 2L)
@@ -78,7 +78,7 @@ test_that("long projection preserves descriptive assertions", {
 test_that("long projection preserves semantic assertions", {
   x <- project_review_long(read_review(muis_final_path))
 
-  assertion <- x[x$row_number == 1 & x$predicate == "depicts", ]
+  assertion <- x[x$row_id == 1 & x$predicate == "depicts", ]
 
   expect_equal(nrow(assertion), 2L)
   expect_equal(assertion$plane, c("candidate", "reviewed"))
@@ -89,7 +89,7 @@ test_that("long projection preserves semantic assertions", {
 test_that("long projection inherits explicit rejection", {
   x <- project_review_long(read_review(countries_final_path))
 
-  assertion <- x[x$row_number == 1 & x$predicate == "gdp", ]
+  assertion <- x[x$row_id == 1 & x$predicate == "gdp", ]
 
   expect_equal(nrow(assertion), 2L)
   expect_equal(assertion$status, rep("rejected", 2L))
@@ -102,8 +102,8 @@ test_that("long projection preserves subjects by plane", {
   review <- read_review(muis_final_path)
   x <- project_review_long(review)
 
-  candidate <- x[x$row_number == 1 & x$plane == "candidate", ]
-  reviewed <- x[x$row_number == 1 & x$plane == "reviewed", ]
+  candidate <- x[x$row_id == 1 & x$plane == "candidate", ]
+  reviewed <- x[x$row_id == 1 & x$plane == "reviewed", ]
 
   expect_true(all(candidate$subject == review$candidate$subject[1]))
   expect_true(all(reviewed$subject == review$reviewed$subject[1]))
@@ -114,7 +114,7 @@ test_that("long projection preserves subjects by plane", {
 
 test_that("long projection preserves row context", {
   x <- project_review_long(read_review(countries_final_path))
-  row <- x[x$row_number == 1, ]
+  row <- x[x$row_id == 1, ]
 
   expect_true(all(row$context_year == "2023"))
   expect_true(all(row$context_unit == "CP_MEUR"))
@@ -171,7 +171,7 @@ test_that("long projection inherits states from the wide projection", {
 
     assertions <- long[long$predicate == predicate, ]
     actual <- assertions$status[
-      match(status$row_number, assertions$row_number)
+      match(status$row_id, assertions$row_id)
     ]
 
     expect_equal(actual, expected)

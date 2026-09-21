@@ -7,7 +7,7 @@
 \format{
 A data frame with 4 rows and the following variables:
 \describe{
-\item{row_number}{Stable integer identifier for the candidate row.}
+\item{row_id}{Stable integer identifier for the candidate row.}
 \item{input_url}{Resolvable DOI of the source Eurostat dataset.}
 \item{label}{Human-readable label for the observation.}
 \item{description}{Human-readable description of the observation.}

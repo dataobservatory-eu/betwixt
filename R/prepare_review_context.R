@@ -50,6 +50,7 @@ prepare_review_context <- function(candidate) {
       data_manager_iri = "",
       data_manager_email = "",
       table_id = "",
+      project_id = "",
       generated_at = NA_character_,
       software_agent = "Betwixt",
       software_version = betwixt_version() # see utils.R
@@ -108,7 +109,7 @@ prepare_review_context <- function(candidate) {
 
     # Assemble the common rendering information for one row.
     row <- list(
-      row_number = candidate$row_number[i],
+      row_id = candidate$row_id[i],
       input_url = if ("input_url" %in% names(candidate)) {
         parse_range(candidate$input_url[i])
       } else {

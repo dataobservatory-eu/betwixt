@@ -307,9 +307,9 @@ review_context_html <- function(
 
     # Assemble the complete review row.
     paste0(
-      '<tr data-row="', row$row_number,
+      '<tr data-row="', row$row_id,
       '" data-finalised="false" data-outcome="accept">',
-      '<td class="num">', row$row_number, "</td>",
+      '<td class="num">', row$row_id, "</td>",
       evidence,
 
       # Preserve the original label as the candidate value.

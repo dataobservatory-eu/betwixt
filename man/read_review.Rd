@@ -25,8 +25,8 @@ and the optional review-level comment.
 }
 \item{candidate}{
 A data frame reconstructing the candidate state presented for review.
-It contains row number, evidence fields, descriptive fields, and
-candidate semantic assertion values.
+It contains row number, the fields related to the inputs, the
+descriptive fields, and candidate semantic assertion values.
 }
 \item{reviewed}{
 A data frame reconstructing the persisted reviewed state. It contains
@@ -35,8 +35,9 @@ row finalisation state, row outcome, and optional row-level comments.
 }
 }
 
-Empty optional evidence fields and comments are returned as \code{NA_character_}.
-\code{row_number} is returned as integer and \code{reviewed$finalised} as logical.
+Empty optional fields describing the inputs and comments are returned
+as \code{NA_character_}. \code{row_id} is returned as integer and
+\code{reviewed$finalised} as logical.
 }
 \description{
 Reads a standalone Betwixt review HTML file and reconstructs the original

@@ -38,7 +38,7 @@
 #'   columns.
 #'
 #' @return
-#' An empty tibble containing `row_number` and `subject`, together with the
+#' An empty tibble containing `row_id` and `subject`, together with the
 #' requested evidence, descriptive, candidate, and contextual columns.
 #'
 #' @examples
@@ -68,7 +68,7 @@ create_candidate_template <- function(
   context = NULL
 ) {
   names <- c(
-    "row_number",
+    "row_id",
     if (input_url) "input_url",
     if (input_media_url) "input_media_url",
     if (input_label) "input_label",
@@ -98,7 +98,7 @@ create_candidate_template <- function(
   names <- c(names, context)
 
   out <- stats::setNames(rep(list(character()), length(names)), names)
-  out$row_number <- integer()
+  out$row_id <- integer()
 
   as.data.frame(out, stringsAsFactors = FALSE)
 }

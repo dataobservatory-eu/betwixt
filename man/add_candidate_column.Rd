@@ -48,7 +48,7 @@ for example \code{dplyr::mutate(context_1 = held_by)}.
 }
 \examples{
 candidates <- tibble::tibble(
-  row_number = 1:2,
+  row_id = 1:2,
   input_description = c("image-1", "image-2")
 )
 

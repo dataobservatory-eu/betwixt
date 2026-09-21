@@ -76,8 +76,13 @@
 #' @param data_manager_email Character string containing the data manager's
 #'   email address.
 #'
-#' @param table_id Character string identifying the project within which the
-#'   candidate dataset was generated.
+#' @param project_id Character string identifying the larger knowledge-production
+#'   project within which the table is created and reviewed. The optional
+#'   `project_id` can help identify and relate tables belonging to the same
+#'   project.
+#'
+#' @param table_id Character string identifying the table across its successive
+#'   states within the project.
 #'
 #' @return
 #' A tibble representing the initial Betwixt candidate dataset, with one row
@@ -85,7 +90,7 @@
 #' input information, subject presentation information, and the candidate
 #' subject assertion.
 #'
-#' The core columns are `row_number`, `input_url`, `input_media_url`,
+#' The core columns are `row_id`, `input_url`, `input_media_url`,
 #' `input_label`, `input_description`, `label`, `description`,
 #' `alternative_label`, `alternative_description`, `subject`,
 #' `subject_range`, and `subject_definition`.
@@ -95,7 +100,7 @@
 #'
 #' @details
 #' `create_candidate_dataset()` establishes the initial structure of a Betwixt
-#' candidate dataset. `row_number` is generated automatically as an integer
+#' candidate dataset. `row_id` is generated automatically as an integer
 #' sequence in input order.
 #'
 #' Input columns describe or identify the serialised artefact supplied to the
@@ -228,7 +233,8 @@ create_candidate_dataset <- function(
   data_manager_name = "",
   data_manager_iri = "",
   data_manager_email = "",
-  table_id = ""
+  table_id = "",
+  project_id = ""
 ) {
   if (is.null(input_predicate) &&
     !all(is.na(input_predicate_range))) {
@@ -247,7 +253,7 @@ create_candidate_dataset <- function(
 
   if (is.null(input_predicate)) {
     x <- tibble::tibble(
-      row_number = seq_along(subject),
+      row_id = seq_along(subject),
       input_url = input_url,
       input_media_url = input_media_url,
       input_description = input_description,
@@ -261,7 +267,7 @@ create_candidate_dataset <- function(
     )
   } else {
     x <- tibble::tibble(
-      row_number = seq_along(subject),
+      row_id = seq_along(subject),
       input_url = input_url,
       input_media_url = input_media_url,
       input_label = input_label,
@@ -282,6 +288,7 @@ create_candidate_dataset <- function(
     data_manager = data_manager_name,
     data_manager_iri = data_manager_iri,
     data_manager_email = data_manager_email,
+    project_id = project_id,
     table_id = table_id,
     generated_at = format(
       Sys.time(),

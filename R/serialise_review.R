@@ -322,7 +322,7 @@ serialise_assertion <- function(x, prefix, filename, dataset, number) {
   lines <- c(
     turtle_iri(iri),
     "    a btx:Assertion",
-    paste0("    ; btx:rowNumber ", x$row_number),
+    paste0("    ; btx:rowNumber ", x$row_id),
     paste0("    ; btx:subject ", turtle_literal(x$subject)),
     paste0("    ; btx:predicate ", turtle_literal(x$predicate)),
     paste0("    ; btx:value ", turtle_literal(x$value))

@@ -62,7 +62,7 @@ For the remainder of this vignette, we reproduce the result of the spreadsheet e
 candidates <- rbind(
   small_countries_dataset,
   data.frame(
-    row_number = 5:6,
+    row_id = 5:6,
     input_url = rep(
       "https://doi.org/10.2908/NAIDA_10_GDP", 2
     ),

@@ -14,6 +14,7 @@ render_review(
   reviewer_name = "",
   reviewer_iri = "",
   table_id = "",
+  project_id = "",
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
@@ -41,7 +42,13 @@ files. Review sequences greater than \code{0} append the sequence number.}
 \item{reviewer_iri}{Character string containing an IRI identifying the
 reviewer, such as an ORCID, ISNI, or Wikidata URI.}
 
-\item{table_id}{Character string identifying the review project.}
+\item{table_id}{Character string identifying the table across its successive
+states within the project.}
+
+\item{project_id}{Character string identifying the larger knowledge-production
+project within which the table is created and reviewed. The optional
+\code{project_id} can help identify and relate tables belonging to the same
+project.}
 
 \item{sequence}{A single non-negative integer identifying the review
 sequence. The initial candidate review has sequence \code{0}.}

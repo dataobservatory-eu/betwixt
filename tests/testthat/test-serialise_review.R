@@ -145,7 +145,7 @@ test_that("review activity links to candidate preparation", {
 # Dataset serialisation -------------------------------------------------------
 
 test_that("serialise_dataset() creates a candidate dataset", {
-  x <- data.frame(row_number = 1:2)
+  x <- data.frame(row_id = 1:2)
 
   ttl <- serialise_dataset(
     x,
@@ -162,7 +162,7 @@ test_that("serialise_dataset() creates a candidate dataset", {
 })
 
 test_that("serialise_dataset() creates a derived reviewed dataset", {
-  x <- data.frame(row_number = 1:2)
+  x <- data.frame(row_id = 1:2)
 
   ttl <- serialise_dataset(
     x,
@@ -180,7 +180,7 @@ test_that("serialise_dataset() creates a derived reviewed dataset", {
 })
 
 test_that("serialise_dataset() adds descriptive metadata", {
-  x <- data.frame(row_number = 1L)
+  x <- data.frame(row_id = 1L)
 
   ttl <- serialise_dataset(
     x,
@@ -197,7 +197,7 @@ test_that("serialise_dataset() adds descriptive metadata", {
 })
 
 test_that("serialise_dataset() escapes literals", {
-  x <- data.frame(row_number = 1L)
+  x <- data.frame(row_id = 1L)
 
   ttl <- serialise_dataset(
     x,
@@ -214,7 +214,7 @@ test_that("serialise_dataset() escapes literals", {
 })
 
 test_that("serialise_dataset() links only its own assertions", {
-  x <- data.frame(row_number = 1:2)
+  x <- data.frame(row_id = 1:2)
 
   ttl <- serialise_dataset(
     x,
@@ -309,7 +309,7 @@ test_that("serialise_reviewer() escapes the reviewer name", {
 # Dataset serialisation -------------------------------------------------------
 
 test_that("serialise_dataset() creates a candidate dataset", {
-  x <- data.frame(row_number = 1:2)
+  x <- data.frame(row_id = 1:2)
 
   ttl <- serialise_dataset(
     x,
@@ -326,7 +326,7 @@ test_that("serialise_dataset() creates a candidate dataset", {
 })
 
 test_that("serialise_dataset() creates a derived reviewed dataset", {
-  x <- data.frame(row_number = 1:2)
+  x <- data.frame(row_id = 1:2)
 
   ttl <- serialise_dataset(
     x,
@@ -344,7 +344,7 @@ test_that("serialise_dataset() creates a derived reviewed dataset", {
 })
 
 test_that("serialise_dataset() adds descriptive metadata", {
-  x <- data.frame(row_number = 1L)
+  x <- data.frame(row_id = 1L)
 
   ttl <- serialise_dataset(
     x,
@@ -361,7 +361,7 @@ test_that("serialise_dataset() adds descriptive metadata", {
 })
 
 test_that("serialise_dataset() escapes literals", {
-  x <- data.frame(row_number = 1L)
+  x <- data.frame(row_id = 1L)
 
   ttl <- serialise_dataset(
     x,
@@ -378,7 +378,7 @@ test_that("serialise_dataset() escapes literals", {
 })
 
 test_that("serialise_dataset() links only its own assertions", {
-  x <- data.frame(row_number = 1:2)
+  x <- data.frame(row_id = 1:2)
 
   ttl <- serialise_dataset(
     x,

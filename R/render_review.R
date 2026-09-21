@@ -25,7 +25,12 @@
 #' @param reviewer_name Character string containing the initial reviewer name.
 #' @param reviewer_iri Character string containing an IRI identifying the
 #'   reviewer, such as an ORCID, ISNI, or Wikidata URI.
-#' @param table_id Character string identifying the review table.
+#' @param project_id Character string identifying the larger knowledge-production
+#'   project within which the table is created and reviewed. The optional
+#'   `project_id` can help identify and relate tables belonging to the same
+#'   project.
+#' @param table_id Character string identifying the table across its successive
+#'   states within the project.
 #' @param sequence A single non-negative integer identifying the review
 #'   sequence. The initial candidate review has sequence `0`.
 #' @param row_comment Logical. If `TRUE`, adds an optional reviewer comment
@@ -63,6 +68,7 @@ render_review <- function(
   reviewer_name = "",
   reviewer_iri = "",
   table_id = "",
+  project_id = "",
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
@@ -232,11 +238,14 @@ render_review <- function(
     escape_html(reviewer_iri), '">',
     "</label>\n",
     "<label>Project ID",
-    '<input id="project-id" class="project-id-input" ',
-    'type="text" value="',
+    '<input id="project-id" type="text" value="',
+    escape_html(project_id), '" readonly>',
+    "</label>\n",
+    "<label>Table ID",
+    '<input id="table-id" type="text" value="',
     escape_html(table_id), '" readonly>',
     "</label>\n",
-    "<label>Sequence",
+    "<label>State sequence",
     '<input id="review-sequence" type="number" value="',
     sequence, '" readonly>',
     "</label>\n",

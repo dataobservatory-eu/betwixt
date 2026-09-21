@@ -38,6 +38,17 @@ project_review_wide <- function(review) {
   candidate <- review$candidate
   reviewed <- review$reviewed
 
+  # Add table and state coordinates.
+  coordinates <- list(
+    project_id = review$metadata$project_id,
+    table_id = review$metadata$table_id,
+    sequence = review$metadata$sequence
+  )
+
+  candidate <- dplyr::mutate(candidate, !!!coordinates)
+  reviewed <- dplyr::mutate(reviewed, !!!coordinates)
+  status <- dplyr::mutate(status, !!!coordinates)
+
   # Identify descriptive and qualified semantic assertions.
   descriptive <- intersect(
     c(
@@ -46,6 +57,7 @@ project_review_wide <- function(review) {
     ),
     names(candidate)
   )
+
   q_cols <- grep("_qualification$", names(reviewed), value = TRUE)
   semantic <- sub("_qualification$", "", q_cols)
   cols <- unique(c(descriptive, semantic))
@@ -78,15 +90,18 @@ project_review_wide <- function(review) {
   reviewed <- reviewed[keep]
   status <- status[keep]
 
-  # Combine the three planes and place plane after row_number.
+  # Combine the three planes and place plane after row_id.
   result <- dplyr::bind_rows(
     dplyr::mutate(candidate, plane = "candidate"),
     dplyr::mutate(reviewed, plane = "reviewed"),
     dplyr::mutate(status, plane = "status")
   )
+
   result <- dplyr::relocate(
-    result, dplyr::all_of("plane"),
-    .after = dplyr::all_of("row_number")
+    result,
+    dplyr::all_of(c("project_id", "table_id", "sequence", "row_id", "plane"),
+      .after = dplyr::all_of("row_id")
+    )
   )
 
   attr(result, "provenance") <- review$provenance

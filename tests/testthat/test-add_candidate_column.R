@@ -107,6 +107,6 @@ test_that("add_candidate_column() preserves row count and order", {
   )
 
   expect_equal(nrow(result), nrow(delini))
-  expect_equal(result$row_number, delini$row_number)
+  expect_equal(result$row_id, delini$row_id)
   expect_equal(result$input_description, delini$input_description)
 })

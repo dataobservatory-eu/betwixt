@@ -21,7 +21,8 @@ create_candidate_dataset(
   data_manager_name = "",
   data_manager_iri = "",
   data_manager_email = "",
-  table_id = ""
+  table_id = "",
+  project_id = ""
 )
 }
 \arguments{
@@ -88,8 +89,13 @@ data manager, such as an ORCID, ISNI, or Wikidata URI.}
 \item{data_manager_email}{Character string containing the data manager's
 email address.}
 
-\item{table_id}{Character string identifying the project within which the
-candidate dataset was generated.}
+\item{table_id}{Character string identifying the table across its successive
+states within the project.}
+
+\item{project_id}{Character string identifying the larger knowledge-production
+project within which the table is created and reviewed. The optional
+\code{project_id} can help identify and relate tables belonging to the same
+project.}
 }
 \value{
 A tibble representing the initial Betwixt candidate dataset, with one row
@@ -97,7 +103,7 @@ per input-subject observation. The table contains structural coordinates,
 input information, subject presentation information, and the candidate
 subject assertion.
 
-The core columns are \code{row_number}, \code{input_url}, \code{input_media_url},
+The core columns are \code{row_id}, \code{input_url}, \code{input_media_url},
 \code{input_label}, \code{input_description}, \code{label}, \code{description},
 \code{alternative_label}, \code{alternative_description}, \code{subject},
 \code{subject_range}, and \code{subject_definition}.
@@ -120,7 +126,7 @@ between the input and the subject, for example \code{"depicts"} or
 }
 \details{
 \code{create_candidate_dataset()} establishes the initial structure of a Betwixt
-candidate dataset. \code{row_number} is generated automatically as an integer
+candidate dataset. \code{row_id} is generated automatically as an integer
 sequence in input order.
 
 Input columns describe or identify the serialised artefact supplied to the

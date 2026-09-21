@@ -60,7 +60,7 @@ its \verb{_range} and \verb{_definition} columns.}
 columns.}
 }
 \value{
-An empty tibble containing \code{row_number} and \code{subject}, together with the
+An empty tibble containing \code{row_id} and \code{subject}, together with the
 requested evidence, descriptive, candidate, and contextual columns.
 }
 \description{

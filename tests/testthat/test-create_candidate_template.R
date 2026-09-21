@@ -5,11 +5,12 @@ test_that("create_candidate_template() creates the default schema", {
 
   expect_s3_class(x, "data.frame")
   expect_equal(nrow(x), 0L)
-  expect_true(is.integer(x$row_number))
+  expect_true(is.integer(x$row_id))
   expect_named(x, c(
-    "row_number", "input_url", "input_media_url", "input_label",
-    "input_description",
-    "label", "description", "subject", "subject_range", "subject_definition"
+    "row_id", "input_url", "input_media_url",
+    "input_label", "input_description",
+    "label", "description",
+    "subject", "subject_range", "subject_definition"
   ))
 })
 
@@ -28,7 +29,7 @@ test_that("optional standard columns can be omitted", {
     subject_definition = FALSE
   )
 
-  expect_named(x, c("row_number", "subject"))
+  expect_named(x, c("row_id", "subject"))
 })
 
 test_that("alternative descriptive columns can be included", {

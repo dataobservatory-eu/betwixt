@@ -11,7 +11,8 @@ test_that("create_candidate_dataset() constructs the expected base structure", {
     description = delini$description,
     subject = delini$subject,
     subject_range = delini$subject_range,
-    subject_definition = delini$subject_definition
+    subject_definition = delini$subject_definition,
+    project_id = "test"
   )
 
   expect_s3_class(result, "data.frame")
@@ -19,7 +20,7 @@ test_that("create_candidate_dataset() constructs the expected base structure", {
   expect_named(
     result,
     c(
-      "row_number",
+      "row_id",
       "input_url",
       "input_media_url",
       "input_label",
@@ -103,10 +104,10 @@ test_that("create_candidate_dataset() creates integer row numbers in input order
     subject = delini$subject
   )
 
-  expect_type(result$row_number, "integer")
+  expect_type(result$row_id, "integer")
 
   expect_identical(
-    result$row_number,
+    result$row_id,
     seq_len(nrow(delini))
   )
 
@@ -232,7 +233,7 @@ test_that("create_candidate_dataset() omits optional input predicate columns", {
   expect_equal(
     names(result),
     c(
-      "row_number",
+      "row_id",
       "input_url",
       "input_media_url",
       "input_description",
@@ -315,7 +316,8 @@ test_that("candidate dataset records provenance", {
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",
-    table_id = "example-project"
+    table_id = "example-table",
+    project_id = "example-project"
   )
 
   p <- attr(x, "provenance")
@@ -323,7 +325,8 @@ test_that("candidate dataset records provenance", {
   expect_equal(p$data_manager, "Daniel Antal")
   expect_equal(p$data_manager_iri, "https://orcid.org/0000-0001-7513-6760")
   expect_equal(p$data_manager_email, "daniel@example.org")
-  expect_equal(p$table_id, "example-project")
+  expect_equal(p$project_id, "example-project")
+  expect_equal(p$table_id, "example-table")
 })
 
 test_that("candidate provenance records generation metadata", {

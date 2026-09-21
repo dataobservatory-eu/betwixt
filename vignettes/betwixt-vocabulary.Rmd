@@ -112,7 +112,7 @@ long <- project_review_long(review)
 head(long)
 ```
 
-Each row in the long projection represents one assertion. `row_number` retains its relationship to the original review matrix, while `assertion_number` identifies the assertion within the projection.
+Each row in the long projection represents one assertion. `row_id` retains its relationship to the original review matrix, while `assertion_number` identifies the assertion within the projection.
 
 This transformation provides the bridge between a human-oriented review matrix and the assertion-oriented representation used by the Betwixt RDF vocabulary.
 

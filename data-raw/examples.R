@@ -289,7 +289,7 @@ represented_by_definition_values <- c(
 
 
 delini_dataset <- readxl::read_excel("delini_import_dataset.xlsx") %>%
-  mutate(row_number = as.integer(seq_along(.data$subject))) %>%
+  mutate(row_id = as.integer(seq_along(.data$subject))) %>%
   mutate(label = trimws(label), description = trimws(description))
 
 names(delini_dataset)

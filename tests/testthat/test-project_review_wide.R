@@ -102,11 +102,11 @@ test_that("project_review_wide() derives MuIS finalised states", {
 test_that("project_review_wide() derives descriptive review states", {
   review <- list(
     candidate = data.frame(
-      row_number = 1:4,
+      row_id = 1:4,
       description = c(NA, "Delete", "Change", "Keep")
     ),
     reviewed = data.frame(
-      row_number = 1:4,
+      row_id = 1:4,
       description = c(NA, "", "Changed", "Keep"),
       finalised = rep(TRUE, 4)
     )

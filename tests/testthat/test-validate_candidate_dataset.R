@@ -8,7 +8,7 @@ test_that("valid candidate template passes validation", {
 
 test_that("candidate and context columns may have arbitrary atomic types", {
   x <- data.frame(
-    row_number = 1L,
+    row_id = 1L,
     subject = "Q121",
     year = 1897L,
     verified = TRUE
@@ -20,13 +20,13 @@ test_that("candidate and context columns may have arbitrary atomic types", {
 
 # Mandatory columns ------------------------------------------------------
 
-test_that("row_number is required", {
+test_that("row_id is required", {
   x <- create_candidate_template()
-  x$row_number <- NULL
+  x$row_id <- NULL
 
   expect_error(
     validate_candidate_dataset(x),
-    "Missing required column.*row_number"
+    "Missing required column.*row_id"
   )
 })
 
@@ -43,13 +43,13 @@ test_that("subject is required", {
 
 # Structural types -------------------------------------------------------
 
-test_that("row_number must be integer", {
+test_that("row_id must be integer", {
   x <- create_candidate_template()
-  x$row_number <- numeric()
+  x$row_id <- numeric()
 
   expect_error(
     validate_candidate_dataset(x),
-    "`row_number` must be integer"
+    "`row_id` must be integer"
   )
 })
 
@@ -125,39 +125,39 @@ test_that("candidate metadata passes with its candidate column", {
 })
 
 
-test_that("row_number cannot contain missing values", {
+test_that("row_id cannot contain missing values", {
   x <- data.frame(
-    row_number = c(1L, NA_integer_),
+    row_id = c(1L, NA_integer_),
     subject = c("Q1", "Q2")
   )
 
   expect_error(
     validate_candidate_dataset(x),
-    "`row_number` cannot contain missing values"
+    "`row_id` cannot contain missing values"
   )
 })
 
-test_that("row_number must be unique", {
+test_that("row_id must be unique", {
   x <- data.frame(
-    row_number = c(1L, 1L),
+    row_id = c(1L, 1L),
     subject = c("Q1", "Q2")
   )
 
   expect_error(
     validate_candidate_dataset(x),
-    "`row_number` must be unique"
+    "`row_id` must be unique"
   )
 })
 
-test_that("row_number must be positive", {
+test_that("row_id must be positive", {
   x <- data.frame(
-    row_number = c(0L, 1L),
+    row_id = c(0L, 1L),
     subject = c("Q1", "Q2")
   )
 
   expect_error(
     validate_candidate_dataset(x),
-    "`row_number` must contain positive integers"
+    "`row_id` must contain positive integers"
   )
 })
 
@@ -165,7 +165,7 @@ test_that("row_number must be positive", {
 
 test_that("pipe-separated input URLs are accepted", {
   x <- data.frame(
-    row_number = 1L,
+    row_id = 1L,
     subject = "Q121",
     input_url = "https://example.org/a| https://example.org/b"
   )
@@ -175,7 +175,7 @@ test_that("pipe-separated input URLs are accepted", {
 
 test_that("invalid input URLs are rejected", {
   x <- data.frame(
-    row_number = 1L,
+    row_id = 1L,
     subject = "Q121",
     input_url = "https://example.org/a | not-a-url"
   )
@@ -189,7 +189,7 @@ test_that("invalid input URLs are rejected", {
 
 test_that("invalid input media URLs are rejected", {
   x <- data.frame(
-    row_number = 1L,
+    row_id = 1L,
     subject = "Q121",
     input_media_url = "not-a-url"
   )

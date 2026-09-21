@@ -11,7 +11,7 @@ project_review_long(review)
 }
 \value{
 A data frame with one row per candidate or reviewed assertion and
-columns \code{assertion_number}, \code{row_number}, zero or more \verb{context_*} columns,
+columns \code{assertion_number}, \code{row_id}, zero or more \verb{context_*} columns,
 \code{plane}, \code{subject}, \code{predicate}, \code{value}, \code{status}, \code{reviewer}, and
 \code{generated_at}.
 }

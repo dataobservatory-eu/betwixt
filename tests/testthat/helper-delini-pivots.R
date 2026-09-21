@@ -27,7 +27,7 @@ delini_long <- delini |>
     value_definition = NA_character_
   ) |>
   dplyr::select(
-    row_number,
+    row_id,
     input_media_url,
     input_description,
     label,
@@ -44,7 +44,7 @@ delini_long <- delini |>
     context_1,
     context_2
   ) |>
-  dplyr::arrange(row_number)
+  dplyr::arrange(row_id)
 
 
 ## Dual wide -----------------------------------------------------------------
@@ -106,7 +106,7 @@ delini_dual_long <- delini_dual_wide |>
     value_definition = NA_character_
   ) |>
   dplyr::select(
-    row_number,
+    row_id,
     input_media_url,
     input_description,
     input_predicate,
@@ -125,7 +125,7 @@ delini_dual_long <- delini_dual_wide |>
     context_1,
     context_2
   ) |>
-  dplyr::arrange(row_number)
+  dplyr::arrange(row_id)
 
 
 ## Dimensions ----------------------------------------------------------------
@@ -158,7 +158,7 @@ test_that("Delini long fixtures contain atomic claims", {
     unique(delini_long$predicate),
     c("instance of", "heritage of")
   )
-  expect_equal(as.integer(table(delini_long$row_number)), rep(2L, 5L))
+  expect_equal(as.integer(table(delini_long$row_id)), rep(2L, 5L))
   expect_false("input_predicate" %in% names(delini_long))
   expect_true("input_predicate" %in% names(delini_dual_long))
   expect_equal(delini_dual_long$input_predicate, rep("depicts", 10L))

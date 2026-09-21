@@ -1,7 +1,7 @@
 ## code to prepare `delini` dataset goes here
 
 delini <- tibble::tribble(
-  ~row_number,
+  ~row_id,
   ~input_url,
   ~input_media_url,
   ~input_description,
@@ -99,6 +99,6 @@ delini <- tibble::tribble(
   "The Ethnographic Open-Air Museum of Latvia"
 )
 
-delini$row_number <- as.integer(delini$row_number)
+delini$row_id <- as.integer(delini$row_id)
 
 usethis::use_data(delini, overwrite = TRUE)

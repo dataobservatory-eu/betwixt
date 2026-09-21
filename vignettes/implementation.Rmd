@@ -72,7 +72,7 @@ The reference implementation begins with a **candidate dataset**. This is an ord
 
 A simplified candidate dataset might contain:
 
-| row_number | subject | instance_of | heritage_of | context_collection |
+| row_id | subject | instance_of | heritage_of | context_collection |
 |-----------:|---------|-------------|-------------|--------------------|
 | 1 | Delini farmstead | farmhouse | Livonians | Open-Air Museum |
 | 2 | tablet-woven sash | sash | Livonians | Open-Air Museum |
@@ -197,7 +197,7 @@ The same review can be represented in different tabular forms without changing i
 
 The **wide projection** remains close to the structure used during human review. Candidate, reviewed, and status states are represented as aligned planes:
 
-| row_number | plane | subject | instance_of | heritage_of |
+| row_id | plane | subject | instance_of | heritage_of |
 |-----------:|-------|---------|-------------|-------------|
 | 1 | candidate | Delini farmstead | farmhouse | Livonians |
 | 1 | reviewed | Delini farmstead | farmhouse | Livonians |
@@ -207,7 +207,7 @@ This form is convenient for inspection because related assertions remain togethe
 
 The **long projection** decomposes the same material into atomic assertions:
 
-| row_number | plane | subject | predicate | value | status |
+| row_id | plane | subject | predicate | value | status |
 |-----------:|-------|---------|-----------|-------|--------|
 | 1 | candidate | Delini farmstead | instance_of | farmhouse | corroborated |
 | 1 | reviewed | Delini farmstead | instance_of | farmhouse | corroborated |

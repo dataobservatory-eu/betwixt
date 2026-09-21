@@ -39,8 +39,8 @@
 #'
 #' @examples
 #' candidates <- create_candidate_dataset(
-#'   evidence_media_url = delini$evidence_media_url,
-#'   evidence_text = delini$evidence_text,
+#'   input_media_url = delini$input_media_url,
+#'   input_description = delini$input_description,
 #'   label = delini$label,
 #'   description = delini$description,
 #'   subject = delini$subject,

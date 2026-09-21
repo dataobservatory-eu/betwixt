@@ -9,7 +9,7 @@
 #' For example, the candidate column `instance_of`
 #' is associated with `instance_of_range` and `instance_of_definition`.
 #'
-#' Pipe-separated values in `evidence_media_url` and `evidence_url` are parsed
+#' Pipe-separated values in `input_media_url` and `input_url` are parsed
 #' into character vectors. Each review row may therefore contain zero, one, or
 #' multiple evidence media URLs and evidence resource URLs for subsequent
 #' rendering.
@@ -66,7 +66,7 @@ prepare_review_context <- function(candidate) {
   context_cols <- grep("^context_", names(candidate), value = TRUE)
 
   # Determine whether the optional evidence relation is present.
-  has_evidence_relation <- "evidence_relation" %in% names(candidate)
+  has_evidence_relation <- "input_relation" %in% names(candidate)
 
   # Prepare each candidate row for rendering.
   rows <- lapply(seq_len(nrow(candidate)), function(i) {
@@ -99,18 +99,18 @@ prepare_review_context <- function(candidate) {
     # Assemble the common rendering information for one row.
     row <- list(
       row_number = candidate$row_number[i],
-      evidence_url = if ("evidence_url" %in% names(candidate)) {
-        parse_range(candidate$evidence_url[i])
+      input_url = if ("input_url" %in% names(candidate)) {
+        parse_range(candidate$input_url[i])
       } else {
         character()
       },
-      evidence_media_url = if ("evidence_media_url" %in% names(candidate)) {
-        parse_range(candidate$evidence_media_url[i])
+      input_media_url = if ("input_media_url" %in% names(candidate)) {
+        parse_range(candidate$input_media_url[i])
       } else {
         character()
       },
-      evidence_text = if ("evidence_text" %in% names(candidate)) {
-        candidate$evidence_text[i]
+      input_description = if ("input_description" %in% names(candidate)) {
+        candidate$input_description[i]
       } else {
         NA_character_
       },
@@ -144,11 +144,11 @@ prepare_review_context <- function(candidate) {
 
     # Add the optional reviewable evidence relation.
     if (has_evidence_relation) {
-      row$evidence_relation <- candidate$evidence_relation[i]
+      row$input_relation <- candidate$input_relation[i]
 
-      if ("evidence_relation_range" %in% names(candidate)) {
-        row$evidence_relation_range <- parse_range(
-          candidate$evidence_relation_range[i]
+      if ("input_relation_range" %in% names(candidate)) {
+        row$input_relation_range <- parse_range(
+          candidate$input_relation_range[i]
         )
       }
     }

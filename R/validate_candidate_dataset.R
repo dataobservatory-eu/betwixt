@@ -37,8 +37,8 @@ validate_candidate_dataset <- function(x) {
   }
 
   character_cols <- c(
-    "evidence_url", "evidence_media_url", "evidence_text",
-    "evidence_relation", "label", "description",
+    "input_url", "input_media_url", "input_description",
+    "input_relation", "label", "description",
     "alternative_label", "alternative_description", "subject"
   )
 
@@ -75,7 +75,7 @@ validate_candidate_dataset <- function(x) {
   # URL validation -------------------------------------------------------
 
   url_cols <- intersect(
-    c("evidence_url", "evidence_media_url"),
+    c("input_url", "input_media_url"),
     names(x)
   )
 

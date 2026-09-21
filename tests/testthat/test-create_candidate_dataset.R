@@ -1,9 +1,9 @@
 test_that("create_candidate_dataset() constructs the expected base structure", {
   result <- create_candidate_dataset(
-    evidence_media_url = delini$evidence_media_url,
-    evidence_text = delini$evidence_text,
-    evidence_relation = rep("depicts", nrow(delini)),
-    evidence_relation_range = rep(
+    input_media_url = delini$input_media_url,
+    input_description = delini$input_description,
+    input_relation = rep("depicts", nrow(delini)),
+    input_relation_range = rep(
       "depicts | documents | is evidence for | Other...",
       nrow(delini)
     ),
@@ -20,11 +20,11 @@ test_that("create_candidate_dataset() constructs the expected base structure", {
     result,
     c(
       "row_number",
-      "evidence_url",
-      "evidence_media_url",
-      "evidence_text",
-      "evidence_relation",
-      "evidence_relation_range",
+      "input_url",
+      "input_media_url",
+      "input_description",
+      "input_relation",
+      "input_relation_range",
       "label",
       "description",
       "alternative_label",
@@ -48,10 +48,10 @@ test_that("create_candidate_dataset() preserves Delini input values", {
   )
 
   result <- create_candidate_dataset(
-    evidence_media_url = delini$evidence_media_url,
-    evidence_text = delini$evidence_text,
-    evidence_relation = relation,
-    evidence_relation_range = relation_range,
+    input_media_url = delini$input_media_url,
+    input_description = delini$input_description,
+    input_relation = relation,
+    input_relation_range = relation_range,
     label = delini$label,
     description = delini$description,
     subject = delini$subject,
@@ -59,11 +59,11 @@ test_that("create_candidate_dataset() preserves Delini input values", {
     subject_definition = delini$subject_definition
   )
 
-  expect_equal(result$evidence_media_url, delini$evidence_media_url)
-  expect_true(all(is.na(result$evidence_url)))
-  expect_equal(result$evidence_text, delini$evidence_text)
-  expect_equal(result$evidence_relation, relation)
-  expect_equal(result$evidence_relation_range, relation_range)
+  expect_equal(result$input_media_url, delini$input_media_url)
+  expect_true(all(is.na(result$input_url)))
+  expect_equal(result$input_description, delini$input_description)
+  expect_equal(result$input_relation, relation)
+  expect_equal(result$input_relation_range, relation_range)
   expect_equal(result$label, delini$label)
   expect_equal(result$description, delini$description)
 
@@ -78,9 +78,9 @@ test_that("create_candidate_dataset() preserves Delini input values", {
 
 test_that("create_candidate_dataset() creates integer row numbers in input order", {
   result <- create_candidate_dataset(
-    evidence_media_url = delini$evidence_media_url,
-    evidence_text = delini$evidence_text,
-    evidence_relation = rep("depicts", nrow(delini)),
+    input_media_url = delini$input_media_url,
+    input_description = delini$input_description,
+    input_relation = rep("depicts", nrow(delini)),
     label = delini$label,
     description = delini$description,
     subject = delini$subject
@@ -94,23 +94,23 @@ test_that("create_candidate_dataset() creates integer row numbers in input order
   )
 
   expect_equal(
-    result$evidence_text,
-    delini$evidence_text
+    result$input_description,
+    delini$input_description
   )
 })
 
 
 test_that("create_candidate_dataset() uses NA defaults for optional subject metadata", {
   result <- create_candidate_dataset(
-    evidence_media_url = rep(
+    input_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
     ),
-    evidence_text = rep(
+    input_description = rep(
       "W3C RDF Data Cube Vocabulary",
       nrow(w3c_life_expectancy)
     ),
-    evidence_relation = rep(
+    input_relation = rep(
       "documents",
       nrow(w3c_life_expectancy)
     ),
@@ -123,13 +123,13 @@ test_that("create_candidate_dataset() uses NA defaults for optional subject meta
   )
 
   # test default behavior
-  expect_true(all(is.na(result$evidence_url)))
-  expect_true(all(is.na(result$evidence_relation_range)))
+  expect_true(all(is.na(result$input_url)))
+  expect_true(all(is.na(result$input_relation_range)))
   expect_true(all(is.na(result$subject_range)))
   expect_true(all(is.na(result$subject_definition)))
 
   # test types
-  expect_type(result$evidence_url, "character")
+  expect_type(result$input_url, "character")
   expect_type(result$subject_range, "character")
   expect_type(result$subject_definition, "character")
   expect_type(result$alternative_label, "character")
@@ -139,15 +139,15 @@ test_that("create_candidate_dataset() uses NA defaults for optional subject meta
 
 test_that("create_candidate_dataset() works with statistical source data", {
   result <- create_candidate_dataset(
-    evidence_media_url = rep(
+    input_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
     ),
-    evidence_text = rep(
+    input_description = rep(
       "W3C RDF Data Cube Vocabulary",
       nrow(w3c_life_expectancy)
     ),
-    evidence_relation = rep(
+    input_relation = rep(
       "documents",
       nrow(w3c_life_expectancy)
     ),
@@ -167,15 +167,15 @@ test_that("create_candidate_dataset() works with statistical source data", {
 
 test_that("create_candidate_dataset() integrates with add_candidate_column()", {
   result <- create_candidate_dataset(
-    evidence_media_url = rep(
+    input_media_url = rep(
       "https://www.w3.org/TR/vocab-data-cube/",
       nrow(w3c_life_expectancy)
     ),
-    evidence_text = rep(
+    input_description = rep(
       "W3C RDF Data Cube Vocabulary",
       nrow(w3c_life_expectancy)
     ),
-    evidence_relation = rep("documents", nrow(w3c_life_expectancy)),
+    input_relation = rep("documents", nrow(w3c_life_expectancy)),
     label = w3c_life_expectancy$observation,
     description = paste(
       "Life expectancy observation for",
@@ -202,23 +202,23 @@ test_that("create_candidate_dataset() integrates with add_candidate_column()", {
 
 test_that("create_candidate_dataset() omits optional evidence relation columns", {
   result <- create_candidate_dataset(
-    evidence_media_url = "https://example.org/evidence/1",
-    evidence_text = "Evidence 1",
+    input_media_url = "https://example.org/evidence/1",
+    input_description = "Evidence 1",
     label = "Example subject",
     description = "An example subject",
     subject = "example:Q1"
   )
 
-  expect_false("evidence_relation" %in% names(result))
-  expect_false("evidence_relation_range" %in% names(result))
+  expect_false("input_relation" %in% names(result))
+  expect_false("input_relation_range" %in% names(result))
 
   expect_equal(
     names(result),
     c(
       "row_number",
-      "evidence_url",
-      "evidence_media_url",
-      "evidence_text",
+      "input_url",
+      "input_media_url",
+      "input_description",
       "label",
       "description",
       "alternative_label",
@@ -234,38 +234,38 @@ test_that("create_candidate_dataset() omits optional evidence relation columns",
 test_that("evidence relation range requires an evidence relation", {
   expect_error(
     create_candidate_dataset(
-      evidence_media_url = "https://example.org/evidence/1",
-      evidence_text = "Evidence 1",
+      input_media_url = "https://example.org/evidence/1",
+      input_description = "Evidence 1",
       label = "Example subject",
       description = "An example subject",
       subject = "example:Q1",
-      evidence_relation_range = add_candidate_range("depicts", "documents")
+      input_relation_range = add_candidate_range("depicts", "documents")
     ),
-    "evidence_relation_range requires evidence_relation."
+    "input_relation_range requires input_relation."
   )
 })
 
 
-test_that("create_candidate_dataset() accepts evidence_url without evidence_media_url", {
+test_that("create_candidate_dataset() accepts input_url without input_media_url", {
   result <- create_candidate_dataset(
-    evidence_url = "https://example.org/evidence/1",
-    evidence_text = "Evidence 1",
+    input_url = "https://example.org/evidence/1",
+    input_description = "Evidence 1",
     label = "Example subject",
     description = "An example subject",
     subject = "example:Q1"
   )
 
-  expect_true(is.na(result$evidence_media_url))
+  expect_true(is.na(result$input_media_url))
   expect_equal(
-    result$evidence_url,
+    result$input_url,
     "https://example.org/evidence/1"
   )
 })
 
 test_that("create_candidate_dataset() preserves alternative labels and descriptions", {
   result <- create_candidate_dataset(
-    evidence_media_url = "https://example.org/evidence/1",
-    evidence_text = "Evidence 1",
+    input_media_url = "https://example.org/evidence/1",
+    input_description = "Evidence 1",
     label = "Tablet-woven sash",
     description = "A tablet-woven textile object.",
     alternative_label = "Tablet-woven belt",
@@ -294,7 +294,7 @@ test_that("create_candidate_dataset() preserves alternative labels and descripti
 test_that("candidate dataset records provenance", {
   x <- create_candidate_dataset(
     subject = "Example",
-    evidence_url = "https://example.org",
+    input_url = "https://example.org",
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",
@@ -312,7 +312,7 @@ test_that("candidate dataset records provenance", {
 test_that("candidate provenance records generation metadata", {
   x <- create_candidate_dataset(
     subject = "Example",
-    evidence_url = "https://example.org"
+    input_url = "https://example.org"
   )
 
   p <- attr(x, "provenance")

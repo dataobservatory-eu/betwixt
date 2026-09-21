@@ -5,8 +5,8 @@
 #' evidence, descriptive information, reviewable assertions, finalisation
 #' controls, optional row comments, and display-only contextual information.
 #'
-#' Evidence media supplied through `evidence_media_url` are presented inline
-#' as images, while evidence resources supplied through `evidence_url` are
+#' Evidence media supplied through `input_media_url` are presented inline
+#' as images, while evidence resources supplied through `input_url` are
 #' rendered as links that can be opened by the reviewer. Multiple evidence
 #' media or resource URLs may be supplied and are rendered independently.
 #'
@@ -207,14 +207,14 @@ review_context_html <- function(
     )
 
     # Represent missing evidence text as an empty value.
-    evidence_text <- if (is.na(row$evidence_text)) {
+    input_description <- if (is.na(row$input_description)) {
       ""
     } else {
-      row$evidence_text
+      row$input_description
     }
 
     # Concatenate all media URLs first as evidence.
-    media <- vapply(row$evidence_media_url, function(url) {
+    media <- vapply(row$input_media_url, function(url) {
       paste0(
         '<a class="evidence-media-link" href="',
         escape_html(url),
@@ -222,14 +222,14 @@ review_context_html <- function(
         '<img src="',
         escape_html(url),
         '" alt="Evidence ',
-        escape_html(evidence_text),
+        escape_html(input_description),
         '">',
         "</a>"
       )
     }, character(1))
 
     # Concatenate all generic URLs second as evidence.
-    links <- vapply(row$evidence_url, function(url) {
+    links <- vapply(row$input_url, function(url) {
       paste0(
         '<a class="evidence-link" href="',
         escape_html(url),
@@ -245,7 +245,7 @@ review_context_html <- function(
       paste(media, collapse = ""),
       paste(links, collapse = ""),
       '<div class="media-id">',
-      escape_html(evidence_text),
+      escape_html(input_description),
       "</div>",
       "</td>"
     )

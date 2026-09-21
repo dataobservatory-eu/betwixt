@@ -2,7 +2,7 @@
 
 small_countries_dataset <- data.frame(
   row_number = 1:4,
-  evidence_url = rep(
+  input_url = rep(
     "https://doi.org/10.2908/NAIDA_10_GDP", 4
   ),
   label = c(

@@ -8,7 +8,7 @@
 A data frame with 4 rows and the following variables:
 \describe{
 \item{row_number}{Stable integer identifier for the candidate row.}
-\item{evidence_url}{Resolvable DOI of the source Eurostat dataset.}
+\item{input_url}{Resolvable DOI of the source Eurostat dataset.}
 \item{label}{Human-readable label for the observation.}
 \item{description}{Human-readable description of the observation.}
 \item{subject}{Human-readable name of the country.}

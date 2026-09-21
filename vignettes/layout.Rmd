@@ -96,7 +96,7 @@ In R, these columns can be added programmatically with `add_candidate_column()`,
 
 ## Evidence, description and context
 
-Evidence is deliberately kept distinct from the candidate assertions being reviewed. The Dēliņi example can provide an evidence resource through `evidence_url`, directly displayable media through `evidence_media_url`, and a short identification through `evidence_text`.
+Evidence is deliberately kept distinct from the candidate assertions being reviewed. The Dēliņi example can provide an evidence resource through `input_url`, directly displayable media through `input_media_url`, and a short identification through `input_description`.
 
 The `label` and `description` columns help the reviewer understand the resource but are not automatically reviewable assertions.
 
@@ -166,18 +166,18 @@ For the Dēliņi example, we can create a second candidate dataset in which the 
 
 ```{r delini-dual}
 delini_dual <- create_candidate_dataset(
-  evidence_url = delini$evidence_url,
-  evidence_media_url = delini$evidence_media_url,
-  evidence_text = delini$evidence_text,
+  input_url = delini$input_url,
+  input_media_url = delini$input_media_url,
+  input_description = delini$input_description,
   label = delini$label,
   description = delini$description,
   subject = delini$subject,
   subject_range = delini$subject_range,
   subject_definition = delini$subject_definition,
-  evidence_relation = c(
+  input_relation = c(
     "depicts", "depicts", "depicts", "documents", "documents"
   ),
-  evidence_relation_range = add_candidate_range(
+  input_relation_range = add_candidate_range(
     "depicts", "documents", "Other…"
   )
 )
@@ -199,7 +199,7 @@ delini_dual <- delini_dual |>
 
 The two candidate datasets contain the same assertions about the heritage resources. They differ in the boundary of the review task.
 
-In the dual-wide representation, `evidence_relation` is itself a candidate assertion. It remains distinct from review provenance, which records who performed the review, when the review took place, and what decisions were made.
+In the dual-wide representation, `input_relation` is itself a candidate assertion. It remains distinct from review provenance, which records who performed the review, when the review took place, and what decisions were made.
 
 ### Rendering the dual-wide review
 
@@ -209,7 +209,7 @@ The same renderer is used for the dual-wide candidate dataset:
 dual_review_file <- render_review(
   delini_dual,
   cols = c(
-    evidence_relation = "Evidence relation",
+    input_relation = "Evidence relation",
     subject = "Subject",
     instance_of = "instance of",
     heritage_of = "heritage of",

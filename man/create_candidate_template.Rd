@@ -5,14 +5,14 @@
 \title{Create an empty Betwixt candidate template}
 \usage{
 create_candidate_template(
-  evidence_url = TRUE,
-  evidence_media_url = TRUE,
-  evidence_text = TRUE,
+  input_url = TRUE,
+  input_media_url = TRUE,
+  input_description = TRUE,
   label = TRUE,
   description = TRUE,
   alternative_label = FALSE,
   alternative_description = FALSE,
-  evidence_relation = FALSE,
+  input_relation = FALSE,
   subject_range = TRUE,
   subject_definition = TRUE,
   columns = NULL,
@@ -20,11 +20,11 @@ create_candidate_template(
 )
 }
 \arguments{
-\item{evidence_url}{Include the \code{evidence_url} column.}
+\item{input_url}{Include the \code{input_url} column.}
 
-\item{evidence_media_url}{Include the \code{evidence_media_url} column.}
+\item{input_media_url}{Include the \code{input_media_url} column.}
 
-\item{evidence_text}{Include the \code{evidence_text} column.}
+\item{input_description}{Include the \code{input_description} column.}
 
 \item{label}{Include the \code{label} column.}
 
@@ -35,8 +35,8 @@ create_candidate_template(
 \item{alternative_description}{Include the \code{alternative_description}
 column.}
 
-\item{evidence_relation}{Include the \code{evidence_relation} and
-\code{evidence_relation_range} columns.}
+\item{input_relation}{Include the \code{input_relation} and
+\code{input_relation_range} columns.}
 
 \item{subject_range}{Include the \code{subject_range} column.}
 

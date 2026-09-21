@@ -176,12 +176,12 @@ read_review <- function(path) {
     url_nodes <- xml2::xml_find_all(row, url_xpath)
     text_node <- xml2::xml_find_first(row, text_xpath)
 
-    evidence_media_url <- paste(
+    input_media_url <- paste(
       xml2::xml_attr(media_nodes, "href"),
       collapse = " | "
     )
-    evidence_url <- paste(xml2::xml_attr(url_nodes, "href"), collapse = " | ")
-    evidence_text <- xml2::xml_text(text_node)
+    input_url <- paste(xml2::xml_attr(url_nodes, "href"), collapse = " | ")
+    input_description <- xml2::xml_text(text_node)
 
     # Read descriptive fields.
     descriptive_nodes <- xml2::xml_find_all(
@@ -254,9 +254,9 @@ read_review <- function(path) {
 
     candidate <- c(
       row_number = xml2::xml_attr(row, "data-row"),
-      evidence_url = evidence_url,
-      evidence_media_url = evidence_media_url,
-      evidence_text = evidence_text,
+      input_url = input_url,
+      input_media_url = input_media_url,
+      input_description = input_description,
       context,
       descriptive,
       assertions
@@ -264,9 +264,9 @@ read_review <- function(path) {
 
     reviewed <- c(
       row_number = xml2::xml_attr(row, "data-row"),
-      evidence_url = evidence_url,
-      evidence_media_url = evidence_media_url,
-      evidence_text = evidence_text,
+      input_url = input_url,
+      input_media_url = input_media_url,
+      input_description = input_description,
       context,
       reviewed_descriptive,
       reviewed_assertions,
@@ -294,18 +294,18 @@ read_review <- function(path) {
   reviewed$row_number <- as.integer(reviewed$row_number)
   reviewed$finalised <- reviewed$finalised == "true"
 
-  candidate$evidence_url[candidate$evidence_url == ""] <- NA_character_
-  reviewed$evidence_url[reviewed$evidence_url == ""] <- NA_character_
+  candidate$input_url[candidate$input_url == ""] <- NA_character_
+  reviewed$input_url[reviewed$input_url == ""] <- NA_character_
 
   # Handle cases where there are no evidence media URLs in the betwixt-html
-  no_media <- candidate$evidence_media_url == ""
-  candidate$evidence_media_url[no_media] <- NA_character_
-  reviewed$evidence_media_url[no_media] <- NA_character_
+  no_media <- candidate$input_media_url == ""
+  candidate$input_media_url[no_media] <- NA_character_
+  reviewed$input_media_url[no_media] <- NA_character_
 
   # Handle cases where there are no evidence columns in the betwixt-html
-  no_text <- candidate$evidence_text == ""
-  candidate$evidence_text[no_text] <- NA_character_
-  reviewed$evidence_text[no_text] <- NA_character_
+  no_text <- candidate$input_description == ""
+  candidate$input_description[no_text] <- NA_character_
+  reviewed$input_description[no_text] <- NA_character_
 
   # Read review metadata.
   title_xpath <- paste0(

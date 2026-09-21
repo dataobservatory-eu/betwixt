@@ -28,8 +28,8 @@ delini_long <- delini |>
   ) |>
   dplyr::select(
     row_number,
-    evidence_media_url,
-    evidence_text,
+    input_media_url,
+    input_description,
     label,
     description,
     subject,
@@ -50,10 +50,10 @@ delini_long <- delini |>
 ## Dual wide -----------------------------------------------------------------
 
 delini_dual_wide <- create_candidate_dataset(
-  evidence_media_url = delini$evidence_media_url,
-  evidence_text = delini$evidence_text,
-  evidence_relation = rep("depicts", nrow(delini)),
-  evidence_relation_range = add_candidate_range(
+  input_media_url = delini$input_media_url,
+  input_description = delini$input_description,
+  input_relation = rep("depicts", nrow(delini)),
+  input_relation_range = add_candidate_range(
     "depicts",
     "documents",
     "is evidence for",
@@ -107,10 +107,10 @@ delini_dual_long <- delini_dual_wide |>
   ) |>
   dplyr::select(
     row_number,
-    evidence_media_url,
-    evidence_text,
-    evidence_relation,
-    evidence_relation_range,
+    input_media_url,
+    input_description,
+    input_relation,
+    input_relation_range,
     label,
     description,
     subject,
@@ -141,9 +141,9 @@ test_that("Delini pivot fixtures have the expected dimensions", {
 ## Wide consistency ----------------------------------------------------------
 
 test_that("Delini wide and dual-wide fixtures are consistent", {
-  expect_false("evidence_relation" %in% names(delini))
-  expect_true("evidence_relation" %in% names(delini_dual_wide))
-  expect_equal(delini_dual_wide$evidence_relation, rep("depicts", 5L))
+  expect_false("input_relation" %in% names(delini))
+  expect_true("input_relation" %in% names(delini_dual_wide))
+  expect_equal(delini_dual_wide$input_relation, rep("depicts", 5L))
   expect_equal(delini_dual_wide$subject, delini$subject)
   expect_equal(delini_dual_wide$instance_of, delini$instance_of)
   expect_equal(delini_dual_wide$heritage_of, delini$heritage_of)
@@ -159,9 +159,9 @@ test_that("Delini long fixtures contain atomic claims", {
     c("instance of", "heritage of")
   )
   expect_equal(as.integer(table(delini_long$row_number)), rep(2L, 5L))
-  expect_false("evidence_relation" %in% names(delini_long))
-  expect_true("evidence_relation" %in% names(delini_dual_long))
-  expect_equal(delini_dual_long$evidence_relation, rep("depicts", 10L))
+  expect_false("input_relation" %in% names(delini_long))
+  expect_true("input_relation" %in% names(delini_dual_long))
+  expect_equal(delini_dual_long$input_relation, rep("depicts", 10L))
 })
 
 

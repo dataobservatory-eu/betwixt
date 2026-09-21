@@ -71,9 +71,9 @@ review_input <- tibble::tribble(
 # -------------------------------------------------------------------
 
 candidates <- create_candidate_dataset(
-  evidence_media_url = review_input$thumbnail_url,
-  evidence_url = review_input$page_url,
-  evidence_text = review_input$label_en,
+  input_media_url = review_input$thumbnail_url,
+  input_url = review_input$page_url,
+  input_description = review_input$label_en,
   label = review_input$label_en,
   description = review_input$description_en,
   alternative_label = review_input$label_hu,

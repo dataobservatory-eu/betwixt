@@ -11,16 +11,16 @@
 #' initialising a conforming header with [create_candidate_template()].
 #' Re-imported datasets can be checked with [validate_candidate_dataset()]
 #' before rendering.
-#' @param evidence_url Include the `evidence_url` column.
-#' @param evidence_media_url Include the `evidence_media_url` column.
-#' @param evidence_text Include the `evidence_text` column.
+#' @param input_url Include the `input_url` column.
+#' @param input_media_url Include the `input_media_url` column.
+#' @param input_description Include the `input_description` column.
 #' @param label Include the `label` column.
 #' @param description Include the `description` column.
 #' @param alternative_label Include the `alternative_label` column.
 #' @param alternative_description Include the `alternative_description`
 #'   column.
-#' @param evidence_relation Include the `evidence_relation` and
-#'   `evidence_relation_range` columns.
+#' @param input_relation Include the `input_relation` and
+#'   `input_relation_range` columns.
 #' @param subject_range Include the `subject_range` column.
 #' @param subject_definition Include the `subject_definition` column.
 #' @param columns Optional character vector naming additional reviewable
@@ -44,14 +44,14 @@
 #' @importFrom stats setNames
 #' @export
 create_candidate_template <- function(
-  evidence_url = TRUE,
-  evidence_media_url = TRUE,
-  evidence_text = TRUE,
+  input_url = TRUE,
+  input_media_url = TRUE,
+  input_description = TRUE,
   label = TRUE,
   description = TRUE,
   alternative_label = FALSE,
   alternative_description = FALSE,
-  evidence_relation = FALSE,
+  input_relation = FALSE,
   subject_range = TRUE,
   subject_definition = TRUE,
   columns = NULL,
@@ -59,11 +59,11 @@ create_candidate_template <- function(
 ) {
   names <- c(
     "row_number",
-    if (evidence_url) "evidence_url",
-    if (evidence_media_url) "evidence_media_url",
-    if (evidence_text) "evidence_text",
-    if (evidence_relation) {
-      c("evidence_relation", "evidence_relation_range")
+    if (input_url) "input_url",
+    if (input_media_url) "input_media_url",
+    if (input_description) "input_description",
+    if (input_relation) {
+      c("input_relation", "input_relation_range")
     },
     if (label) "label",
     if (description) "description",

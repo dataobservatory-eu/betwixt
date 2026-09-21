@@ -8,9 +8,9 @@
 A data frame with 5 rows and 16 variables:
 \describe{
 \item{row_number}{Integer row identifier.}
-\item{evidence_url}{Optional URL of an evidential resource.}
-\item{evidence_media_url}{URL of the evidential media resource.}
-\item{evidence_text}{Short human-readable identifier for the evidence.}
+\item{input_url}{Optional URL of an evidential resource.}
+\item{input_media_url}{URL of the evidential media resource.}
+\item{input_description}{Short human-readable identifier for the evidence.}
 \item{label}{Human-readable label of the described entity.}
 \item{description}{Human-readable description of the described entity.}
 \item{subject}{Candidate subject identifier or value.}

@@ -135,5 +135,5 @@ test_that("read_review() normalises missing candidate provenance", {
 
   expect_false(is.na(review$provenance$generated_at))
   expect_equal(review$provenance$software_agent, "Betwixt")
-  expect_equal(review$provenance$software_version, "0.0.7")
+  expect_equal(review$provenance$software_version, "0.0.81")
 })

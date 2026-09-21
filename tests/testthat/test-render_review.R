@@ -140,7 +140,7 @@ test_that("reviewer identity survives the HTML round trip", {
 test_that("candidate provenance survives rendering", {
   candidate <- create_candidate_dataset(
     subject = "Example",
-    evidence_url = "https://example.org",
+    input_url = "https://example.org",
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",

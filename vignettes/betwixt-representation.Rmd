@@ -32,7 +32,7 @@ This vignette explains these representational choices and their relationship to 
 
 ## From `evidence` to `input`
 
-Earlier versions of Betwixt used terms such as `evidence_url`, `evidence_media_url`, and `evidence_text`. These names made a semantic commitment that is not always warranted. A resource supplied to a review process is not necessarily evidence for the assertion being reviewed. It may be a candidate dataset, source document, image, previous semantic state, generated output, or another artefact whose role has yet to be established.
+Earlier versions of Betwixt used terms such as `input_url`, `input_media_url`, and `input_description`. These names made a semantic commitment that is not always warranted. A resource supplied to a review process is not necessarily evidence for the assertion being reviewed. It may be a candidate dataset, source document, image, previous semantic state, generated output, or another artefact whose role has yet to be established.
 
 Betwixt therefore uses **input** as the more neutral term.
 

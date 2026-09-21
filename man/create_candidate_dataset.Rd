@@ -6,15 +6,15 @@
 \usage{
 create_candidate_dataset(
   subject,
-  evidence_url = NA_character_,
-  evidence_media_url = NA_character_,
-  evidence_text = NA_character_,
+  input_url = NA_character_,
+  input_media_url = NA_character_,
+  input_description = NA_character_,
   label = NA_character_,
   description = NA_character_,
   alternative_label = NA_character_,
   alternative_description = NA_character_,
-  evidence_relation = NULL,
-  evidence_relation_range = NA_character_,
+  input_relation = NULL,
+  input_relation_range = NA_character_,
   subject_range = NA_character_,
   subject_definition = NA_character_,
   data_manager_name = "",
@@ -27,14 +27,14 @@ create_candidate_dataset(
 \item{subject}{A vector containing the subject identifiers or values to be
 reviewed. The subject is stored as the subject column named \code{subject}.}
 
-\item{evidence_url}{An optional character vector containing URLs or other
+\item{input_url}{An optional character vector containing URLs or other
 resolvable locations of evidence resources that can be opened by the
 reviewer.}
 
-\item{evidence_media_url}{An optional character vector containing URLs or
+\item{input_media_url}{An optional character vector containing URLs or
 other resolvable locations of media presented directly to the reviewer.}
 
-\item{evidence_text}{An optional character vector containing short identifiers or
+\item{input_description}{An optional character vector containing short identifiers or
 labels for the evidence.}
 
 \item{label}{An optional character vector containing human-readable labels for the
@@ -52,15 +52,15 @@ alternative human-readable descriptions of the subjects presented for
 review, for example a translation, a more detailed description, or a
 description intended for a different user group.}
 
-\item{evidence_relation}{An optional character vector describing a candidate
+\item{input_relation}{An optional character vector describing a candidate
 semantic relation between the evidence and the subject, for example
 \code{"depicts"}. If \code{NULL}, no evidence relation columns are added. Defaults
 to \code{NULL}.}
 
-\item{evidence_relation_range}{An optional character vector containing the
+\item{input_relation_range}{An optional character vector containing the
 admissible or suggested evidence relations. Use \code{\link[=add_candidate_range]{add_candidate_range()}} to
 construct controlled ranges. This argument can only be used when
-\code{evidence_relation} is supplied. Defaults to \code{NA_character_}.}
+\code{input_relation} is supplied. Defaults to \code{NA_character_}.}
 
 \item{subject_range}{A character vector containing the admissible or
 suggested subject values. Use \code{\link[=add_candidate_range]{add_candidate_range()}} to construct controlled
@@ -87,12 +87,12 @@ candidate dataset was generated.}
 }
 \value{
 A tibble with one row per evidence-subject observation and the columns
-\code{row_number}, \code{evidence_url}, \code{evidence_media_url}, \code{evidence_text}, \code{label},
+\code{row_number}, \code{input_url}, \code{input_media_url}, \code{input_description}, \code{label},
 \code{description}, \code{alternative_label}, \code{alternative_description}, \code{subject},
 \code{subject_range}, and \code{subject_definition}.
 
-If \code{evidence_relation} is supplied, the tibble additionally contains
-\code{evidence_relation} and \code{evidence_relation_range}.
+If \code{input_relation} is supplied, the tibble additionally contains
+\code{input_relation} and \code{input_relation_range}.
 }
 \description{
 Constructs the initial wide-form candidate dataset used for a Betwixt
@@ -125,7 +125,7 @@ Additional reviewable assertions can be appended with
 \code{\link[=add_candidate_column]{add_candidate_column()}}. Display-only contextual columns can be added with
 ordinary data manipulation functions such as \code{\link[dplyr:mutate]{dplyr::mutate()}}.
 
-At least one of \code{evidence_media_url} or \code{evidence_url} must be supplied for
+At least one of \code{input_media_url} or \code{input_url} must be supplied for
 each row.
 
 The evidence relation is distinct from review provenance. When present, it
@@ -135,8 +135,8 @@ subject and is itself available for review.
 \examples{
 # Candidate dataset without a reviewable evidence relation
 delini_candidates <- create_candidate_dataset(
-  evidence_media_url = delini$evidence_media_url,
-  evidence_text = delini$evidence_text,
+  input_media_url = delini$input_media_url,
+  input_description = delini$input_description,
   label = delini$label,
   description = delini$description,
   subject = delini$subject,
@@ -148,14 +148,14 @@ delini_candidates
 
 # Candidate dataset with a reviewable evidence relation
 delini_dual_candidates <- create_candidate_dataset(
-  evidence_media_url = delini$evidence_media_url,
-  evidence_text = delini$evidence_text,
+  input_media_url = delini$input_media_url,
+  input_description = delini$input_description,
   label = delini$label,
   description = delini$description,
   subject = delini$subject,
   subject_definition = delini$subject_definition,
-  evidence_relation = rep("depicts", nrow(delini)),
-  evidence_relation_range = rep(
+  input_relation = rep("depicts", nrow(delini)),
+  input_relation_range = rep(
     add_candidate_range("depicts", "documents", "Other…"),
     nrow(delini)
   )
@@ -165,11 +165,11 @@ delini_dual_candidates
 
 # Statistical example based on the W3C RDF Data Cube Vocabulary
 w3c_candidates <- create_candidate_dataset(
-  evidence_media_url = rep(
+  input_media_url = rep(
     "https://www.w3.org/TR/vocab-data-cube/",
     nrow(w3c_life_expectancy)
   ),
-  evidence_text = rep(
+  input_description = rep(
     "W3C RDF Data Cube Vocabulary",
     nrow(w3c_life_expectancy)
   ),

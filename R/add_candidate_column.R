@@ -36,7 +36,7 @@
 #' @examples
 #' candidates <- tibble::tibble(
 #'   row_number = 1:2,
-#'   evidence_text = c("image-1", "image-2")
+#'   input_description = c("image-1", "image-2")
 #' )
 #'
 #' candidates <- add_candidate_column(

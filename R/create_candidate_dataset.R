@@ -16,14 +16,14 @@
 #' @param subject A vector containing the subject identifiers or values to be
 #'   reviewed. The subject is stored as the subject column named `subject`.
 #'
-#' @param evidence_media_url An optional character vector containing URLs or
+#' @param input_media_url An optional character vector containing URLs or
 #'   other resolvable locations of media presented directly to the reviewer.
 #'
-#' @param evidence_url An optional character vector containing URLs or other
+#' @param input_url An optional character vector containing URLs or other
 #'   resolvable locations of evidence resources that can be opened by the
 #'   reviewer.
 #'
-#' @param evidence_text An optional character vector containing short identifiers or
+#' @param input_description An optional character vector containing short identifiers or
 #'   labels for the evidence.
 #'
 #' @param label An optional character vector containing human-readable labels for the
@@ -41,15 +41,15 @@
 #'   review, for example a translation, a more detailed description, or a
 #'   description intended for a different user group.
 #'
-#' @param evidence_relation An optional character vector describing a candidate
+#' @param input_relation An optional character vector describing a candidate
 #'   semantic relation between the evidence and the subject, for example
 #'   `"depicts"`. If `NULL`, no evidence relation columns are added. Defaults
 #'   to `NULL`.
 #'
-#' @param evidence_relation_range An optional character vector containing the
+#' @param input_relation_range An optional character vector containing the
 #'   admissible or suggested evidence relations. Use [add_candidate_range()] to
 #'   construct controlled ranges. This argument can only be used when
-#'   `evidence_relation` is supplied. Defaults to `NA_character_`.
+#'   `input_relation` is supplied. Defaults to `NA_character_`.
 #'
 #' @param subject_range A character vector containing the admissible or
 #'   suggested subject values. Use [add_candidate_range()] to construct controlled
@@ -76,12 +76,12 @@
 #'
 #' @return
 #' A tibble with one row per evidence-subject observation and the columns
-#' `row_number`, `evidence_url`, `evidence_media_url`, `evidence_text`, `label`,
+#' `row_number`, `input_url`, `input_media_url`, `input_description`, `label`,
 #' `description`, `alternative_label`, `alternative_description`, `subject`,
 #' `subject_range`, and `subject_definition`.
 #'
-#' If `evidence_relation` is supplied, the tibble additionally contains
-#' `evidence_relation` and `evidence_relation_range`.
+#' If `input_relation` is supplied, the tibble additionally contains
+#' `input_relation` and `input_relation_range`.
 #'
 #' @details
 #' `create_candidate_dataset()` establishes the initial structure of a Betwixt
@@ -101,7 +101,7 @@
 #' [add_candidate_column()]. Display-only contextual columns can be added with
 #' ordinary data manipulation functions such as [dplyr::mutate()].
 #'
-#' At least one of `evidence_media_url` or `evidence_url` must be supplied for
+#' At least one of `input_media_url` or `input_url` must be supplied for
 #' each row.
 #'
 #' The evidence relation is distinct from review provenance. When present, it
@@ -111,8 +111,8 @@
 #' @examples
 #' # Candidate dataset without a reviewable evidence relation
 #' delini_candidates <- create_candidate_dataset(
-#'   evidence_media_url = delini$evidence_media_url,
-#'   evidence_text = delini$evidence_text,
+#'   input_media_url = delini$input_media_url,
+#'   input_description = delini$input_description,
 #'   label = delini$label,
 #'   description = delini$description,
 #'   subject = delini$subject,
@@ -124,14 +124,14 @@
 #'
 #' # Candidate dataset with a reviewable evidence relation
 #' delini_dual_candidates <- create_candidate_dataset(
-#'   evidence_media_url = delini$evidence_media_url,
-#'   evidence_text = delini$evidence_text,
+#'   input_media_url = delini$input_media_url,
+#'   input_description = delini$input_description,
 #'   label = delini$label,
 #'   description = delini$description,
 #'   subject = delini$subject,
 #'   subject_definition = delini$subject_definition,
-#'   evidence_relation = rep("depicts", nrow(delini)),
-#'   evidence_relation_range = rep(
+#'   input_relation = rep("depicts", nrow(delini)),
+#'   input_relation_range = rep(
 #'     add_candidate_range("depicts", "documents", "Other…"),
 #'     nrow(delini)
 #'   )
@@ -141,11 +141,11 @@
 #'
 #' # Statistical example based on the W3C RDF Data Cube Vocabulary
 #' w3c_candidates <- create_candidate_dataset(
-#'   evidence_media_url = rep(
+#'   input_media_url = rep(
 #'     "https://www.w3.org/TR/vocab-data-cube/",
 #'     nrow(w3c_life_expectancy)
 #'   ),
-#'   evidence_text = rep(
+#'   input_description = rep(
 #'     "W3C RDF Data Cube Vocabulary",
 #'     nrow(w3c_life_expectancy)
 #'   ),
@@ -181,15 +181,15 @@
 #' @export
 create_candidate_dataset <- function(
   subject,
-  evidence_url = NA_character_,
-  evidence_media_url = NA_character_,
-  evidence_text = NA_character_,
+  input_url = NA_character_,
+  input_media_url = NA_character_,
+  input_description = NA_character_,
   label = NA_character_,
   description = NA_character_,
   alternative_label = NA_character_,
   alternative_description = NA_character_,
-  evidence_relation = NULL,
-  evidence_relation_range = NA_character_,
+  input_relation = NULL,
+  input_relation_range = NA_character_,
   subject_range = NA_character_,
   subject_definition = NA_character_,
   data_manager_name = "",
@@ -197,20 +197,20 @@ create_candidate_dataset <- function(
   data_manager_email = "",
   project_id = ""
 ) {
-  if (is.null(evidence_relation) &&
-    !all(is.na(evidence_relation_range))) {
+  if (is.null(input_relation) &&
+    !all(is.na(input_relation_range))) {
     stop(
-      "evidence_relation_range requires evidence_relation.",
+      "input_relation_range requires input_relation.",
       call. = FALSE
     )
   }
 
-  if (is.null(evidence_relation)) {
+  if (is.null(input_relation)) {
     x <- tibble::tibble(
       row_number = seq_along(subject),
-      evidence_url = evidence_url,
-      evidence_media_url = evidence_media_url,
-      evidence_text = evidence_text,
+      input_url = input_url,
+      input_media_url = input_media_url,
+      input_description = input_description,
       label = label,
       description = description,
       alternative_label = alternative_label,
@@ -222,11 +222,11 @@ create_candidate_dataset <- function(
   } else {
     x <- tibble::tibble(
       row_number = seq_along(subject),
-      evidence_url = evidence_url,
-      evidence_media_url = evidence_media_url,
-      evidence_text = evidence_text,
-      evidence_relation = evidence_relation,
-      evidence_relation_range = evidence_relation_range,
+      input_url = input_url,
+      input_media_url = input_media_url,
+      input_description = input_description,
+      input_relation = input_relation,
+      input_relation_range = input_relation_range,
       label = label,
       description = description,
       alternative_label = alternative_label,

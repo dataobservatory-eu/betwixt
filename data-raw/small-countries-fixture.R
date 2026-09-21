@@ -5,7 +5,7 @@ devtools::load_all()
 # -------------------------------------------------------------------------
 
 candidates <- create_candidate_dataset(
-  evidence_url = rep("https://doi.org/10.2908/NAIDA_10_GDP", 6),
+  input_url = rep("https://doi.org/10.2908/NAIDA_10_GDP", 6),
   label = c(
     "Iceland 2023", "Iceland 2024",
     "Malta 2023", "Malta 2024",

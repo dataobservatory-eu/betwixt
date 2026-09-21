@@ -98,9 +98,9 @@ Human judgement rarely operates on an isolated semantic assertion. Reviewers may
 Candidate datasets can therefore carry evidential and descriptive information alongside the assertions under review. For example:
 
 ```text
-evidence_url
-evidence_media_url
-evidence_text
+input_url
+input_media_url
+input_description
 label
 description
 ```

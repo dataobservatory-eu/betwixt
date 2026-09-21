@@ -147,7 +147,7 @@ test_that("pipe-separated evidence URLs are accepted", {
   x <- data.frame(
     row_number = 1L,
     subject = "Q121",
-    evidence_url = "https://example.org/a| https://example.org/b"
+    input_url = "https://example.org/a| https://example.org/b"
   )
 
   expect_invisible(validate_candidate_dataset(x))
@@ -157,12 +157,12 @@ test_that("invalid evidence URLs are rejected", {
   x <- data.frame(
     row_number = 1L,
     subject = "Q121",
-    evidence_url = "https://example.org/a | not-a-url"
+    input_url = "https://example.org/a | not-a-url"
   )
 
   expect_error(
     validate_candidate_dataset(x),
-    "Invalid URL in `evidence_url`"
+    "Invalid URL in `input_url`"
   )
 })
 
@@ -171,11 +171,11 @@ test_that("invalid evidence media URLs are rejected", {
   x <- data.frame(
     row_number = 1L,
     subject = "Q121",
-    evidence_media_url = "not-a-url"
+    input_media_url = "not-a-url"
   )
 
   expect_error(
     validate_candidate_dataset(x),
-    "Invalid URL in `evidence_media_url`"
+    "Invalid URL in `input_media_url`"
   )
 })

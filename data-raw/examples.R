@@ -4,10 +4,10 @@ library(tidyverse)
 
 ## For import
 candidate <- create_candidate_template(
-  evidence_media_url = TRUE,
-  evidence_url = TRUE,
-  evidence_text = TRUE,
-  evidence_relation = TRUE,
+  input_media_url = TRUE,
+  input_url = TRUE,
+  input_description = TRUE,
+  input_relation = TRUE,
   label = TRUE,
   description = TRUE,
   subject_range = TRUE,
@@ -58,8 +58,8 @@ candidate$context_collection <- character()
 # review input
 
 review_input <- tibble::tribble(
-  ~evidence_media_url, ~evidence_url, ~evidence_text, ~evidence_relation,
-  ~evidence_relation_range, ~subject, ~subject_definition, ~subject_range,
+  ~input_media_url, ~input_url, ~input_description, ~input_relation,
+  ~input_relation_range, ~subject, ~subject_definition, ~subject_range,
   ~label, ~description,
   ~represents, ~represented_instance_of, ~instance_of, ~context_collection,
   "https://example.com/image.jpg", "https://example.com/record/1",
@@ -78,8 +78,8 @@ controlled_vocab_classes <-
 controlled_vocab_relations <- "depicts | depicted by | documents | documented by"
 
 review_input <- tibble::tribble(
-  ~evidence_media_url, ~evidence_url, ~evidence_text,
-  ~evidence_relation, ~evidence_relation_range,
+  ~input_media_url, ~input_url, ~input_description,
+  ~input_relation, ~input_relation_range,
   ~label, ~description,
   ~subject, ~subject_definition, ~subject_range,
   ~represents, ~represents_range,

@@ -2,9 +2,9 @@
 
 delini <- tibble::tribble(
   ~row_number,
-  ~evidence_url,
-  ~evidence_media_url,
-  ~evidence_text,
+  ~input_url,
+  ~input_media_url,
+  ~input_description,
   ~label,
   ~description,
   ~subject,

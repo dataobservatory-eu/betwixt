@@ -14,16 +14,16 @@ test_that("prepare_review_context() prepares delini", {
   row <- context$rows[[1]]
 
   expect_equal(row$row_number, delini$row_number[1])
-  expect_equal(row$evidence_media_url, delini$evidence_media_url[1])
-  expect_length(row$evidence_media_url, 1)
-  expect_length(row$evidence_url, 0)
-  expect_equal(row$evidence_text, delini$evidence_text[1])
+  expect_equal(row$input_media_url, delini$input_media_url[1])
+  expect_length(row$input_media_url, 1)
+  expect_length(row$input_url, 0)
+  expect_equal(row$input_description, delini$input_description[1])
   expect_equal(row$label, delini$label[1])
   expect_equal(row$description, delini$description[1])
   expect_true(is.na(row$alternative_label))
   expect_true(is.na(row$alternative_description))
-  expect_null(row$evidence_relation)
-  expect_null(row$evidence_relation_range)
+  expect_null(row$input_relation)
+  expect_null(row$input_relation_range)
 })
 
 
@@ -110,9 +110,9 @@ test_that("optional descriptive columns may be absent", {
 
   row <- prepare_review_context(candidate)$rows[[1]]
 
-  expect_length(row$evidence_url, 0)
-  expect_length(row$evidence_media_url, 0)
-  expect_true(is.na(row$evidence_text))
+  expect_length(row$input_url, 0)
+  expect_length(row$input_media_url, 0)
+  expect_true(is.na(row$input_description))
   expect_true(is.na(row$label))
   expect_true(is.na(row$description))
   expect_true(is.na(row$alternative_label))
@@ -122,8 +122,8 @@ test_that("optional descriptive columns may be absent", {
 
 test_that("alternative descriptive information is preserved", {
   candidate <- create_candidate_dataset(
-    evidence_media_url = "https://example.com/001.jpg",
-    evidence_text = "Example evidence",
+    input_media_url = "https://example.com/001.jpg",
+    input_description = "Example evidence",
     label = "Tablet-woven sash",
     description = "A tablet-woven textile object.",
     alternative_label = "Tablet-woven belt",
@@ -147,28 +147,28 @@ test_that("alternative descriptive information is preserved", {
 test_that("prepare_review_context() supports evidence relations", {
   dual_delini <- delini %>%
     dplyr::mutate(
-      evidence_relation = "depicts",
-      evidence_relation_range = add_candidate_range("depicts", "documents")
+      input_relation = "depicts",
+      input_relation_range = add_candidate_range("depicts", "documents")
     )
 
   context <- prepare_review_context(dual_delini)
 
   expect_true(context$has_evidence_relation)
   expect_length(context$rows, nrow(dual_delini))
-  expect_equal(context$rows[[1]]$evidence_relation, "depicts")
+  expect_equal(context$rows[[1]]$input_relation, "depicts")
   expect_equal(
-    context$rows[[1]]$evidence_relation_range,
+    context$rows[[1]]$input_relation_range,
     c("depicts", "documents")
   )
 
   relations <- vapply(
     context$rows,
-    function(row) row$evidence_relation,
+    function(row) row$input_relation,
     character(1)
   )
   expect_true(all(relations == "depicts"))
 
-  ranges <- lapply(context$rows, function(row) row$evidence_relation_range)
+  ranges <- lapply(context$rows, function(row) row$input_relation_range)
   expected <- c("depicts", "documents")
   expect_true(all(vapply(ranges, identical, logical(1), expected)))
 })
@@ -178,11 +178,11 @@ test_that("prepare_review_context() supports evidence relations", {
 
 test_that("prepare_review_context() parses multiple evidence URLs", {
   candidate <- create_candidate_dataset(
-    evidence_media_url =
+    input_media_url =
       "https://example.com/001.jpg | https://example.com/002.jpg",
-    evidence_url =
+    input_url =
       "https://example.com/001.html | https://example.com/002.html",
-    evidence_text = "Multiple evidence resources",
+    input_description = "Multiple evidence resources",
     label = "Example subject",
     description = "An example subject",
     subject = "example:Q1"
@@ -191,11 +191,11 @@ test_that("prepare_review_context() parses multiple evidence URLs", {
   row <- prepare_review_context(candidate)$rows[[1]]
 
   expect_equal(
-    row$evidence_media_url,
+    row$input_media_url,
     c("https://example.com/001.jpg", "https://example.com/002.jpg")
   )
   expect_equal(
-    row$evidence_url,
+    row$input_url,
     c("https://example.com/001.html", "https://example.com/002.html")
   )
 })
@@ -203,12 +203,12 @@ test_that("prepare_review_context() parses multiple evidence URLs", {
 
 test_that("pipe parsing tolerates surrounding whitespace", {
   candidate <- create_candidate_dataset(
-    evidence_url = "https://example.com/a|  https://example.com/b",
+    input_url = "https://example.com/a|  https://example.com/b",
     subject = "example:Q1"
   )
 
   expect_equal(
-    prepare_review_context(candidate)$rows[[1]]$evidence_url,
+    prepare_review_context(candidate)$rows[[1]]$input_url,
     c("https://example.com/a", "https://example.com/b")
   )
 })
@@ -248,7 +248,7 @@ test_that("finalised review preserves reviewer comments", {
 test_that("candidate provenance survives context preparation", {
   x <- create_candidate_dataset(
     subject = "Example",
-    evidence_url = "https://example.org",
+    input_url = "https://example.org",
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",

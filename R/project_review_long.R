@@ -96,7 +96,7 @@ project_review_long <- function(review) {
   # Identify semantic predicate columns.
   reserved <- grepl(
     paste0(
-      "^(row_number|plane|evidence_|label$|description$|",
+      "^(row_number|plane|input_|label$|description$|",
       "alternative_label$|alternative_description$|context_|",
       "subject$|subject_)"
     ),

@@ -26,7 +26,7 @@ Each row represents an observation about a country in a particular year.
 
 The `subject` column contains the human-readable country name, while `subject_definition` provides a resolvable GeoNames identifier for that country. The `country_code` column provides its ISO 3166-1 alpha-2 code.
 
-The `gdp` column contains the statistical value. Its `gdp_definition` identifies the Eurostat national-accounts concept `B1GQ`, gross domestic product at market prices. The `evidence_url` points to the DOI of the Eurostat dataset from which the observations were obtained.
+The `gdp` column contains the statistical value. Its `gdp_definition` identifies the Eurostat national-accounts concept `B1GQ`, gross domestic product at market prices. The `input_url` points to the DOI of the Eurostat dataset from which the observations were obtained.
 
 Columns prefixed with `context_`, such as `context_year` and `context_unit`, provide row-level context needed to interpret an observation. They are preserved and displayed during review but are not themselves candidate assertions and do not receive a review status.
 
@@ -63,7 +63,7 @@ candidates <- rbind(
   small_countries_dataset,
   data.frame(
     row_number = 5:6,
-    evidence_url = rep(
+    input_url = rep(
       "https://doi.org/10.2908/NAIDA_10_GDP", 2
     ),
     label = c("Luxembourg 2023", "Luxembourg 2024"),
@@ -101,7 +101,7 @@ validate_candidate_dataset(candidates)
 
 Successful validation returns the dataset invisibly. If the structure is invalid, an error identifies the first validation failure. Otherwise, the dataset is ready for review.
 
-If you want to try error messages, for example, try deleting the `subject` column in the spreadsheet or replacing one of the values in `evidence_url` with `not-a-url`, read the file again, and rerun `validate_candidate_dataset()`.
+If you want to try error messages, for example, try deleting the `subject` column in the spreadsheet or replacing one of the values in `input_url` with `not-a-url`, read the file again, and rerun `validate_candidate_dataset()`.
 
 ```{r, eval=FALSE}
 validate_candidate_dataset(candidates[, names(candidates)[-4]])

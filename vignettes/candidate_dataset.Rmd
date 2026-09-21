@@ -108,19 +108,19 @@ Betwixt distinguishes between evidence that is presented directly in the review 
 In this example, the MuIS thumbnail is presented directly:
 
 ``` text
-evidence_media_url = review_input$thumbnail_url
+input_media_url = review_input$thumbnail_url
 ```
 
 while the museum record itself is retained as an evidence resource:
 
 ``` text
-evidence_url = review_input$page_url
+input_url = review_input$page_url
 ```
 
 A short human-readable identification of the evidence is supplied separately:
 
 ``` text
-evidence_text = review_input$label_en
+input_description = review_input$label_en
 ```
 
 This distinction allows a review to present convenient visual evidence while separately retaining links to evidence resources that the reviewer may inspect. Evidence is also distinct from provenance: it supports the assertions under review, whereas provenance records how the candidate and review states were produced.
@@ -149,9 +149,9 @@ We can now bring these elements together.
 
 ```{r}
 candidates <- create_candidate_dataset(
-  evidence_media_url = review_input$thumbnail_url,
-  evidence_url = review_input$page_url,
-  evidence_text = review_input$label_en,
+  input_media_url = review_input$thumbnail_url,
+  input_url = review_input$page_url,
+  input_description = review_input$label_en,
   label = review_input$label_en,
   description = review_input$description_en,
   alternative_label = review_input$label_hu,

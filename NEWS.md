@@ -1,3 +1,31 @@
+# betwixt 0.0.9
+
+## Semantic assertion model
+
+* Formalised `btx:Assertion` as the intermediate semantic representation used by Betwixt, with lexical `subject`, `predicate`, and `value` components that remain independent of any particular domain ontology.
+
+* Added canonical assertion coordinates through `btx:rowId` and `btx:assertionId`, allowing assertions to retain their position in Betwixt tabular and long-form projections where those coordinates are available.
+
+* Added `btx:alignedWith` for expressing bounded correspondence between reviewed assertions without asserting global identity or semantic equivalence.
+
+* Extended the Betwixt mapping model with explicit assertion roles for subject, predicate, and value mappings, supporting projection of lexical Betwixt terms to RDF resources.
+
+## Input representation and review projection
+
+* Generalised review inputs around `input_url`, `input_media_url`, `input_label`, and `input_description`, allowing review inputs to be represented independently from the semantic assertions being reviewed.
+
+* Added optional `input_predicate` and `input_predicate_range` support for cases where the relationship between a review input and the represented subject is itself reviewable.
+
+* Improved candidate construction so that optional input fields can be omitted while retaining support for descriptive input labels and descriptions when supplied.
+
+* Added canonical long-form assertion projection with `row_id`, `assertion_id`, `component`, `subject`, `predicate`, and `value`, distinguishing assertion components from mapping roles.
+
+## RDF serialisation
+
+* Updated RDF serialisation to use the stabilised Betwixt vocabulary, including `btx:rowId`, optional `btx:assertionId`, and assertion-level review status.
+
+* Preserved the distinction between canonical assertion coordinates and serializer-generated RDF resource identifiers, avoiding the introduction of synthetic semantic identifiers during serialisation.
+
 # betwixt 0.0.8
 
 ## Review representation, provenance, and RDF

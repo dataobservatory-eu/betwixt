@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![devel-version](https://img.shields.io/badge/devel%20version-0.0.82-blue.svg)](https://github.com/dataobservatory-eu/betwixt) [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
+[![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Project Status: WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) [![devel-version](https://img.shields.io/badge/devel%20version-0.0.83-blue.svg)](https://github.com/dataobservatory-eu/betwixt) [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
 [![R-CMD-check](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -146,7 +146,7 @@ The wide projection preserves the tabular structure used during review and repre
 
 The wide projection keeps the original tabular structure and adds a `plane` column. Each source row can therefore appear in three aligned states: the original candidate values, the reviewed values, and their review status.
 
-| row_number | plane     | subject         | label            | instance_of | heritage_of |
+| row_id | plane     | subject         | label            | instance_of | heritage_of |
 |-----------:|-----------|-----------------|------------------|-------------|-------------|
 | 1          | candidate | fuds:Q7328      | Delini farmstead | farmhouse   | Livonians   |
 | 1          | reviewed  | fuds:Q7328      | Delini farmstead | farmhouse   | Livonians   |
@@ -161,7 +161,7 @@ The long projection represents individual semantic assertions as `subject`, `pre
 
 The long projection represents each atomic assertion as a separate `subject`–`predicate`–`value` row. Candidate and reviewed assertions remain separate, while review status is attached to the assertion rather than represented as a third plane.
 
-| assertion_number | row_number | plane     | subject    | predicate    | value            | status       |
+| assertion_number | row_id | plane     | subject    | predicate    | value            | status       |
 |-----------------:|-----------:|-----------|------------|--------------|------------------|--------------|
 | 1                | 1          | candidate | fuds:Q7328 | label        | Delini farmstead | corroborated |
 | 2                | 1          | candidate | fuds:Q7328 | description  | the farmhouse... | corroborated |

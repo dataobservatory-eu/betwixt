@@ -2,12 +2,14 @@
 
 export(add_candidate_column)
 export(add_candidate_range)
+export(betwixt_representation)
 export(create_candidate_dataset)
 export(create_candidate_template)
 export(project_review_long)
 export(project_review_wide)
 export(read_review)
 export(render_review)
+export(review_pivot_longer)
 export(serialise_review)
 export(serialize_review)
 export(validate_candidate_dataset)
@@ -15,12 +17,15 @@ importFrom(dplyr,
   arrange,
   bind_rows,
   case_when,
+  filter,
   left_join,
   mutate,
   row_number,
-  select,
-  transmute
+  select
 )
 importFrom(stats,setNames)
 importFrom(tibble,tibble)
-importFrom(tidyr,pivot_longer)
+importFrom(tidyr,
+  pivot_longer,
+  separate_longer_delim
+)

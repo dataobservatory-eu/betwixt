@@ -8,7 +8,7 @@
 [![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Project Status:
 WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![devel-version](https://img.shields.io/badge/devel%20version-0.0.82-blue.svg)](https://github.com/dataobservatory-eu/betwixt)
+[![devel-version](https://img.shields.io/badge/devel%20version-0.0.83-blue.svg)](https://github.com/dataobservatory-eu/betwixt)
 [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
 [![R-CMD-check](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
@@ -171,14 +171,14 @@ The wide projection keeps the original tabular structure and adds a
 states: the original candidate values, the reviewed values, and their
 review status.
 
-| row_number | plane | subject | label | instance_of | heritage_of |
-|---:|----|----|----|----|----|
-| 1 | candidate | fuds:Q7328 | Delini farmstead | farmhouse | Livonians |
-| 1 | reviewed | fuds:Q7328 | Delini farmstead | farmhouse | Livonians |
-| 1 | status | corroborated | corroborated | corroborated | corroborated |
-| 5 | candidate | bed (PLM 7201) | bed (PLM 7201) | bed | Livonians |
-| 5 | reviewed | bed (PLM 7201) | bed (PLM 7201) | bed | Do not know |
-| 5 | status | corroborated | corroborated | corroborated | deferred |
+| row_id | plane     | subject        | label            | instance_of  | heritage_of  |
+|-------:|-----------|----------------|------------------|--------------|--------------|
+|      1 | candidate | fuds:Q7328     | Delini farmstead | farmhouse    | Livonians    |
+|      1 | reviewed  | fuds:Q7328     | Delini farmstead | farmhouse    | Livonians    |
+|      1 | status    | corroborated   | corroborated     | corroborated | corroborated |
+|      5 | candidate | bed (PLM 7201) | bed (PLM 7201)   | bed          | Livonians    |
+|      5 | reviewed  | bed (PLM 7201) | bed (PLM 7201)   | bed          | Do not know  |
+|      5 | status    | corroborated   | corroborated     | corroborated | deferred     |
 
 The `candidate` plane preserves the proposed assertions, the `reviewed`
 plane contains the values after human review, and the `status` plane
@@ -196,7 +196,7 @@ The long projection represents each atomic assertion as a separate
 remain separate, while review status is attached to the assertion rather
 than represented as a third plane.
 
-| assertion_number | row_number | plane | subject | predicate | value | status |
+| assertion_number | row_id | plane | subject | predicate | value | status |
 |---:|---:|----|----|----|----|----|
 | 1 | 1 | candidate | fuds:Q7328 | label | Delini farmstead | corroborated |
 | 2 | 1 | candidate | fuds:Q7328 | description | the farmhouse… | corroborated |

@@ -25,10 +25,12 @@ reference:
     contents:
       - read_review
 
-  - title: Projections and serialisation
+  - title: Projections, representation and serialisation
     contents:
       - project_review_wide
       - project_review_long
+      - betwixt_representation
+      - review_pivot_longer
       - serialise_review
 
   - title: Datasets
@@ -44,6 +46,7 @@ articles:
       - implementation
       - layout
       - betwixt-vocabulary
+      - betwixt-representation
 
   - title: Tutorials
     navbar: Tutorials

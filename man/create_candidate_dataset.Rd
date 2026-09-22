@@ -170,7 +170,6 @@ row.
 # Candidate dataset without a reviewable input predicate
 delini_candidates <- create_candidate_dataset(
   input_media_url = delini$input_media_url,
-  input_label = delini$input_label,
   input_description = delini$input_description,
   label = delini$label,
   description = delini$description,
@@ -184,7 +183,6 @@ delini_candidates
 # Candidate dataset with a reviewable input predicate
 delini_dual_candidates <- create_candidate_dataset(
   input_media_url = delini$input_media_url,
-  input_label = delini$input_label,
   input_description = delini$input_description,
   label = delini$label,
   description = delini$description,

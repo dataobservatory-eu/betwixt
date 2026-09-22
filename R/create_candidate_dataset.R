@@ -145,7 +145,6 @@
 #' # Candidate dataset without a reviewable input predicate
 #' delini_candidates <- create_candidate_dataset(
 #'   input_media_url = delini$input_media_url,
-#'   input_label = delini$input_label,
 #'   input_description = delini$input_description,
 #'   label = delini$label,
 #'   description = delini$description,
@@ -159,7 +158,6 @@
 #' # Candidate dataset with a reviewable input predicate
 #' delini_dual_candidates <- create_candidate_dataset(
 #'   input_media_url = delini$input_media_url,
-#'   input_label = delini$input_label,
 #'   input_description = delini$input_description,
 #'   label = delini$label,
 #'   description = delini$description,
@@ -242,6 +240,10 @@ create_candidate_dataset <- function(
       "input_predicate_range requires input_predicate.",
       call. = FALSE
     )
+  }
+
+  if (!length(input_label)) {
+    input_label <- NA_character_
   }
 
   input_description <- dplyr::case_when(

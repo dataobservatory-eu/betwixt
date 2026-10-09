@@ -13,9 +13,9 @@ test_that("subject definitions distinguish resolved entities", {
 test_that("URL candidate values are rendered as links", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
-    label = "Example",
-    description = "Example description",
+    input_description = "Input evidence",
+    label = "Input",
+    description = "Input description",
     subject = "[image shown]"
   ) |>
     add_candidate_column(
@@ -33,9 +33,9 @@ test_that("URL candidate values are rendered as links", {
 test_that("URL subjects are not automatically rendered as links", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
-    label = "Example",
-    description = "Example description",
+    input_description = "Input evidence",
+    label = "Input",
+    description = "Input description",
     subject = "https://example.org/subject"
   )
 
@@ -81,9 +81,9 @@ test_that("assertions preserve their semantic column identities", {
 test_that("descriptive fields preserve their candidate values", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
-    label = "Example label",
-    description = "Example description",
+    input_description = "Input evidence",
+    label = "Input label",
+    description = "Input description",
     subject = "[image shown]"
   )
 
@@ -92,12 +92,12 @@ test_that("descriptive fields preserve their candidate values", {
   expect_match(html, 'data-field="label"', fixed = TRUE)
   expect_match(html, 'data-field="description"', fixed = TRUE)
   expect_match(
-    html, 'value="Example label" data-candidate="Example label"',
+    html, 'value="Input label" data-candidate="Input label"',
     fixed = TRUE
   )
   expect_match(
     html,
-    '<textarea data-field="description" data-candidate="Example description">Example description</textarea>',
+    '<textarea data-field="description" data-candidate="Input description">Input description</textarea>',
     fixed = TRUE
   )
 })
@@ -225,9 +225,9 @@ test_that("review can be rendered without evidence", {
 test_that("alternative descriptive columns are omitted when unused", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
-    label = "Example",
-    description = "Example description",
+    input_description = "Input evidence",
+    label = "Input",
+    description = "Input description",
     subject = "[image shown]"
   )
 
@@ -241,7 +241,7 @@ test_that("alternative descriptive columns are omitted when unused", {
 test_that("alternative label can be rendered alone", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
+    input_description = "Input evidence",
     label = "Tablet-woven sash",
     description = "A tablet-woven textile object.",
     alternative_label = "Tablet-woven belt",
@@ -260,7 +260,7 @@ test_that("alternative label can be rendered alone", {
 test_that("alternative label and description are rendered together", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
+    input_description = "Input evidence",
     label = "Tablet-woven sash",
     description = "A tablet-woven textile object.",
     alternative_label = "Tablet-woven belt",
@@ -287,7 +287,7 @@ test_that("alternative label and description are rendered together", {
 # -------------------------------------------------------------------------
 
 test_that("context preserves its column identity and value", {
-  x <- create_candidate_dataset(subject = "Example") |>
+  x <- create_candidate_dataset(subject = "Input") |>
     dplyr::mutate(context_held_by = "Estonian National Museum")
 
   html <- review_context_html(prepare_review_context(x))
@@ -297,7 +297,7 @@ test_that("context preserves its column identity and value", {
 })
 
 test_that("context is not reviewable", {
-  x <- create_candidate_dataset(subject = "Example") |>
+  x <- create_candidate_dataset(subject = "Input") |>
     dplyr::mutate(context_held_by = "Estonian National Museum")
 
   html <- review_context_html(prepare_review_context(x))
@@ -313,9 +313,9 @@ test_that("context is not reviewable", {
 test_that("row comment is not rendered by default", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
-    label = "Example",
-    description = "Example description",
+    input_description = "Input evidence",
+    label = "Input",
+    description = "Input description",
     subject = "[image shown]"
   )
 
@@ -331,9 +331,9 @@ test_that("row comment is not rendered by default", {
 test_that("row comment is rendered when requested", {
   x <- create_candidate_dataset(
     input_media_url = "https://example.org/evidence.jpg",
-    input_description = "Example evidence",
-    label = "Example",
-    description = "Example description",
+    input_description = "Input evidence",
+    label = "Input",
+    description = "Input description",
     subject = "[image shown]"
   )
 
@@ -357,7 +357,7 @@ test_that("row comment is rendered when requested", {
 
 test_that("candidate provenance is retained in HTML", {
   x <- create_candidate_dataset(
-    subject = "Example",
+    subject = "Input",
     input_url = "https://example.org",
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",

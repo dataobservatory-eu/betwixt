@@ -221,7 +221,7 @@ review_context_html <- function(
         '" target="_blank" rel="noopener">',
         '<img src="',
         escape_html(url),
-        '" alt="Evidence ',
+        '" alt="Input ',
         escape_html(input_description),
         '">',
         "</a>"

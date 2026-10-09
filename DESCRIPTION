@@ -30,6 +30,7 @@ Suggests:
     writexl
 Imports: 
     dplyr,
+    rlang,
     stats,
     tibble,
     tidyr,

@@ -25,6 +25,7 @@
 #'
 #' @importFrom dplyr bind_rows filter mutate select
 #' @importFrom tidyr pivot_longer separate_longer_delim
+#' @importFrom rlang .data
 #' @export
 review_pivot_longer <- function(x) {
   representation <- betwixt_representation(x)
@@ -36,9 +37,9 @@ review_pivot_longer <- function(x) {
   is_reviewed <- "plane" %in% names(x)
 
   if (is_reviewed) {
-    candidate <- dplyr::filter(x, plane == "candidate")
-    reviewed_values <- dplyr::filter(x, plane == "reviewed")
-    status <- dplyr::filter(x, plane == "status")
+    candidate <- dplyr::filter(x, .data$plane == "candidate")
+    reviewed_values <- dplyr::filter(x, .data$plane == "reviewed")
+    status <- dplyr::filter(x, .data$plane == "status")
   } else {
     candidate <- x
   }
@@ -108,21 +109,21 @@ review_pivot_longer <- function(x) {
 
   if (length(domain_cols) > 0L) {
     domain <- candidate |>
-      dplyr::select(row_id, subject, dplyr::all_of(domain_cols)) |>
+      dplyr::select(dplyr::all_of(c("row_id", "subject", domain_cols))) |>
       tidyr::pivot_longer(
         cols = dplyr::all_of(domain_cols),
         names_to = "predicate",
         values_to = "value",
         values_transform = as.character
       ) |>
-      tidyr::separate_longer_delim(value, delim = "|") |>
+      tidyr::separate_longer_delim("value", delim = "|") |>
       dplyr::mutate(
         component = "domain",
-        predicate = trimws(predicate),
-        value = trimws(value)
+        predicate = trimws(.data$predicate),
+        value = trimws(.data$value)
       ) |>
-      dplyr::filter(!is.na(value), nzchar(value)) |>
-      dplyr::select(row_id, component, subject, predicate, value)
+      dplyr::filter(!is.na(.data$value), nzchar(.data$value)) |>
+      dplyr::select(dplyr::all_of(c("row_id", "component", "subject", "predicate", "value")))
   }
 
   # Input relation ----------------------------------------------------------
@@ -138,9 +139,7 @@ review_pivot_longer <- function(x) {
   if ("input_media_url" %in% names(candidate)) {
     input <- candidate |>
       dplyr::select(
-        row_id,
-        subject,
-        input_media_url,
+        dplyr::all_of(c("row_id", "subject", "input_media_url")),
         dplyr::any_of("input_predicate")
       )
 
@@ -154,15 +153,15 @@ review_pivot_longer <- function(x) {
     ] <- "review_input"
 
     input <- input |>
-      tidyr::separate_longer_delim(input_media_url, delim = "|") |>
+      tidyr::separate_longer_delim("input_media_url", delim = "|") |>
       dplyr::mutate(
-        subject = as.character(subject),
+        subject = as.character(.data$subject),
         component = "input",
-        predicate = trimws(as.character(input_predicate)),
-        value = trimws(as.character(input_media_url))
+        predicate = trimws(as.character(.data$input_predicate)),
+        value = trimws(as.character(.data$input_media_url))
       ) |>
-      dplyr::filter(!is.na(value), nzchar(value)) |>
-      dplyr::select(row_id, component, subject, predicate, value)
+      dplyr::filter(!is.na(.data$value), nzchar(.data$value)) |>
+      dplyr::select(dplyr::all_of(c("row_id", "component", "subject", "predicate", "value")))
   }
 
   # Context assertions ------------------------------------------------------
@@ -179,21 +178,21 @@ review_pivot_longer <- function(x) {
 
   if (length(context_cols) > 0L) {
     context <- candidate |>
-      dplyr::select(row_id, subject, dplyr::all_of(context_cols)) |>
+      dplyr::select(dplyr::all_of(c("row_id", "subject", context_cols))) |>
       tidyr::pivot_longer(
         cols = dplyr::all_of(context_cols),
         names_to = "predicate",
         values_to = "value",
         values_transform = as.character
       ) |>
-      tidyr::separate_longer_delim(value, delim = "|") |>
+      tidyr::separate_longer_delim("value", delim = "|") |>
       dplyr::mutate(
         component = "context",
-        predicate = trimws(predicate),
-        value = trimws(value)
+        predicate = trimws(.data$predicate),
+        value = trimws(.data$value)
       ) |>
-      dplyr::filter(!is.na(value), nzchar(value)) |>
-      dplyr::select(row_id, component, subject, predicate, value)
+      dplyr::filter(!is.na(.data$value), nzchar(.data$value)) |>
+      dplyr::select(dplyr::all_of(c("row_id", "component", "subject", "predicate", "value")))
   }
 
   # Row comments ------------------------------------------------------------
@@ -227,12 +226,12 @@ review_pivot_longer <- function(x) {
     comments <- comment_source |>
       dplyr::mutate(
         component = "row_comment",
-        subject = as.character(row_id),
+        subject = as.character(.data$row_id),
         predicate = "hasComment",
         value = as.character(.data[[comment_col[[1L]]]])
       ) |>
-      dplyr::filter(!is.na(value), nzchar(value)) |>
-      dplyr::select(row_id, component, subject, predicate, value)
+      dplyr::filter(!is.na(.data$value), nzchar(.data$value)) |>
+      dplyr::select(dplyr::all_of(c("row_id", "component", "subject", "predicate", "value")))
   }
 
   # Assertion provenance ----------------------------------------------------
@@ -250,7 +249,7 @@ review_pivot_longer <- function(x) {
 
     if (length(review_cols) > 0L) {
       candidate_long <- candidate |>
-        dplyr::select(row_id, subject, dplyr::all_of(review_cols)) |>
+        dplyr::select(dplyr::all_of(c("row_id", "subject", review_cols))) |>
         tidyr::pivot_longer(
           cols = dplyr::all_of(review_cols),
           names_to = "predicate",
@@ -259,7 +258,7 @@ review_pivot_longer <- function(x) {
         )
 
       reviewed_long <- reviewed_values |>
-        dplyr::select(row_id, dplyr::all_of(review_cols)) |>
+        dplyr::select(dplyr::all_of(c("row_id", review_cols))) |>
         tidyr::pivot_longer(
           cols = dplyr::all_of(review_cols),
           names_to = "predicate",
@@ -268,7 +267,7 @@ review_pivot_longer <- function(x) {
         )
 
       status_long <- status |>
-        dplyr::select(row_id, dplyr::all_of(review_cols)) |>
+        dplyr::select(dplyr::all_of(c("row_id", review_cols))) |>
         tidyr::pivot_longer(
           cols = dplyr::all_of(review_cols),
           names_to = "predicate",
@@ -286,26 +285,26 @@ review_pivot_longer <- function(x) {
           by = c("row_id", "predicate")
         ) |>
         dplyr::filter(
-          !is.na(candidate_value) |
-            !is.na(reviewed_value)
+          !is.na(.data$candidate_value) |
+            !is.na(.data$reviewed_value)
         ) |>
         dplyr::mutate(
-          candidate_value = trimws(candidate_value),
-          reviewed_value = trimws(reviewed_value),
-          review_status = trimws(review_status),
+          candidate_value = trimws(.data$candidate_value),
+          reviewed_value = trimws(.data$reviewed_value),
+          review_status = trimws(.data$review_status),
           value = dplyr::case_when(
-            review_status == "corrected" ~ paste0(
-              candidate_value,
+            .data$review_status == "corrected" ~ paste0(
+              .data$candidate_value,
               " -> ",
-              reviewed_value
+              .data$reviewed_value
             ),
-            review_status %in% c("rejected", "deferred") ~ candidate_value,
-            TRUE ~ reviewed_value
+            .data$review_status %in% c("rejected", "deferred") ~ .data$candidate_value,
+            TRUE ~ .data$reviewed_value
           ),
           component = "assertion_provenance"
         ) |>
-        dplyr::filter(!is.na(value), nzchar(value)) |>
-        dplyr::select(row_id, component, subject, predicate, value)
+        dplyr::filter(!is.na(.data$value), nzchar(.data$value)) |>
+        dplyr::select(dplyr::all_of(c("row_id", "component", "subject", "predicate", "value")))
     }
   }
 
@@ -359,7 +358,7 @@ review_pivot_longer <- function(x) {
           unlist(provenance_values, use.names = FALSE)
         )
       ) |>
-        dplyr::filter(!is.na(value), nzchar(value))
+        dplyr::filter(!is.na(.data$value), nzchar(.data$value))
     }
   }
 
@@ -370,5 +369,5 @@ review_pivot_longer <- function(x) {
     assertion_provenance, dataset_comment, dataset_provenance
   ) |>
     dplyr::mutate(assertion_id = dplyr::row_number()) |>
-    dplyr::select(row_id, assertion_id, component, subject, predicate, value)
+    dplyr::select(dplyr::all_of(c("row_id", "assertion_id", "component", "subject", "predicate", "value")))
 }

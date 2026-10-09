@@ -568,11 +568,7 @@ test_that("review_pivot_longer() preserves concatenated value order", {
 
   expect_equal(
     domain$predicate,
-    c(
-      "instance_of", "instance_of",
-      "occupation", "occupation",
-      "instance_of"
-    )
+    c("instance_of", "instance_of", "occupation", "occupation", "instance_of")
   )
 
   expect_equal(

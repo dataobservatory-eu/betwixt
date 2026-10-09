@@ -2,13 +2,12 @@
 #'
 #' @description
 #' Converts a prepared Betwixt review context into an HTML table containing
-#' evidence, descriptive information, reviewable assertions, finalisation
-#' controls, optional row comments, and display-only contextual information.
+#' supplied inputs, descriptive information, reviewable assertions,
+#' finalisation controls, optional row comments, and contextual information.
 #'
-#' Evidence media supplied through `input_media_url` are presented inline
-#' as images, while evidence resources supplied through `input_url` are
-#' rendered as links that can be opened by the reviewer. Multiple evidence
-#' media or resource URLs may be supplied and are rendered independently.
+#' Media supplied through `input_media_url` are presented inline as images,
+#' while resources supplied through `input_url` are rendered as links.
+#' Multiple input media or resource URLs are rendered independently.
 #'
 #' Primary and alternative labels and descriptions are rendered as editable
 #' fields. Alternative columns are included only when corresponding values

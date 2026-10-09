@@ -511,3 +511,35 @@ test_that("serialise_assertion() serialises alignment as an assertion", {
   expect_match(ttl, 'btx:value "assertion-2"', fixed = TRUE)
   expect_match(ttl, "btx:status btx:Corroborated", fixed = TRUE)
 })
+
+## Turtle serialisation omits missing provenance values ----------------------
+
+test_that("Turtle serialisation omits missing provenance values", {
+  review <- read_review(test_path(
+    "fixtures",
+    "muis-garments-review_1-finalised.html"
+  ))
+
+  review$provenance$data_manager <- NA_character_
+  review$provenance$data_manager_iri <- NA_character_
+  review$provenance$reviewer <- NA_character_
+  review$provenance$reviewer_iri <- NA_character_
+  review$provenance$started_at <- NA_character_
+  review$provenance$ended_at <- NA_character_
+  review$provenance$generated_at <- NA_character_
+
+  ttl <- serialise_review(
+    review,
+    prefix = "https://usebetwixt.com/tests/",
+    filename = "missing-provenance.ttl"
+  )
+
+  expect_false(grepl('"NA"', ttl, fixed = TRUE))
+  expect_false(grepl("prov:wasAssociatedWith", ttl, fixed = TRUE))
+  expect_false(grepl("rdfs:label", ttl, fixed = TRUE))
+  expect_false(grepl("prov:startedAtTime", ttl, fixed = TRUE))
+  expect_false(grepl("prov:endedAtTime", ttl, fixed = TRUE))
+
+  expect_true(grepl("a btx:Assertion", ttl, fixed = TRUE))
+  expect_true(grepl("prov:wasInformedBy", ttl, fixed = TRUE))
+})

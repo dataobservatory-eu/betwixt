@@ -160,32 +160,48 @@ serialise_dataset <- function(
 #' @keywords internal
 #' @noRd
 serialise_activity <- function(
-  review,
-  prefix,
-  filename,
-  reviewer_iri = NULL
+    review,
+    prefix,
+    filename,
+    reviewer_iri = NULL
 ) {
   stem <- tools::file_path_sans_ext(filename)
   iri <- paste0(prefix, stem, "/activity")
   candidate_activity_iri <- paste0(prefix, stem, "/candidate-activity")
   provenance <- review$provenance
 
-  if (is.null(reviewer_iri)) {
-    reviewer_iri <- review$provenance$reviewer_iri
-  }
-
-  if (is.na(reviewer_iri) || !nzchar(reviewer_iri)) {
-    reviewer_iri <- paste0(prefix, stem, "/reviewer")
+  if (!has_value(reviewer_iri)) {
+    reviewer_iri <- provenance$reviewer_iri
   }
 
   lines <- c(
     turtle_iri(iri),
-    "    a prov:Activity",
-    paste0("    ; prov:wasAssociatedWith ", turtle_iri(reviewer_iri)),
-    paste0("    ; prov:wasInformedBy ", turtle_iri(candidate_activity_iri))
+    "    a prov:Activity"
   )
 
-  if (!is.null(provenance$started_at)) {
+  if (has_value(reviewer_iri) || has_value(provenance$reviewer)) {
+    if (!has_value(reviewer_iri)) {
+      reviewer_iri <- paste0(prefix, stem, "/reviewer")
+    }
+
+    lines <- c(
+      lines,
+      paste0(
+        "    ; prov:wasAssociatedWith ",
+        turtle_iri(reviewer_iri)
+      )
+    )
+  }
+
+  lines <- c(
+    lines,
+    paste0(
+      "    ; prov:wasInformedBy ",
+      turtle_iri(candidate_activity_iri)
+    )
+  )
+
+  if (has_value(provenance$started_at)) {
     lines <- c(
       lines,
       paste0(
@@ -196,7 +212,7 @@ serialise_activity <- function(
     )
   }
 
-  if (!is.null(provenance$ended_at)) {
+  if (has_value(provenance$ended_at)) {
     lines <- c(
       lines,
       paste0(
@@ -216,23 +232,32 @@ serialise_activity <- function(
 #' @noRd
 serialise_data_manager <- function(review, prefix, filename) {
   provenance <- review$provenance
-  stem <- tools::file_path_sans_ext(filename)
 
+  if (!has_value(provenance$data_manager) &&
+      !has_value(provenance$data_manager_iri)) {
+    return("")
+  }
+
+  stem <- tools::file_path_sans_ext(filename)
   iri <- provenance$data_manager_iri
-  if (is.na(iri) || !nzchar(iri)) {
+
+  if (!has_value(iri)) {
     iri <- paste0(prefix, stem, "/data-manager")
   }
 
-  paste(
-    turtle_iri(iri),
-    "    a prov:Agent",
-    paste0(
-      "    ; rdfs:label ",
-      turtle_literal(provenance$data_manager),
-      " ."
-    ),
-    sep = "\n"
-  )
+  lines <- c(turtle_iri(iri), "    a prov:Agent")
+
+  if (has_value(provenance$data_manager)) {
+    lines <- c(
+      lines,
+      paste0(
+        "    ; rdfs:label ",
+        turtle_literal(provenance$data_manager)
+      )
+    )
+  }
+
+  paste0(paste(lines, collapse = "\n"), " .")
 }
 
 # Candidate activity ---------------------------------------------------------
@@ -244,21 +269,26 @@ serialise_candidate_activity <- function(review, prefix, filename) {
   stem <- tools::file_path_sans_ext(filename)
   iri <- paste0(prefix, stem, "/candidate-activity")
 
-  manager_iri <- provenance$data_manager_iri
-  if (is.na(manager_iri) || !nzchar(manager_iri)) {
-    manager_iri <- paste0(prefix, stem, "/data-manager")
+  lines <- c(turtle_iri(iri), "    a prov:Activity")
+
+  if (has_value(provenance$data_manager) ||
+      has_value(provenance$data_manager_iri)) {
+    manager_iri <- provenance$data_manager_iri
+
+    if (!has_value(manager_iri)) {
+      manager_iri <- paste0(prefix, stem, "/data-manager")
+    }
+
+    lines <- c(
+      lines,
+      paste0(
+        "    ; prov:wasAssociatedWith ",
+        turtle_iri(manager_iri)
+      )
+    )
   }
 
-  lines <- c(
-    turtle_iri(iri),
-    "    a prov:Activity",
-    paste0(
-      "    ; prov:wasAssociatedWith ",
-      turtle_iri(manager_iri)
-    )
-  )
-
-  if (!is.na(provenance$generated_at)) {
+  if (has_value(provenance$generated_at)) {
     lines <- c(
       lines,
       paste0(
@@ -277,28 +307,34 @@ serialise_candidate_activity <- function(review, prefix, filename) {
 #' @keywords internal
 #' @noRd
 serialise_reviewer <- function(
-  review,
-  prefix,
-  filename,
-  reviewer_iri = NULL
+    review, prefix, filename, reviewer_iri = NULL
 ) {
-  stem <- tools::file_path_sans_ext(filename)
-  reviewer <- review$provenance$reviewer
+  provenance <- review$provenance
 
-  if (is.null(reviewer_iri)) {
-    reviewer_iri <- review$provenance$reviewer_iri
+  if (!has_value(reviewer_iri)) {
+    reviewer_iri <- provenance$reviewer_iri
   }
 
-  if (is.na(reviewer_iri) || !nzchar(reviewer_iri)) {
+  if (!has_value(reviewer_iri) && !has_value(provenance$reviewer)) {
+    return("")
+  }
+
+  stem <- tools::file_path_sans_ext(filename)
+
+  if (!has_value(reviewer_iri)) {
     reviewer_iri <- paste0(prefix, stem, "/reviewer")
   }
 
-  paste(
-    turtle_iri(reviewer_iri),
-    "    a prov:Agent",
-    paste0("    ; rdfs:label ", turtle_literal(reviewer), " ."),
-    sep = "\n"
-  )
+  lines <- c(turtle_iri(reviewer_iri), "    a prov:Agent")
+
+  if (has_value(provenance$reviewer)) {
+    lines <- c(
+      lines,
+      paste0("    ; rdfs:label ", turtle_literal(provenance$reviewer))
+    )
+  }
+
+  paste0(paste(lines, collapse = "\n"), " .")
 }
 
 # Assertions ------------------------------------------------------------------
@@ -355,6 +391,12 @@ serialise_assertion <- function(x, prefix, filename, dataset, number) {
 }
 
 # Turtle utilities ------------------------------------------------------------
+
+#' @keywords internal
+#' @noRd
+has_value <- function(x) {
+  length(x) == 1L && !is.na(x) && nzchar(trimws(x))
+}
 
 #' @keywords internal
 #' @noRd

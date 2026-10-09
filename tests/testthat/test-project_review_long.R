@@ -177,3 +177,40 @@ test_that("long projection inherits states from the wide projection", {
     expect_equal(actual, expected)
   }
 })
+
+
+## Descriptive-only review files  ---------------------------------------------
+
+test_that("long projection supports descriptive-only reviews", {
+  review <- read_review(muis_final_path)
+  wide <- project_review_wide(review)
+
+  descriptive <- intersect(
+    c(
+      "label", "description",
+      "alternative_label", "alternative_description"
+    ),
+    names(wide)
+  )
+
+  keep <- c(
+    "row_id", "plane", "subject",
+    grep("^context_", names(wide), value = TRUE),
+    descriptive
+  )
+
+  wide <- wide[, keep, drop = FALSE]
+
+  local_mocked_bindings(
+    project_review_wide = function(review) wide
+  )
+
+  x <- project_review_long(review)
+
+  expect_setequal(unique(x$predicate), descriptive)
+  expect_setequal(unique(x$plane), c("candidate", "reviewed"))
+  expect_equal(
+    nrow(x),
+    nrow(wide[wide$plane != "status", ]) * length(descriptive)
+  )
+})

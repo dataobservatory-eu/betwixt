@@ -27,6 +27,7 @@ importFrom(dplyr,
   row_number,
   select
 )
+importFrom(rlang,.data)
 importFrom(stats,setNames)
 importFrom(tibble,tibble)
 importFrom(tidyr,

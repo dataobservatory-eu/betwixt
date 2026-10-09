@@ -98,31 +98,36 @@ project_review_long <- function(review) {
   )
 
   # Project semantic assertions and inherit their status.
-  semantic <- states |>
-    dplyr::select(
-      dplyr::all_of(c(
-        "row_id", context_cols, "plane", "subject", predicate_cols
-      ))
-    ) |>
-    tidyr::pivot_longer(
-      cols = dplyr::all_of(predicate_cols),
-      names_to = "predicate",
-      values_to = "value"
-    )
+  # Project semantic assertions and inherit their status.
+  semantic <- NULL
 
-  semantic_status <- status |>
-    dplyr::select(dplyr::all_of(c("row_id", predicate_cols))) |>
-    tidyr::pivot_longer(
-      cols = dplyr::all_of(predicate_cols),
-      names_to = "predicate",
-      values_to = "status"
-    )
+  if (length(predicate_cols) > 0L) {
+    semantic <- states |>
+      dplyr::select(
+        dplyr::all_of(c(
+          "row_id", context_cols, "plane", "subject", predicate_cols
+        ))
+      ) |>
+      tidyr::pivot_longer(
+        cols = dplyr::all_of(predicate_cols),
+        names_to = "predicate",
+        values_to = "value"
+      )
 
-  semantic <- dplyr::left_join(
-    semantic,
-    semantic_status,
-    by = c("row_id", "predicate")
-  )
+    semantic_status <- status |>
+      dplyr::select(dplyr::all_of(c("row_id", predicate_cols))) |>
+      tidyr::pivot_longer(
+        cols = dplyr::all_of(predicate_cols),
+        names_to = "predicate",
+        values_to = "status"
+      )
+
+    semantic <- dplyr::left_join(
+      semantic,
+      semantic_status,
+      by = c("row_id", "predicate")
+    )
+  }
 
   # Combine assertions and attach review provenance.
   x <- dplyr::bind_rows(descriptions, semantic) |>

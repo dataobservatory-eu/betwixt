@@ -181,7 +181,7 @@ review_context_html <- function(
   header <- paste0(
     "<thead><tr>",
     '<th class="num">#</th>',
-    "<th>Evidence</th>",
+    "<th>Input</th>",
     "<th>Label</th>",
     "<th>Description</th>",
     alternative_headers,

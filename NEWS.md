@@ -20,6 +20,8 @@
 
 * Added canonical long-form assertion projection with `row_id`, `assertion_id`, `component`, `subject`, `predicate`, and `value`, distinguishing assertion components from mapping roles.
 
+* Added separate web-based and local HTML review renderers, supporting portable reviews with relative media paths and format-specific resource validation.
+
 ## RDF serialisation
 
 * Updated RDF serialisation to use the stabilised Betwixt vocabulary, including `btx:rowId`, optional `btx:assertionId`, and assertion-level review status.

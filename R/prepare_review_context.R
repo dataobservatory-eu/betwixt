@@ -38,9 +38,6 @@
 #' @noRd
 #' @keywords internal
 prepare_review_context <- function(candidate) {
-  # Validate the candidate dataset.
-  validate_candidate_dataset(candidate)
-
   provenance <- attr(candidate, "provenance")
 
   if (is.null(provenance)) {

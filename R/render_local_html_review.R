@@ -1,106 +1,44 @@
-#' Render a Betwixt review
-#'
-#' @description
-#' Renders a Betwixt candidate dataset as an interactive, standalone HTML
-#' review. The `type` argument selects between a web-based review using
-#' HTTP(S) resources and a local review using files stored alongside the
-#' generated HTML document.
-#'
-#' Both formats preserve the original candidate values alongside editable
-#' review values. The generated HTML includes the original filename and
-#' creation timestamp as artefact provenance. Timestamps are recorded in
-#' ISO 8601 UTC format at one-second precision.
-#'
-#' A review belongs to a project, has a filename stem, and has a non-negative
-#' sequence number. Sequence `0` represents the initial candidate review.
-#' Subsequent review states may use sequence `1`, `2`, and so on. Saving a
-#' draft or finalising a review does not itself change the sequence.
-#'
-#' The project identifier identifies the larger knowledge-production project,
-#' while the table identifier identifies a table across successive review
-#' states. The filename stem independently determines the saved HTML filename.
-#'
-#' @details
-#' The `"web_html"` renderer accepts HTTP(S) references in `input_url` and
-#' `input_media_url`. These references are validated syntactically without
-#' checking network availability.
-#'
-#' The `"local_html"` renderer uses local resource paths, including relative
-#' references such as `media/photo.jpg`. Resources must already exist and be
-#' readable. Relative paths are resolved against the review output directory.
-#' The local renderer does not copy resources automatically.
-#'
-#' Both formats embed the review CSS and JavaScript in the HTML document.
-#' Local reviews can therefore be moved together with their referenced
-#' resources without changing the relative paths.
-#'
-#' @param candidate A Betwixt candidate dataset.
-#' @param ... Arguments passed to the selected review renderer.
-#' @param type Review format: `"web_html"` (default) or `"local_html"`.
-#' @param cols Optional named character vector containing presentation labels
-#'   for candidate and context columns.
-#' @param subheadings Optional named character vector containing presentation
-#'   subheadings for candidate columns.
-#' @param title Character string used as the review title.
-#' @param description Character string containing review instructions.
-#' @param filename_stem Base name for saved review files. Sequences greater
-#'   than `0` append the sequence number.
-#' @param reviewer_name Initial reviewer name.
-#' @param reviewer_iri IRI identifying the reviewer, such as an ORCID, ISNI,
-#'   or Wikidata URI.
-#' @param project_id Identifier of the larger knowledge-production project.
-#' @param table_id Identifier of the table across successive review states.
-#' @param sequence Single non-negative integer identifying the review sequence.
-#'   Defaults to `0`, representing the initial candidate review.
-#' @param row_comment Logical. Add an optional comment field to each review row.
-#'   Defaults to `FALSE`.
-#' @param review_comment Logical. Add an optional comment field for the review
-#'   as a whole. Defaults to `FALSE`.
-#' @param path Output directory for the generated HTML. For `"web_html"`,
-#'   `NULL` returns the HTML without writing a file. For `"local_html"`,
-#'   an existing directory is required to resolve local resource references.
-#'
-#' @return A character string containing the rendered HTML, returned invisibly
-#'   when written to `path`.
-#'
-#' @seealso [create_candidate_dataset()],
-#'   [validate_candidate_dataset()],
-#'   [validate_external_resources()],
-#'   [validate_local_resources()]
-#' @export
-
-render_review <- function(candidate, ..., type = "web_html") {
-  switch(type,
-    web_html = render_web_html_review(candidate, ...),
-    local_html = render_local_html_review(candidate, ...),
-    stop("Unsupported review type: ", type, call. = FALSE)
-  )
-}
-
-#' Render a web-based HTML review
-#'
+#' Render a local HTML Betwixt review
 #' @rdname render_review
 #' @examples
-#' # Review using externally hosted photographs.
+#' # Create a local review using photographs bundled with Betwixt.
 #' data(delini)
 #'
-#' candidates <- create_candidate_dataset(
-#'   input_media_url = delini$input_media_url,
+#' review_path <- tempfile("delini-review-")
+#' dir.create(file.path(review_path, "media"), recursive = TRUE)
+#'
+#' # Resolve packaged images and copy them into the review directory.
+#' source_media <- sub(
+#'   "^.*?/images/delini/",
+#'   "media/delini/",
+#'   delini$input_media_url
+#' )
+#' source_files <- system.file(source_media, package = "betwixt")
+#' stopifnot(all(nzchar(source_files)))
+#'
+#' file.copy(source_files, file.path(review_path, "media"))
+#'
+#' # Use relative references in the candidate dataset.
+#' candidate <- create_candidate_dataset(
+#'   subject = delini$subject,
+#'   input_media_url = file.path("media", basename(source_files)),
+#'   input_label = delini$input_label,
 #'   input_description = delini$input_description,
 #'   label = delini$label,
 #'   description = delini$description,
-#'   subject = delini$subject,
 #'   subject_range = delini$subject_range,
 #'   subject_definition = delini$subject_definition
 #' )
 #'
-#' review_html <- render_web_html_review(
-#'   candidates,
-#'   title = "Deliņi Farmstead Review"
+#' render_local_html_review(
+#'   candidate,
+#'   title = "Deliņi Farmstead Review",
+#'   filename_stem = "delini-review",
+#'   path = review_path
 #' )
 #' @export
 
-render_web_html_review <- function(
+render_local_html_review <- function(
   candidate,
   cols = NULL,
   subheadings = NULL,
@@ -116,11 +54,10 @@ render_web_html_review <- function(
   review_comment = FALSE,
   path = NULL
 ) {
-  # Validate candidate structure and external resources.
   validate_candidate_dataset(candidate)
-  validate_external_resources(candidate)
+  validate_local_resources(candidate, path)
 
-  # Validate the review sequence.
+  # Validate candidate structure and local resources.
   if (length(sequence) != 1L ||
     is.na(sequence) ||
     sequence < 0 ||

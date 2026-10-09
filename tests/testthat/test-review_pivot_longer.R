@@ -323,8 +323,6 @@ test_that("review_pivot_longer() supplies the default input predicate", {
 })
 
 
-
-
 test_that("review_pivot_longer() projects the dataset review comment", {
   review <- read_review(final_path)
 
@@ -547,7 +545,7 @@ test_that("review_pivot_longer() preserves candidate dataset identity and proven
   expect_true(any(
     provenance$predicate == "data_manager_iri" &
       provenance$value ==
-      "https://orcid.org/0000-0001-7513-6760"
+        "https://orcid.org/0000-0001-7513-6760"
   ))
 
   expect_true(any(
@@ -580,7 +578,7 @@ test_that("review_pivot_longer() preserves concatenated value order", {
   expect_equal(
     domain$value,
     c("human", "composer", "pianist", "composer", "building")
-    )
+  )
 
   expect_equal(
     domain$subject,

@@ -320,8 +320,8 @@ review_pivot_longer <- function(x) {
   )
 
   if (!is.null(provenance$review_comment) &&
-      !is.na(provenance$review_comment) &&
-      nzchar(provenance$review_comment)) {
+    !is.na(provenance$review_comment) &&
+    nzchar(provenance$review_comment)) {
     dataset_comment <- tibble::tibble(
       row_id = 0L,
       component = "dataset_comment",

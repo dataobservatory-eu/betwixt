@@ -219,7 +219,7 @@ test_that("render_review() requires a subject", {
   delini_no_subject <- delini
   delini_no_subject$subject <- NULL
 
-  expect_error(render_review(delini_no_subject), "must identify the subject")
+  expect_error(render_review(delini_no_subject), "Missing required column")
 })
 
 # -------------------------------------------------------------------------

@@ -1,23 +1,11 @@
 #' Validate a Betwixt candidate dataset
 #'
-#' Checks whether a data frame conforms to the structural requirements of a
-#' Betwixt candidate dataset.
+#' Checks the structural requirements of a Betwixt candidate dataset.
+#' Resource validation is handled separately.
 #'
 #' @param x A data frame representing a Betwixt candidate dataset.
-#'
-#' @details
-#' Candidate datasets can be created in a spreadsheet application after
-#' initialising a conforming header with [create_candidate_template()].
-#' Re-imported datasets can be checked with `validate_candidate_dataset()`
-#' before rendering with [render_review()].
-#'
-#' @return Invisibly returns `x` if validation succeeds. Otherwise, an error
-#'   describes the first validation failure.
-#'
-#' @examples
-#' x <- create_candidate_template()
-#' validate_candidate_dataset(x)
-#'
+#' @return Invisibly returns `x` if validation succeeds.
+#' @seealso [validate_local_resources()], [validate_external_resources()]
 #' @export
 validate_candidate_dataset <- function(x) {
   if (!is.data.frame(x)) {
@@ -54,7 +42,6 @@ validate_candidate_dataset <- function(x) {
     )
   }
 
-
   # Row number validation ----------------------------------------------------
   if (!is.integer(x$row_id)) {
     stop("`row_id` must be integer.", call. = FALSE)
@@ -72,28 +59,7 @@ validate_candidate_dataset <- function(x) {
     stop("`row_id` must contain positive integers.", call. = FALSE)
   }
 
-  # URL validation -------------------------------------------------------
-
-  url_cols <- intersect(
-    c("input_url", "input_media_url"),
-    names(x)
-  )
-
-  for (col in url_cols) {
-    values <- x[[col]]
-    values <- values[!is.na(values)]
-    values <- unlist(strsplit(values, "|", fixed = TRUE))
-    values <- trimws(values)
-    values <- values[nzchar(values)]
-
-    invalid <- !grepl("^https?://[^[:space:]]+$", values)
-
-    if (any(invalid)) {
-      stop("Invalid URL in `", col, "`.", call. = FALSE)
-    }
-  }
-
-  ## Variable name consistency validation -----------------------------------
+  # Variable name consistency ------------------------------------------------
   metadata <- grep("_(range|definition)$", names(x), value = TRUE)
   base <- sub("_(range|definition)$", "", metadata)
   missing <- unique(base[!base %in% names(x)])

@@ -51,8 +51,10 @@ project_review_long <- function(review) {
 
   # Identify descriptive, contextual, and semantic columns.
   descriptive <- intersect(
-    c("label", "description", "alternative_label",
-      "alternative_description"),
+    c(
+      "label", "description", "alternative_label",
+      "alternative_description"
+    ),
     names(states)
   )
   context_cols <- grep("^context_", names(states), value = TRUE)

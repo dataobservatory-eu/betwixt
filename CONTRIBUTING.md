@@ -2,15 +2,15 @@
 
 Thank you for your interest in contributing to betwixt.
 
-This package contains utility functions, templates, and workflows used\
-to support reproducible examples, package development, and related\
-research software activities. Contributions that improve reliability,\
-clarity, maintainability, and developer experience are particularly\
+This package contains utility functions, templates, and workflows used
+to support reproducible examples, package development, and related
+research software activities. Contributions that improve reliability,
+clarity, maintainability, and developer experience are particularly
 welcome.
 
 ## Repository Structure
 
-This repository follows standard R package conventions described in\
+This repository follows standard R package conventions described in
 *Writing R Extensions*.
 
 The most important locations are:
@@ -25,28 +25,28 @@ The most important locations are:
 
 - `inst/` – installed package resources
 
-Some files and directories are excluded from the built package through\
+Some files and directories are excluded from the built package through
 `.Rbuildignore` and exist solely to support package development.
 
 ## Documentation
 
 Documentation is generated with `roxygen2`.
 
-Please do not edit files in `man/` or `NAMESPACE` directly.\
-Instead, edit the corresponding source files in `R/` and regenerate\
+Please do not edit files in `man/` or `NAMESPACE` directly.
+Instead, edit the corresponding source files in `R/` and regenerate
 documentation with:
 
 ```         
 devtools::document()
 ```
 
-Examples should be included whenever appropriate. Examples requiring\
-internet access, user interaction, or substantial execution time should\
+Examples should be included whenever appropriate. Examples requiring
+internet access, user interaction, or substantial execution time should
 be wrapped in `\\dontrun{}`.
 
 ## Code Style
 
-Code should follow the tidyverse style guide and common rOpenSci\
+Code should follow the tidyverse style guide and common rOpenSci
 conventions.
 
 Project-specific coding conventions are documented in:
@@ -57,10 +57,10 @@ Please consult that document before making substantial changes.
 
 ## Testing
 
-New functionality and bug fixes should be accompanied by appropriate\
+New functionality and bug fixes should be accompanied by appropriate
 unit tests whenever practical.
 
-Tests use the `testthat` framework and are located in\
+Tests use the `testthat` framework and are located in
 `tests/testthat/`.
 
 Before submitting changes, please ensure that:
@@ -73,7 +73,7 @@ run successfully.
 
 ## Pull Requests
 
-For larger changes, please open an issue first to discuss the proposed\
+For larger changes, please open an issue first to discuss the proposed
 approach.
 
 When submitting a pull request:
@@ -106,7 +106,7 @@ users and maintainers.
 
 ## Code of Conduct
 
-This project follows the Contributor Code of Conduct described in\
+This project follows the Contributor Code of Conduct described in
 `CODE_OF_CONDUCT.md`.
 
 By participating in this project, you agree to abide by its terms.

@@ -10,21 +10,12 @@ validate_candidate_dataset(x)
 \item{x}{A data frame representing a Betwixt candidate dataset.}
 }
 \value{
-Invisibly returns \code{x} if validation succeeds. Otherwise, an error
-describes the first validation failure.
+Invisibly returns \code{x} if validation succeeds.
 }
 \description{
-Checks whether a data frame conforms to the structural requirements of a
-Betwixt candidate dataset.
+Checks the structural requirements of a Betwixt candidate dataset.
+Resource validation is handled separately.
 }
-\details{
-Candidate datasets can be created in a spreadsheet application after
-initialising a conforming header with \code{\link[=create_candidate_template]{create_candidate_template()}}.
-Re-imported datasets can be checked with \code{validate_candidate_dataset()}
-before rendering with \code{\link[=render_review]{render_review()}}.
-}
-\examples{
-x <- create_candidate_template()
-validate_candidate_dataset(x)
-
+\seealso{
+\code{\link[=validate_local_resources]{validate_local_resources()}}, \code{\link[=validate_external_resources]{validate_external_resources()}}
 }

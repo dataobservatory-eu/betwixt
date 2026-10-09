@@ -8,11 +8,15 @@ export(create_candidate_template)
 export(project_review_long)
 export(project_review_wide)
 export(read_review)
+export(render_local_html_review)
 export(render_review)
+export(render_web_html_review)
 export(review_pivot_longer)
 export(serialise_review)
 export(serialize_review)
 export(validate_candidate_dataset)
+export(validate_external_resources)
+export(validate_local_resources)
 importFrom(dplyr,
   arrange,
   bind_rows,

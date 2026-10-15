@@ -139,3 +139,57 @@ test_that("empty resource columns are accepted", {
 
   expect_invisible(validate_local_resources(x, path))
 })
+
+## Working with external input URLs -------------------------------------------
+
+test_that("external HTTP and HTTPS resources are accepted", {
+  path <- tempfile()
+  dir.create(path)
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+
+  x <- data.frame(
+    input_url = "https://reprexbase.eu/rubik/Item:Q245",
+    input_media_url = "http://example.org/photo.jpg"
+  )
+
+  expect_invisible(validate_local_resources(x, path))
+})
+
+test_that("external URLs and local resources can be mixed", {
+  path <- tempfile()
+  dir.create(file.path(path, "images"), recursive = TRUE)
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+
+  file.create(file.path(path, "images", "photo.jpg"))
+
+  x <- data.frame(
+    input_url = "https://reprexbase.eu/rubik/Item:Q245",
+    input_media_url = paste(
+      "images/photo.jpg",
+      "https://example.org/another.jpg",
+      sep = " | "
+    )
+  )
+
+  expect_invisible(validate_local_resources(x, path))
+})
+
+test_that("missing local resources are rejected alongside external URLs", {
+  path <- tempfile()
+  dir.create(path)
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+
+  x <- data.frame(
+    input_url = "https://reprexbase.eu/rubik/Item:Q245",
+    input_media_url = paste(
+      "https://example.org/photo.jpg",
+      "images/missing.jpg",
+      sep = " | "
+    )
+  )
+
+  expect_error(
+    validate_local_resources(x, path),
+    "Missing local resource.*images/missing.jpg"
+  )
+})

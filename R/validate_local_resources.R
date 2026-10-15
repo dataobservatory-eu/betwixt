@@ -25,6 +25,11 @@ validate_local_resources <- function(x, path) {
     values <- trimws(values)
     values <- values[nzchar(values)]
 
+    # External URLs are not local resources.
+    values <- values[
+      !grepl("^https?://", values, ignore.case = TRUE)
+    ]
+
     if (!length(values)) next
 
     # Resolve relative paths against the review directory.

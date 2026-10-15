@@ -8,7 +8,7 @@
 [![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Project Status:
 WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![devel-version](https://img.shields.io/badge/devel%20version-0.0.84-blue.svg)](https://github.com/dataobservatory-eu/betwixt)
+[![devel-version](https://img.shields.io/badge/devel%20version-0.0.841-blue.svg)](https://github.com/dataobservatory-eu/betwixt)
 [![dataobservatory](https://img.shields.io/badge/ecosystem-dataobservatory.eu-3EA135.svg)](https://dataobservatory.eu/)
 [![R-CMD-check](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dataobservatory-eu/betwixt/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
@@ -303,7 +303,7 @@ The package documentation develops the workflow in more detail:
 
 If you use Betwixt in research, please cite:
 
-> Antal, D. (2026). *Betwixt*. Reprex.  
+> Antal, D. (2026). *Betwixt*. Reprex.\
 > <https://doi.org/10.5281/zenodo.22091535>
 
 The current citation is also available from R:

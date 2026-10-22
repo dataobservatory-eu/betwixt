@@ -8,6 +8,7 @@
 #' @param path Directory containing the local review resources.
 #' @return Invisibly returns `x` if validation succeeds.
 #' @export
+
 validate_local_resources <- function(x, path) {
   if (!dir.exists(path)) {
     stop("Review directory does not exist: ", path, call. = FALSE)

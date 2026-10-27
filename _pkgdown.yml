@@ -17,6 +17,8 @@ reference:
       - create_candidate_dataset
       - create_candidate_template
       - validate_candidate_dataset
+      - validate_external_resources
+      - validate_local_resources
       - add_candidate_column
       - add_candidate_range
       - render_review

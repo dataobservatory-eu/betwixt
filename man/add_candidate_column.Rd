@@ -46,6 +46,35 @@ Contextual, non-reviewable information does not need to be added with this
 function and can be appended with ordinary data manipulation operations,
 for example \code{dplyr::mutate(context_1 = held_by)}.
 }
+\section{Special candidate-range values}{
+
+Candidate ranges may contain reserved tokens that have
+special meanings in the review interface:
+
+\describe{
+\item{\verb{<other>}}{
+Allows the reviewer to enter a value not included in
+the proposed candidate range.
+For backward compatibility, \verb{Other…} (Unicode ellipsis)
+and \code{Other...} (three periods) are also recognised.
+}
+\item{\verb{<unknown>}}{
+Indicates that an applicable value may exist, but
+its value is unknown.
+}
+\item{\verb{<no-value>}}{
+Indicates that no applicable value is possible.
+}
+}
+
+Reserved tokens are recognised only when they appear
+as complete range entries. Ordinary strings such as
+\code{Other}, \code{Unknown}, and \code{None} retain their literal meanings.
+
+Special values are optional and are not automatically
+appended to candidate ranges.
+}
+
 \examples{
 candidates <- tibble::tibble(
   row_id = 1:2,

@@ -150,7 +150,7 @@ read_review <- function(path) {
     value
   }
 
-  # Read the current value of a review control.
+  # Extract the reviewer's entered or selected value from an HTML element.
   control_value <- function(node) {
     name <- xml2::xml_name(node)
     if (name == "textarea") {
@@ -170,6 +170,63 @@ read_review <- function(path) {
     xml2::xml_attr(option, "value")
   }
 
+  # Resolve special candidate-range values, including special range options.
+  # Extract reviewed assertion values, preserving special range selections.
+  assertion_value <- function(node) {
+    select <- xml2::xml_find_first(node, ".//select")
+
+    if (inherits(select, "xml_missing")) {
+      control <- xml2::xml_find_first(
+        node, ".//input | .//textarea | .//a"
+      )
+
+      if (inherits(control, "xml_missing")) {
+        return(xml2::xml_text(node))
+      }
+
+      return(control_value(control))
+    }
+
+    value <- control_value(select)
+
+    if (identical(value, "__unknown__")) {
+      return("<unknown>")
+    }
+
+    if (identical(value, "__no_value__")) {
+      return("<no-value>")
+    }
+
+    if (identical(value, "__other__")) {
+      option <- xml2::xml_find_first(
+        select, ".//option[@selected]"
+      )
+
+      if (inherits(option, "xml_missing")) {
+        option <- xml2::xml_find_first(select, ".//option[1]")
+      }
+
+      original <- xml2::xml_text(option)
+
+      write_in <- xml2::xml_find_first(
+        node, './/input[contains(@class, "write-in")]'
+      )
+
+      if (inherits(write_in, "xml_missing")) {
+        return(original)
+      }
+
+      entered <- xml2::xml_attr(write_in, "value")
+
+      if (is.na(entered) || !nzchar(trimws(entered))) {
+        return(original)
+      }
+
+      return(entered)
+    }
+
+    value
+  }
   # Read the review rows.
   row_nodes <- xml2::xml_find_all(review_table, ".//tbody/tr")
 
@@ -237,15 +294,12 @@ read_review <- function(path) {
       character(1)
     )
 
-    reviewed_assertions <- vapply(assertion_nodes, function(node) {
-      control <- xml2::xml_find_first(
-        node, ".//input | .//textarea | .//select | .//a"
-      )
-      if (inherits(control, "xml_missing")) {
-        return(xml2::xml_text(node))
-      }
-      control_value(control)
-    }, character(1))
+    reviewed_assertions <- vapply(
+      assertion_nodes,
+      assertion_value,
+      character(1)
+    )
+
     names(reviewed_assertions) <- names(assertions)
 
     qualifications <- vapply(

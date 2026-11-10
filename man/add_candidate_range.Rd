@@ -14,15 +14,80 @@ A single pipe-delimited character string. If no values are
 supplied, \code{NA_character_} is returned.
 }
 \description{
-Creates the canonical representation of a candidate value range.
+Creates the canonical pipe-delimited representation of a candidate
+value range used in Betwixt semantic review.
 
 Values may be supplied as a character vector or as one or more
 pipe-delimited character strings. Whitespace surrounding values is removed.
+
+Candidate ranges may include ordinary values and reserved special values
+that control how the reviewer can respond to a semantic assertion.
 }
+\details{
+Candidate ranges define the values offered to a reviewer when examining
+a semantic assertion. The values are preserved in their supplied order.
+
+The function combines the supplied values into a single pipe-delimited
+string. It does not validate their semantic meaning, resolve entities,
+or interpret special values.
+}
+\section{Special candidate-range values}{
+
+Betwixt recognises the following reserved values in candidate ranges:
+
+\describe{
+\item{\verb{<other>}}{
+Allows the reviewer to enter a value outside the proposed candidate
+range. Displayed as "Other curator entered".
+}
+\item{\verb{<unknown>}}{
+Indicates that an applicable value may exist, but its value is
+unknown. Displayed as "Value unknown".
+}
+\item{\verb{<no-value>}}{
+Indicates that no applicable value is possible.
+Displayed as "No value possible".
+}
+}
+
+\verb{Other…} (Unicode ellipsis) and \code{Other...}
+(three periods) are also recognised as equivalents of \verb{<other>}.
+
+The distinction between these values is semantic:
+\itemize{
+\item \verb{<other>} requests a curator-entered replacement value.
+\item \verb{<unknown>} expresses uncertainty about an applicable value.
+\item \verb{<no-value>} expresses the absence of an applicable value.
+}
+
+Ordinary strings such as \code{Other}, \code{Unknown}, and \code{None} retain their
+literal meanings and are not interpreted as reserved values.
+
+Special values are optional and must be explicitly included in the
+candidate range. They are not automatically appended.
+
+\code{add_candidate_range()} preserves the supplied tokens. Their special
+behaviour is applied when the candidate range is rendered in the
+Betwixt review interface.
+}
+
 \examples{
+# Ordinary candidate ranges
 add_candidate_range("depicts", "documents")
 add_candidate_range(c("depicts", "documents"))
 add_candidate_range("depicts|documents")
 add_candidate_range("depicts | documents")
+
+# Allow a curator to enter another value
+add_candidate_range("Spreading", "Debunking", "<other>")
+
+# Allow explicit uncertainty or absence of an applicable value
+add_candidate_range("Farmhouse", "Dwelling", "<unknown>", "<no-value>")
+
+# Combine ordinary and special values
+add_candidate_range(
+  "Spreading", "Debunking", "Discussing",
+  "<other>", "<unknown>", "<no-value>"
+)
 
 }

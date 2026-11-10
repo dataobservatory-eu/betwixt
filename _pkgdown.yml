@@ -54,6 +54,7 @@ articles:
     navbar: Tutorials
     contents:
       - candidate_dataset
+      - candidate_dataset_excel
       - imported_datasets
       - serialisation
 

@@ -20,3 +20,4 @@
 ^betwixt_new_logo\.png$
 ^\.github$
 ^codemeta\.json$
+^fixtures$

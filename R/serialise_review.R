@@ -160,10 +160,10 @@ serialise_dataset <- function(
 #' @keywords internal
 #' @noRd
 serialise_activity <- function(
-    review,
-    prefix,
-    filename,
-    reviewer_iri = NULL
+  review,
+  prefix,
+  filename,
+  reviewer_iri = NULL
 ) {
   stem <- tools::file_path_sans_ext(filename)
   iri <- paste0(prefix, stem, "/activity")
@@ -234,7 +234,7 @@ serialise_data_manager <- function(review, prefix, filename) {
   provenance <- review$provenance
 
   if (!has_value(provenance$data_manager) &&
-      !has_value(provenance$data_manager_iri)) {
+    !has_value(provenance$data_manager_iri)) {
     return("")
   }
 
@@ -272,7 +272,7 @@ serialise_candidate_activity <- function(review, prefix, filename) {
   lines <- c(turtle_iri(iri), "    a prov:Activity")
 
   if (has_value(provenance$data_manager) ||
-      has_value(provenance$data_manager_iri)) {
+    has_value(provenance$data_manager_iri)) {
     manager_iri <- provenance$data_manager_iri
 
     if (!has_value(manager_iri)) {
@@ -307,7 +307,7 @@ serialise_candidate_activity <- function(review, prefix, filename) {
 #' @keywords internal
 #' @noRd
 serialise_reviewer <- function(
-    review, prefix, filename, reviewer_iri = NULL
+  review, prefix, filename, reviewer_iri = NULL
 ) {
   provenance <- review$provenance
 

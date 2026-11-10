@@ -137,3 +137,96 @@ test_that("read_review() normalises missing candidate provenance", {
   expect_equal(review$provenance$software_agent, "Betwixt")
   expect_equal(review$provenance$software_version, "0.0.81")
 })
+
+
+# Special candidate-range values -------------------------------------------
+
+test_that("read_review() resolves special candidate values", {
+  # Use an existing review fixture as the document template.
+  document <- xml2::read_html(initial_path)
+  row <- xml2::xml_find_first(
+    document, '//*[@id="review-table"]//tbody/tr[1]'
+  )
+
+  assertion <- xml2::xml_find_first(
+    row, ".//td[@data-column and @data-candidate][1]"
+  )
+
+  column <- xml2::xml_attr(assertion, "data-column")
+  original <- xml2::xml_attr(assertion, "data-candidate")
+
+  cases <- data.frame(
+    option = c(
+      "Other", "Other\u2026", "Other...", "<other>",
+      "<other>", "<unknown>", "<no-value>"
+    ),
+    value = c(
+      "Other", "__other__", "__other__", "__other__",
+      "__other__", "__unknown__", "__no_value__"
+    ),
+    write_in = c(
+      "", "", "", "", "Satirical commentary", "", ""
+    ),
+    expected = c(
+      "Other", "Other\u2026", "Other...", "<other>",
+      "Satirical commentary", "<unknown>", "<no-value>"
+    )
+  )
+
+  for (i in seq_len(nrow(cases))) {
+    # Reconstruct the review from a fresh copy of the fixture.
+    document <- xml2::read_html(initial_path)
+
+    assertion <- xml2::xml_find_first(
+      document,
+      '//*[@id="review-table"]//tbody/tr[1]//td[@data-column][1]'
+    )
+
+    # Replace the assertion's review control.
+    children <- xml2::xml_children(assertion)
+    xml2::xml_remove(children)
+
+    select <- xml2::xml_add_child(
+      assertion, "select",
+      class = "candidate-select"
+    )
+
+    xml2::xml_add_child(
+      select, "option",
+      "Original",
+      value = "Original"
+    )
+
+    xml2::xml_add_child(
+      select, "option",
+      cases$option[i],
+      value = cases$value[i],
+      selected = "selected"
+    )
+
+    xml2::xml_add_child(
+      assertion, "input",
+      class = "write-in",
+      value = cases$write_in[i]
+    )
+
+    # Read the modified review through the public function.
+    path <- tempfile(fileext = ".html")
+    xml2::write_html(document, path)
+
+    review <- read_review(path)
+
+    expect_equal(
+      review$candidate[[column]][1],
+      original
+    )
+
+    expect_equal(
+      review$reviewed[[column]][1],
+      cases$expected[i],
+      info = paste("Case:", cases$option[i])
+    )
+
+    unlink(path)
+  }
+})

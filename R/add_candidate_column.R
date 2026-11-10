@@ -5,6 +5,33 @@
 #' columns are stored as triplets consisting of a candidate value, an optional
 #' controlled range, and an optional semantic definition.
 #'
+#' @section Special candidate-range values:
+#' Candidate ranges may contain reserved tokens that have
+#' special meanings in the review interface:
+#'
+#' \describe{
+#'   \item{`<other>`}{
+#'     Allows the reviewer to enter a value not included in
+#'     the proposed candidate range.
+#'     For backward compatibility, `Other…` (Unicode ellipsis)
+#'     and `Other...` (three periods) are also recognised.
+#'   }
+#'   \item{`<unknown>`}{
+#'     Indicates that an applicable value may exist, but
+#'     its value is unknown.
+#'   }
+#'   \item{`<no-value>`}{
+#'     Indicates that no applicable value is possible.
+#'   }
+#' }
+#'
+#' Reserved tokens are recognised only when they appear
+#' as complete range entries. Ordinary strings such as
+#' `Other`, `Unknown`, and `None` retain their literal meanings.
+#'
+#' Special values are optional and are not automatically
+#' appended to candidate ranges.
+#'
 #' @param x A data frame or tibble representing a Betwixt candidate dataset.
 #'
 #' @param name A character string giving the name of the candidate column.

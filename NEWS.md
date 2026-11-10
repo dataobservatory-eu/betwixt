@@ -28,6 +28,12 @@
 
 * Preserved the distinction between canonical assertion coordinates and serializer-generated RDF resource identifiers, avoiding the introduction of synthetic semantic identifiers during serialisation.
 
+## Other improvements
+
+* Normalised special candidate-range values (<other>, <unknown>, <no-value>) in
+  the review interface and read_review(), preserving backward compatibility 
+  with Other… and Other.... Updated documentation and regression tests.
+
 # betwixt 0.0.8
 
 ## Review representation, provenance, and RDF

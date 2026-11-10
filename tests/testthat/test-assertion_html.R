@@ -56,7 +56,7 @@ test_that("assertion with range and no definition is controlled", {
   )
   expect_match(
     html,
-    '<option value="__other__">Other curator entered</option>',
+    '<option value="__other__">Other [curator entered]</option>',
     fixed = TRUE
   )
   expect_false(grepl("definition-link", html, fixed = TRUE))
@@ -102,7 +102,7 @@ test_that("legacy and canonical other options activate free-text entry", {
 
   html <- assertion_html(assertion)
 
-  expect_match(html, '<option value="__other__">Other curator entered</option>', fixed = TRUE)
+  expect_match(html, '<option value="__other__">Other [curator entered]</option>', fixed = TRUE)
   expect_equal(
     lengths(regmatches(html, gregexpr('value="__other__"', html, fixed = TRUE))),
     3L
@@ -136,7 +136,7 @@ test_that("ordinary values remain distinct from reserved tokens", {
   html <- assertion_html(assertion)
 
   expect_match(html, '<option value="Other" selected>Other</option>', fixed = TRUE)
-  expect_match(html, '<option value="__other__">Other curator entered</option>', fixed = TRUE)
+  expect_match(html, '<option value="__other__">Other [curator entered]</option>', fixed = TRUE)
   expect_match(html, '<option value="Unknown">Unknown</option>', fixed = TRUE)
   expect_match(html, '<option value="None">None</option>', fixed = TRUE)
   expect_match(html, '<option value="__unknown__">Value unknown</option>', fixed = TRUE)

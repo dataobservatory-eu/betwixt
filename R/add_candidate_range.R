@@ -26,15 +26,15 @@
 #' \describe{
 #'   \item{`<other>`}{
 #'     Allows the reviewer to enter a value outside the proposed candidate
-#'     range. Displayed as "Other curator entered".
+#'     range. Displayed as `Other [curator entered]`.
 #'   }
 #'   \item{`<unknown>`}{
 #'     Indicates that an applicable value may exist, but its value is
-#'     unknown. Displayed as "Value unknown".
+#'     unknown. Displayed as `Value unknown`.
 #'   }
 #'   \item{`<no-value>`}{
 #'     Indicates that no applicable value is possible.
-#'     Displayed as "No value possible".
+#'     Displayed as `No value possible`.
 #'   }
 #' }
 #'

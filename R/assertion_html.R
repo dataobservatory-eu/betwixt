@@ -151,9 +151,9 @@ assertion_html <- function(assertion) {
       option_value <- if (is.null(special)) option else special
 
       option_label <- switch(option,
-        "Other\u2026" = "Other curator entered",
-        "Other..." = "Other curator entered",
-        "<other>" = "Other curator entered",
+        "Other\u2026" = "Other [curator entered]",
+        "Other..." = "Other [curator entered]",
+        "<other>" = "Other [curator entered]",
         "<unknown>" = "Value unknown",
         "<no-value>" = "No value possible",
         option

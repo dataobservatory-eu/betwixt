@@ -38,15 +38,15 @@ Betwixt recognises the following reserved values in candidate ranges:
 \describe{
 \item{\verb{<other>}}{
 Allows the reviewer to enter a value outside the proposed candidate
-range. Displayed as "Other curator entered".
+range. Displayed as \verb{Other [curator entered]}.
 }
 \item{\verb{<unknown>}}{
 Indicates that an applicable value may exist, but its value is
-unknown. Displayed as "Value unknown".
+unknown. Displayed as \verb{Value unknown}.
 }
 \item{\verb{<no-value>}}{
 Indicates that no applicable value is possible.
-Displayed as "No value possible".
+Displayed as \verb{No value possible}.
 }
 }
 

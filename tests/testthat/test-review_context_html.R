@@ -124,7 +124,7 @@ test_that("assertions preserve their candidate values", {
 
 
 # -------------------------------------------------------------------------
-# Evidence
+# Input (evidence)
 # -------------------------------------------------------------------------
 
 test_that("input_media_url is rendered as an image", {
@@ -216,6 +216,125 @@ test_that("review can be rendered without evidence", {
   expect_match(html, 'data-candidate="House"', fixed = TRUE)
   expect_match(html, 'data-candidate="Sash"', fixed = TRUE)
   expect_match(html, 'data-candidate="Bed"', fixed = TRUE)
+})
+
+test_that("Input evidence links support blank and modal targets", {
+  x <- create_candidate_dataset(
+    input_media_url = paste(
+      "https://example.org/001.jpg",
+      "https://example.org/002.jpg",
+      sep = " | "
+    ),
+    input_url = paste(
+      "https://example.org/001.html",
+      "https://example.org/002.html",
+      sep = " | "
+    ),
+    input_description = "Example evidence",
+    label = "Example",
+    description = "Example description",
+    subject = "https://example.org/subject"
+  )
+
+  context <- prepare_review_context(x)
+
+  # Default behaviour remains a new browser tab.
+  default_html <- review_context_html(context)
+  blank_html <- review_context_html(context, input_link_target = "blank")
+
+  expect_identical(default_html, blank_html)
+  expect_equal(
+    lengths(regmatches(blank_html, gregexpr('target="_blank"', blank_html, fixed = TRUE))),
+    4L
+  )
+  expect_false(grepl('data-open="modal"', blank_html, fixed = TRUE))
+
+  # Modal behaviour applies to both evidence links and images.
+  modal_html <- review_context_html(context, input_link_target = "modal")
+
+  expect_match(
+    modal_html,
+    '<a class="evidence-link" href="https://example.org/001.html" target="evidence-viewer" data-open="modal">',
+    fixed = TRUE
+  )
+  expect_match(
+    modal_html,
+    '<a class="evidence-media-link" href="https://example.org/001.jpg" target="evidence-viewer" data-open="modal">',
+    fixed = TRUE
+  )
+  expect_equal(
+    lengths(regmatches(modal_html, gregexpr('data-open="modal"', modal_html, fixed = TRUE))),
+    4L
+  )
+  expect_false(grepl('target="_blank"', modal_html, fixed = TRUE))
+
+  # Evidence content and descriptions are unaffected.
+  expect_match(modal_html, '<img src="https://example.org/001.jpg"', fixed = TRUE)
+  expect_match(modal_html, '<img src="https://example.org/002.jpg"', fixed = TRUE)
+  expect_match(modal_html, 'href="https://example.org/002.html"', fixed = TRUE)
+  expect_match(modal_html, '<div class="media-id">Example evidence</div>', fixed = TRUE)
+})
+
+
+# -------------------------------------------------------------------------
+# Rendering of text input evidence
+# -------------------------------------------------------------------------
+
+test_that("Input evidence links support blank and modal targets", {
+  x <- create_candidate_dataset(
+    input_media_url = paste(
+      "https://example.org/001.jpg",
+      "https://example.org/002.jpg",
+      sep = " | "
+    ),
+    input_url = paste(
+      "https://example.org/001.html",
+      "https://example.org/002.html",
+      sep = " | "
+    ),
+    input_description = "Example evidence",
+    label = "Example",
+    description = "Example description",
+    subject = "https://example.org/subject"
+  )
+
+  context <- prepare_review_context(x)
+
+  # Default behaviour remains a new browser tab.
+  default_html <- review_context_html(context)
+  blank_html <- review_context_html(context, input_link_target = "blank")
+
+  expect_identical(default_html, blank_html)
+  expect_equal(
+    lengths(regmatches(blank_html, gregexpr('target="_blank"', blank_html, fixed = TRUE))),
+    4L
+  )
+  expect_false(grepl('data-open="modal"', blank_html, fixed = TRUE))
+
+  # Modal behaviour applies to both evidence links and images.
+  modal_html <- review_context_html(context, input_link_target = "modal")
+
+  expect_match(
+    modal_html,
+    '<a class="evidence-link" href="https://example.org/001.html" target="evidence-viewer" data-open="modal">',
+    fixed = TRUE
+  )
+  expect_match(
+    modal_html,
+    '<a class="evidence-media-link" href="https://example.org/001.jpg" target="evidence-viewer" data-open="modal">',
+    fixed = TRUE
+  )
+  expect_equal(
+    lengths(regmatches(modal_html, gregexpr('data-open="modal"', modal_html, fixed = TRUE))),
+    4L
+  )
+  expect_false(grepl('target="_blank"', modal_html, fixed = TRUE))
+
+  # Input (evidence) content and descriptions are unaffected.
+  expect_match(modal_html, '<img src="https://example.org/001.jpg"', fixed = TRUE)
+  expect_match(modal_html, '<img src="https://example.org/002.jpg"', fixed = TRUE)
+  expect_match(modal_html, 'href="https://example.org/002.html"', fixed = TRUE)
+  expect_match(modal_html, '<div class="media-id">Example evidence</div>', fixed = TRUE)
 })
 
 # -------------------------------------------------------------------------

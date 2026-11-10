@@ -56,6 +56,10 @@
 #'   Defaults to `FALSE`.
 #' @param review_comment Logical. Add an optional comment field for the review
 #'   as a whole. Defaults to `FALSE`.
+#' @param input_link_target How links in the Input column are opened.
+#'   `"blank"` (default) opens resources in a new browser tab.
+#'   `"modal"` opens resources in a popup within the review page.
+#'   Does not affect semantic assertion or definition links.
 #' @param path Output directory for the generated HTML. For `"web_html"`,
 #'   `NULL` returns the HTML without writing a file. For `"local_html"`,
 #'   an existing directory is required to resolve local resource references.
@@ -114,6 +118,7 @@ render_web_html_review <- function(
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
+  input_link_target = "blank",
   path = NULL
 ) {
   # Validate candidate structure and external resources.
@@ -137,6 +142,17 @@ render_web_html_review <- function(
       "`render_review()` requires a `subject` column. ",
       "Each candidate row must identify the subject of the assertions ",
       "being reviewed.",
+      call. = FALSE
+    )
+  }
+
+  # Validate how Input links are opened.
+  if (!is.character(input_link_target) ||
+    length(input_link_target) != 1L ||
+    is.na(input_link_target) ||
+    !input_link_target %in% c("blank", "modal")) {
+    stop(
+      "`input_link_target` must be 'blank' or 'modal'.",
       call. = FALSE
     )
   }
@@ -166,7 +182,8 @@ render_web_html_review <- function(
     context,
     cols = cols,
     subheadings = subheadings,
-    row_comment = row_comment
+    row_comment = row_comment,
+    input_link_target = input_link_target
   )
 
   # Locate the packaged review resources.

@@ -20,6 +20,7 @@ render_local_html_review(
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
+  input_link_target = "blank",
   path = NULL
 )
 
@@ -39,6 +40,7 @@ render_web_html_review(
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
+  input_link_target = "blank",
   path = NULL
 )
 }
@@ -75,6 +77,11 @@ Defaults to \code{FALSE}.}
 
 \item{review_comment}{Logical. Add an optional comment field for the review
 as a whole. Defaults to \code{FALSE}.}
+
+\item{input_link_target}{How links in the Input column are opened.
+\code{"blank"} (default) opens resources in a new browser tab.
+\code{"modal"} opens resources in a popup within the review page.
+Does not affect semantic assertion or definition links.}
 
 \item{path}{Output directory for the generated HTML. For \code{"web_html"},
 \code{NULL} returns the HTML without writing a file. For \code{"local_html"},

@@ -1,6 +1,48 @@
 (() => {
   const rows = [...document.querySelectorAll("tbody tr")];
 
+  // Find Input links configured to open in a modal.
+  const modalLinks = document.querySelectorAll(
+    'a[data-open="modal"]'
+  );
+
+  if (modalLinks.length > 0) {
+    const dialog = document.createElement("dialog");
+    dialog.id = "evidence-dialog";
+
+    dialog.innerHTML = `
+      <div class="evidence-dialog-header">
+        <span>Input evidence</span>
+        <button type="button" class="evidence-dialog-close"
+                aria-label="Close evidence viewer">×</button>
+      </div>
+      <iframe name="evidence-viewer"
+              title="Input evidence"></iframe>
+    `;
+
+    document.body.appendChild(dialog);
+
+    const frame = dialog.querySelector("iframe");
+    const close = dialog.querySelector(".evidence-dialog-close");
+
+    // Display the dialog when a modal evidence link is selected.
+    modalLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        dialog.showModal();
+      });
+    });
+
+    // Close the dialog using its close button.
+    close.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    // Clear the previous resource when the dialog closes.
+    dialog.addEventListener("close", () => {
+      frame.src = "about:blank";
+    });
+  }
+
   // Determine the overall outcome of a review row.
   function outcome(row) {
     const cells = [...row.querySelectorAll(".semantic-cell")];
@@ -67,7 +109,7 @@
     return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   }
 
-    // Build a lookup from the initial candidate-definition pairs.
+  // Build a lookup from the initial candidate-definition pairs.
   const definitions = new Map();
 
   document.querySelectorAll(".semantic-cell").forEach(cell => {
@@ -98,7 +140,7 @@
       });
     });
 
-        row.querySelectorAll(".candidate-select").forEach(select => {
+    row.querySelectorAll(".candidate-select").forEach(select => {
       const cell = select.closest(".semantic-cell");
       const writeIn = cell.querySelector(".write-in");
       const definition = cell.querySelector(".definition-link");
@@ -304,6 +346,9 @@
     // Preserve the updated state in the downloaded HTML.
     const clone = document.documentElement.cloneNode(true);
     persistStateIntoClone(clone);
+
+    // Exclude the temporary evidence viewer from the saved review.
+    clone.querySelector("#evidence-dialog")?.remove();
 
     const blob = new Blob(
       ["<!doctype html>\n" + clone.outerHTML],

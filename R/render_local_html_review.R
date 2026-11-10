@@ -52,6 +52,7 @@ render_local_html_review <- function(
   sequence = 0L,
   row_comment = FALSE,
   review_comment = FALSE,
+  input_link_target = "blank",
   path = NULL
 ) {
   validate_candidate_dataset(candidate)
@@ -64,6 +65,17 @@ render_local_html_review <- function(
     sequence != as.integer(sequence)) {
     stop(
       "sequence must be a single non-negative integer.",
+      call. = FALSE
+    )
+  }
+
+  # Validate how Input links are opened.
+  if (!is.character(input_link_target) ||
+    length(input_link_target) != 1L ||
+    is.na(input_link_target) ||
+    !input_link_target %in% c("blank", "modal")) {
+    stop(
+      "`input_link_target` must be 'blank' or 'modal'.",
       call. = FALSE
     )
   }
@@ -103,7 +115,8 @@ render_local_html_review <- function(
     context,
     cols = cols,
     subheadings = subheadings,
-    row_comment = row_comment
+    row_comment = row_comment,
+    input_link_target = input_link_target
   )
 
   # Locate the packaged review resources.

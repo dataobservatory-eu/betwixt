@@ -42,6 +42,9 @@
 #'   presentation subheadings for candidate columns.
 #' @param row_comment Logical. If `TRUE`, adds an optional reviewer comment
 #'   field to each review row. Defaults to `FALSE`.
+#' @param input_link_target How links in the Input column are opened.
+#'   `"blank"` (default) opens resources in a new browser tab.
+#'   `"modal"` opens resources in a popup within the review page.
 #'
 #' @return A character string containing the generated HTML review table.
 #'
@@ -51,7 +54,8 @@ review_context_html <- function(
   context,
   cols = NULL,
   subheadings = NULL,
-  row_comment = FALSE
+  row_comment = FALSE,
+  input_link_target = "blank"
 ) {
   # Escape text before inserting it into HTML.
   # See escape_html() in utils.R
@@ -191,6 +195,13 @@ review_context_html <- function(
     "</tr></thead>"
   )
 
+  # Select how Input links are opened.
+  input_link_attributes <- if (input_link_target == "modal") {
+    ' target="evidence-viewer" data-open="modal"'
+  } else {
+    ' target="_blank" rel="noopener"'
+  }
+
   # Render each prepared review row.
   rows <- vapply(context$rows, function(row) {
     assertions <- vapply(
@@ -217,7 +228,7 @@ review_context_html <- function(
       paste0(
         '<a class="evidence-media-link" href="',
         escape_html(url),
-        '" target="_blank" rel="noopener">',
+        '"', input_link_attributes, ">",
         '<img src="',
         escape_html(url),
         '" alt="Input ',
@@ -232,12 +243,11 @@ review_context_html <- function(
       paste0(
         '<a class="evidence-link" href="',
         escape_html(url),
-        '" target="_blank" rel="noopener">',
+        '"', input_link_attributes, ">",
         escape_html(url),
         "</a>"
       )
     }, character(1))
-
     # Concatenate all URLs as evidence.
     evidence <- paste0(
       '<td class="evidence">',

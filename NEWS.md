@@ -33,6 +33,10 @@
 * Normalised special candidate-range values (<other>, <unknown>, <no-value>) in
   the review interface and read_review(), preserving backward compatibility 
   with Other… and Other.... Updated documentation and regression tests.
+  
+* Added `input_link_target = "blank"` or `"modal"` to HTML review rendering, 
+  allowing Input evidence links and images to open in a new browser tab 
+  (default) or an embedded modal viewer.
 
 # betwixt 0.0.8
 

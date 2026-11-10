@@ -297,3 +297,35 @@ test_that("render_review() produces one site footer", {
 
   expect_length(matches[matches > 0], 1L)
 })
+
+# -------------------------------------------------------------------------
+# Input evidence links
+# -------------------------------------------------------------------------
+
+test_that("render_review() forwards input link targets", {
+  candidate <- create_candidate_dataset(
+    subject = "urn:test:article:1",
+    input_url = "https://example.org/article.html",
+    input_description = "Example newspaper article"
+  )
+
+  # Default behaviour remains a new browser tab.
+  default_html <- render_review(candidate)
+  blank_html <- render_review(candidate, input_link_target = "blank")
+
+  expect_identical(default_html, blank_html)
+  expect_match(
+    blank_html,
+    'class="evidence-link" href="https://example.org/article.html" target="_blank" rel="noopener"',
+    fixed = TRUE
+  )
+
+  # Modal behaviour is forwarded to the web HTML renderer.
+  modal_html <- render_review(candidate, input_link_target = "modal")
+
+  expect_match(
+    modal_html,
+    'class="evidence-link" href="https://example.org/article.html" target="evidence-viewer" data-open="modal"',
+    fixed = TRUE
+  )
+})

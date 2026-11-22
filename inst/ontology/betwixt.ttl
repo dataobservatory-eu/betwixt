@@ -23,7 +23,12 @@ btx:subject
     rdfs:domain btx:Assertion ;
     rdfs:range xsd:string ;
     rdfs:label "subject" ;
-    rdfs:comment "The lexical representation of the subject of an assertion." .
+    rdfs:comment
+        "The lexical representation of the subject of an assertion.
+        The value MUST be deterministically resolvable to an absolute IRI,
+        either directly or through a declared identifier resolution rule.
+        This preserves subject identity independently of subsequent tabular,
+        graph, or tensor projections." .
 
 btx:predicate
     a owl:DatatypeProperty ;
@@ -57,14 +62,33 @@ btx:rowId
     rdfs:domain btx:Assertion ;
     rdfs:range xsd:integer ;
     rdfs:label "row identifier" ;
-    rdfs:comment "The row coordinate from which the assertion was projected." .
+    rdfs:comment
+        "The integer coordinate identifying the source row of an assertion
+        within its containing Betwixt table. Row identifiers are scoped
+        to a table; transformations producing a new table establish new
+        coordinates, while source coordinates may be retained as provenance." .
 
 btx:assertionId
     a owl:DatatypeProperty ;
     rdfs:domain btx:Assertion ;
     rdfs:range xsd:integer ;
     rdfs:label "assertion identifier" ;
-    rdfs:comment "The sequential coordinate of the assertion in the canonical Betwixt projection." .
+    rdfs:comment
+        "The integer coordinate identifying an assertion within
+        a Betwixt table. Assertion identifiers are unique within
+        their containing table. A transformation producing a new
+        table establishes new assertion coordinates." .
+
+# Table -----------------------------------------------------------------------
+
+btx:Table
+    a owl:Class ;
+    rdfs:label "Table"@en ;
+    rdfs:comment
+        "An identified collection of rows and semantically classified
+        columns, maintained according to tidy-data principles and
+        supporting stable semantic assertions and multiple data
+        projections."@en .
 
 # Review status ---------------------------------------------------------------
 

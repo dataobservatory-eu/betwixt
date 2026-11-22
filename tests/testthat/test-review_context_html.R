@@ -158,7 +158,7 @@ test_that("input_url is rendered as a link without an image", {
 
   expect_match(
     html,
-    '<a class="evidence-link" href="https://example.org/evidence.html"',
+    '<a class="evidence-link input-url" href="https://example.org/evidence.html"',
     fixed = TRUE
   )
   expect_false(
@@ -254,7 +254,7 @@ test_that("Input evidence links support blank and modal targets", {
 
   expect_match(
     modal_html,
-    '<a class="evidence-link" href="https://example.org/001.html" target="evidence-viewer" data-open="modal">',
+    '<a class="evidence-link input-url" href="https://example.org/001.html" title="https://example.org/001.html" target="evidence-viewer" data-open="modal">',
     fixed = TRUE
   )
   expect_match(
@@ -316,7 +316,7 @@ test_that("Input evidence links support blank and modal targets", {
 
   expect_match(
     modal_html,
-    '<a class="evidence-link" href="https://example.org/001.html" target="evidence-viewer" data-open="modal">',
+    '<a class="evidence-link input-url" href="https://example.org/001.html" title="https://example.org/001.html" target="evidence-viewer" data-open="modal">',
     fixed = TRUE
   )
   expect_match(

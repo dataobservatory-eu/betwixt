@@ -171,7 +171,7 @@ test_that("local HTML evidence links support blank and modal targets", {
   # Extract evidence links without matching embedded JavaScript.
   evidence_links <- function(html) {
     matches <- gregexpr(
-      '<a class="evidence-(media-)?link"[^>]*>',
+      '<a class="evidence-(media-)?link(?: [^"]+)?"[^>]*>',
       html,
       perl = TRUE
     )
@@ -215,7 +215,12 @@ test_that("local HTML evidence links support blank and modal targets", {
   # Both resource links and image links use the modal target.
   expect_match(
     modal_html,
-    '<a class="evidence-link" href="media/article-1.html" target="evidence-viewer" data-open="modal">',
+    paste0(
+      '<a class="evidence-link input-url" ',
+      'href="media/article-1.html" ',
+      'title="media/article-1.html" ',
+      'target="evidence-viewer" data-open="modal">'
+    ),
     fixed = TRUE
   )
   expect_match(
@@ -266,4 +271,109 @@ test_that("local HTML validates input link targets", {
       ))
     )
   }
+})
+
+
+# -------------------------------------------------------------------------
+# Table identity
+# -------------------------------------------------------------------------
+
+test_that("local review preserves candidate table identity", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    project_id = "example-project",
+    table_id = "example-table"
+  )
+
+  html <- render_local_html_review(candidate)
+
+  expect_match(
+    html,
+    'id="project-id" type="text" value="example-project" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-id" type="text" value="example-table" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="https://example.com/example-project/example-table" readonly',
+    fixed = TRUE
+  )
+})
+
+
+test_that("local review preserves an explicit table IRI", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    project_id = "example-project",
+    table_id = "example-table",
+    table_iri = "https://data.example.org/tables/123"
+  )
+
+  html <- render_local_html_review(candidate)
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="https://data.example.org/tables/123" readonly',
+    fixed = TRUE
+  )
+})
+
+
+test_that("local review uses candidate identity over renderer arguments", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    project_id = "candidate-project",
+    table_id = "candidate-table"
+  )
+
+  html <- render_local_html_review(
+    candidate,
+    project_id = "renderer-project",
+    table_id = "renderer-table"
+  )
+
+  expect_match(
+    html,
+    'id="project-id" type="text" value="candidate-project" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-id" type="text" value="candidate-table" readonly',
+    fixed = TRUE
+  )
+})
+
+
+test_that("local review supports missing table identity", {
+  candidate <- create_candidate_dataset(
+    subject = "Example"
+  )
+
+  html <- render_local_html_review(candidate)
+
+  expect_match(
+    html,
+    'id="project-id" type="text" value="" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-id" type="text" value="" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="" readonly',
+    fixed = TRUE
+  )
 })

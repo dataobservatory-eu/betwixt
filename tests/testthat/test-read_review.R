@@ -230,3 +230,56 @@ test_that("read_review() resolves special candidate values", {
     unlink(path)
   }
 })
+
+# -------------------------------------------------------------------------
+# Table identity and backward compatibility
+# -------------------------------------------------------------------------
+
+test_that("read_review() handles legacy reviews without table_iri", {
+  review <- read_review(initial_path)
+
+  expect_true("table_id" %in% names(review$metadata))
+  expect_true("table_iri" %in% names(review$metadata))
+
+  expect_identical(
+    review$metadata$table_iri,
+    NA_character_
+  )
+})
+
+
+test_that("read_review() preserves an explicit table_iri", {
+  document <- xml2::read_html(initial_path)
+
+  # Insert the new metadata field into the HTML body.
+  body <- xml2::xml_find_first(document, "//body")
+
+  xml2::xml_add_child(
+    body,
+    "input",
+    id = "table-iri",
+    type = "hidden",
+    value = "https://example.org/tables/123"
+  )
+
+  # Verify that the field was inserted.
+  expect_identical(
+    xml2::xml_attr(
+      xml2::xml_find_first(document, '//*[@id="table-iri"]'),
+      "value"
+    ),
+    "https://example.org/tables/123"
+  )
+
+  path <- tempfile(fileext = ".html")
+  on.exit(unlink(path), add = TRUE)
+
+  xml2::write_html(document, path)
+
+  review <- read_review(path)
+
+  expect_identical(
+    review$metadata$table_iri,
+    "https://example.org/tables/123"
+  )
+})

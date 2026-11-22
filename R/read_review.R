@@ -386,6 +386,7 @@ read_review <- function(path) {
     ),
     project_id = input_value("project-id"),
     table_id = input_value("table-id"),
+    table_iri = input_value("table-iri"),
     sequence = as.integer(input_value("review-sequence")),
     status = input_value("review-status")
   )

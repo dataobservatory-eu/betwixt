@@ -42,7 +42,14 @@ serialise_review <- function(
   description = NULL,
   reviewer_iri = NULL
 ) {
+  table_iri <- default_table_iri(
+    table_iri = review$metadata$table_iri,
+    table_id = review$metadata$table_id,
+    project_id = review$metadata$project_id
+  )
+
   x <- project_review_long(review)
+
   candidate <- x[x$plane == "candidate", ]
   reviewed <- x[x$plane == "reviewed", ]
 
@@ -51,7 +58,8 @@ serialise_review <- function(
     serialise_dataset(
       candidate, prefix, filename, "candidate",
       title, description,
-      activity = "candidate-activity"
+      activity = "candidate-activity",
+      source_table_iri = table_iri
     ),
     serialise_dataset(
       reviewed, prefix, filename, "reviewed-1",
@@ -101,7 +109,8 @@ serialise_dataset <- function(
   title = NULL,
   description = NULL,
   activity,
-  derived_from = NULL
+  derived_from = NULL,
+  source_table_iri = NULL
 ) {
   stem <- tools::file_path_sans_ext(filename)
   base <- paste0(prefix, stem, "/")
@@ -134,6 +143,16 @@ serialise_dataset <- function(
       paste0(
         "    ; prov:wasDerivedFrom ",
         turtle_iri(paste0(base, derived_from))
+      )
+    )
+  }
+
+  if (has_value(source_table_iri)) {
+    lines <- c(
+      lines,
+      paste0(
+        "    ; prov:wasDerivedFrom ",
+        turtle_iri(source_table_iri)
       )
     )
   }

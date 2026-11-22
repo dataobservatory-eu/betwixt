@@ -81,8 +81,14 @@
 #'   `project_id` can help identify and relate tables belonging to the same
 #'   project.
 #'
-#' @param table_id Character string identifying the table across its successive
-#'   states within the project.
+#' @param table_id Character string identifying the table within a project.
+#'   The identifier is local to the project and need not be an IRI.
+#'
+#' @param table_iri Optional absolute IRI identifying the logical
+#'   Betwixt table across its successive states and representations.
+#'   The IRI may resolve to the latest published state, while
+#'   historical states can be retained as separately identified
+#'   versions. Defaults to `""`.
 #'
 #' @return
 #' A tibble representing the initial Betwixt candidate dataset, with one row
@@ -232,7 +238,8 @@ create_candidate_dataset <- function(
   data_manager_iri = "",
   data_manager_email = "",
   table_id = "",
-  project_id = ""
+  project_id = "",
+  table_iri = ""
 ) {
   if (is.null(input_predicate) &&
     !all(is.na(input_predicate_range))) {
@@ -286,12 +293,20 @@ create_candidate_dataset <- function(
     )
   }
 
+  # Default table_iri ----------------------------------------------
+  table_iri <- default_table_iri(
+    table_iri = table_iri,
+    table_id = table_id,
+    project_id = project_id
+  )
+
   attr(x, "provenance") <- list(
     data_manager = data_manager_name,
     data_manager_iri = data_manager_iri,
     data_manager_email = data_manager_email,
     project_id = project_id,
     table_id = table_id,
+    table_iri = table_iri,
     generated_at = format(
       Sys.time(),
       tz = "UTC", format = "%Y-%m-%dT%H:%M:%SZ"

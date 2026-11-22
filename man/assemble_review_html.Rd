@@ -14,6 +14,7 @@ assemble_review_html(
   reviewer_iri,
   project_id,
   table_id,
+  table_iri,
   sequence,
   original_filename,
   original_created_at,

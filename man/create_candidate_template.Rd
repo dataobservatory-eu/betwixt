@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_candidate_template.R
 \name{create_candidate_template}
 \alias{create_candidate_template}
-\title{Create an empty Betwixt candidate template}
+\title{Create a Betwixt candidate template}
 \usage{
 create_candidate_template(
   input_url = TRUE,
@@ -17,7 +17,8 @@ create_candidate_template(
   subject_range = TRUE,
   subject_definition = TRUE,
   columns = NULL,
-  context = NULL
+  context = NULL,
+  n = 0
 )
 }
 \arguments{
@@ -25,27 +26,23 @@ create_candidate_template(
 
 \item{input_media_url}{Include the \code{input_media_url} column.}
 
-\item{input_label}{Include \code{input_label} column for an optional character
-vector containing short human-readable labels identifying the inputs.}
+\item{input_label}{Include \code{input_label} for short human-readable
+labels identifying the inputs.}
 
-\item{input_description}{Include the \code{input_description} column for
-optionally adding the human-readable descriptions of the inputs.}
+\item{input_description}{Include \code{input_description} for optional
+human-readable descriptions of the inputs.}
 
-\item{label}{Include the \code{label} column for the optional
-human-readable labels for the subjects presented for review.}
+\item{label}{Include \code{label} for optional human-readable subject labels.}
 
-\item{description}{Include the \code{description} column
-for the optional description of the subjects presented for review.}
+\item{description}{Include \code{description} for optional subject descriptions.}
 
-\item{alternative_label}{Include the \code{alternative_label} column for the
-optional, alternative human-readable descriptions of the subjects presented
-for review, for example as a translation, a more detailed description, or a
-description intended for a different user group.}
+\item{alternative_label}{Include \code{alternative_label} for alternative
+subject labels, such as translations or labels for different audiences.}
 
-\item{alternative_description}{Include the \code{alternative_description}
-column.}
+\item{alternative_description}{Include \code{alternative_description} for
+alternative subject descriptions.}
 
-\item{input_predicate}{Include the \code{input_predicate} and
+\item{input_predicate}{Include \code{input_predicate} and
 \code{input_predicate_range} columns.}
 
 \item{subject_range}{Include the \code{subject_range} column.}
@@ -53,25 +50,29 @@ column.}
 \item{subject_definition}{Include the \code{subject_definition} column.}
 
 \item{columns}{Optional character vector naming additional reviewable
-candidate columns. Each name creates a candidate column together with
-its \verb{_range} and \verb{_definition} columns.}
+candidate columns. Each creates a column with corresponding \verb{_range}
+and \verb{_definition} columns.}
 
 \item{context}{Optional character vector naming display-only contextual
 columns.}
+
+\item{n}{Number of rows to initialise. \code{NULL} (default) or \code{0} creates
+a header-only template; a positive whole number creates rows with
+sequential \code{row_id} values.}
 }
 \value{
-An empty tibble containing \code{row_id} and \code{subject}, together with the
-requested evidence, descriptive, candidate, and contextual columns.
+A data.frame containing \code{row_id}, \code{subject}, and the requested evidence,
+descriptive, candidate, and contextual columns. Unpopulated fields are \code{NA}.
 }
 \description{
-Creates an empty candidate dataset template for preparing a Betwixt review.
+Creates a candidate dataset template for preparing a Betwixt review.
 Standard descriptive and evidence columns can be included or omitted.
-Reviewable candidate columns are supplied through \code{columns}, while
-display-only contextual columns are supplied through \code{context}.
+Additional reviewable columns are specified through \code{columns}, while
+display-only contextual columns are specified through \code{context}.
 }
 \details{
-Candidate datasets can be created in a spreadsheet application after
-initialising a conforming header with \code{\link[=create_candidate_template]{create_candidate_template()}}.
+By default, creates a header-only template for use in a spreadsheet
+application. Set \code{n} to initialise rows for programmatic population.
 Re-imported datasets can be checked with \code{\link[=validate_candidate_dataset]{validate_candidate_dataset()}}
 before rendering.
 }
@@ -79,6 +80,7 @@ before rendering.
 create_candidate_template()
 
 create_candidate_template(
+  n = 3,
   columns = c("instance_of", "heritage_of"),
   context = "held_by"
 )

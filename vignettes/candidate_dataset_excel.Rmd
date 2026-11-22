@@ -63,7 +63,8 @@ These are **candidate entities**. Their classifications and relationships are pr
 
 The photographs and objects deliberately share their MuIS evidence URLs. This does not mean that they have the same identity. You will create a table like <https://usebetwixt.com/examples/tutorial/muis_dual_representation_example.html>.
 
-![](images/clipboard-3660405389.png)
+![Betwixt review table showing MuIS museum objects with photographic evidence, proposed classifications, depicts and depicted_by relationships, cultural heritage associations, and review controls.](images/muis-dual-representation-review.png)
+
 
 ## Relationships between the entities
 
@@ -101,7 +102,7 @@ First, load Betwixt.
 library(betwixt)
 ```
 
-The function `create_candidate_template()` creates an empty table with the column names expected by Betwixt.
+The function `create_candidate_template()` creates a table with the column names expected by Betwixt. By default, it creates a header-only template. You can also specify the number of rows to initialise.
 
 For this exercise, we need four reviewable properties:
 
@@ -112,8 +113,9 @@ For this exercise, we need four reviewable properties:
 
 We also include `context_held_by`, which provides contextual information but is not itself a reviewable assertion.
 
-```{r}
+```{r createtemplate}
 template <- create_candidate_template(
+  n = 6,
   input_label = FALSE,
   columns = c(
     "instance_of",
@@ -127,7 +129,7 @@ template <- create_candidate_template(
 names(template)
 ```
 
-The template contains column headers but no records.
+The template contains six empty candidate rows, with sequential `row_id` values from 1 to 6. All other fields are initially empty. To create a header-only template instead, omit `n` or set `n = 0`.
 
 Export it to Excel:
 
@@ -144,19 +146,17 @@ Open `muis-dual-representation.xlsx` in Excel.
 
 # Enter six candidate entities
 
-Each row represents one entity proposed for registration in a database.
+Each row represents one entity proposed for registration in a database. The template already contains six rows, distinguishing three museum objects from three photographs.
 
-We need six rows because we are distinguishing three museum objects from three photographs.
-
-The following blocks are designed for direct copying into Excel. Each block contains six lines, corresponding to rows 2–7 of the spreadsheet.
-
-Paste the contents into the column named above each block, starting in the first data cell.
+The following blocks are designed for direct copying into Excel. Each contains six lines, corresponding to rows 2–7 of the spreadsheet. Paste each block into the named column, starting in the first data cell.
 
 ## Row identifiers
 
-The `row_id` column identifies rows in the candidate dataset.
+The `row_id` column has already been populated with unique positive integers from 1 to 6. These identify dataset rows, not museum objects or semantic relationships.
 
-It is not a museum identifier and does not represent a semantic relationship.
+Keep these values unchanged if you use only the six predefined rows. You may add further observations in Excel, assigning each new row a unique, sequential `row_id` (7, 8, 9, and so on). Row identifiers must always be positive whole numbers, without decimal places.
+
+If you need to record museum inventory numbers, do not use row_id. Instead, create a dedicated column, such as `inventory_number`. Include it as a reviewable candidate column if reviewers should be able to correct its values, or as a contextual column if it is intended for display only.
 
 **Column: `row_id`**
 
@@ -242,7 +242,7 @@ You can add either or both of the following columns to your Excel spreadsheet:
 
 For example, a museum object labelled *sweater, women's* might have the Hungarian alternative label *női pulóver*. Similarly, its English description could be accompanied by a Hungarian description intended for museum visitors.
 
-![](images/clipboard-3781524214.png)
+![Betwixt review table showing three MuIS museum objects and their photographic representations, with English labels and descriptions alongside alternative Hungarian labels and descriptions.](images/muis-alternative-labels-descriptions.png)
 
 To include these properties, simply add one or two columns with the exact headers `alternative_label` and `alternative_description`. Enter the alternative values in the corresponding rows. You do not need to change any other columns.
 

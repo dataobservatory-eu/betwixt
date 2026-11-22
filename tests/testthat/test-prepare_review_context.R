@@ -265,7 +265,6 @@ test_that("candidate provenance survives context preparation", {
 
 
 test_that("candidate assertion order follows source column order", {
-
   candidate <- data.frame(
     row_id = 1L,
     first = "A",

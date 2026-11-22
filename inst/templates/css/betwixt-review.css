@@ -50,8 +50,24 @@ td:nth-child(1), td:nth-child(2) {
 }
 
 .num { width:46px; min-width:46px; text-align:right; color:var(--muted); }
-.evidence { width:190px; min-width:190px; }
-.evidence img { display:block; max-width:165px; max-height:130px; object-fit:contain; }
+.evidence {
+  width:190px;
+  min-width:190px; }
+.evidence img {
+  display:block;
+  max-width:165px;
+  max-height:130px;
+  object-fit:contain; }
+/* Truncate long input URLs without changing their destinations. */
+.input-url {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.label { width:230px; min-width:230px; }
 .media-id { margin-top:6px; font-size:12px; color:var(--muted); }
 .label { width:230px; min-width:230px; }
 .description { width:300px; min-width:300px; }

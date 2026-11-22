@@ -176,4 +176,3 @@ prepare_review_context <- function(candidate) {
     provenance = provenance
   )
 }
-

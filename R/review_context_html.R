@@ -82,7 +82,6 @@ review_context_html <- function(
   # Render one reviewable assertion.
   # See assertion_html()
 
-
   # Render one display-only context value.
   context_html <- function(item) {
     paste0(
@@ -239,9 +238,12 @@ review_context_html <- function(
     }, character(1))
 
     # Concatenate all generic URLs second as evidence.
+    # Truncate displayed URLs while preserving the full hyperlink.
     links <- vapply(row$input_url, function(url) {
       paste0(
-        '<a class="evidence-link" href="',
+        '<a class="evidence-link input-url" href="',
+        escape_html(url),
+        '" title="',
         escape_html(url),
         '"', input_link_attributes, ">",
         escape_html(url),

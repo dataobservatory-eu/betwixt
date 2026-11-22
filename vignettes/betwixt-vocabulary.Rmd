@@ -20,25 +20,31 @@ library(betwixt)
 
 ## Why an intermediate vocabulary?
 
-Betwixt operates between candidate knowledge and its eventual representation in a domain knowledge graph. At the time of review, the components of an assertion may not yet have stable identifiers or mappings to a particular ontology.
+Betwixt operates between candidate knowledge and its subsequent representation in tabular, graph, or tensor form. Its intermediate vocabulary preserves semantic identity and review state without requiring commitment to a particular domain ontology or output representation.
+
+At the time of review, the components of an assertion may not yet have mappings to external vocabularies. However, subjects must be deterministically identifiable, either through an absolute IRI or a declared identifier resolution rule.
 
 For example, a reviewed assertion might consist of:
 
-```text
+``` text
 subject:   Q223
 predicate: depicts
 value:     cardigan
 ```
 
-The subject may eventually resolve to a Wikibase entity, `depicts` may be mapped to a property from an external vocabulary, and `cardigan` may later be replaced by a controlled concept. Betwixt does not require these decisions to have been made before the assertion can be reviewed.
+The subject `Q223` may be a local identifier that resolves deterministically to an absolute IRI. The predicate `depicts` may identify a property defined within the Betwixt table, while `cardigan` may remain a literal value or subsequently be mapped to a controlled concept.
 
-The Betwixt vocabulary therefore represents **reviewed semantic assertions before they are committed to a particular domain ontology**. It is deliberately small: its purpose is to preserve assertion structure, review state, and the information required for subsequent semantic projection.
+Betwixt does not require external ontology mappings before review. It requires sufficient semantic identification to preserve the meaning of assertions across subsequent transformations.
+
+The Betwixt vocabulary represents *semantic assertions independently of their eventual data representation or domain ontology*. It is deliberately small: its purpose is to preserve assertion structure, semantic identity, review state, and the information required for reproducible transformations.
+
+A reviewed Betwixt table may be retained as a typed tabular dataset, projected into an RDF knowledge graph, or transformed into a tensor. None of these representations is privileged as the underlying semantic model.
 
 ## Assertions
 
-The central class is `btx:Assertion`. Its subject, predicate, and value are represented as lexical values.
+The central class is `btx:Assertion`. Its subject, predicate, and value are represented lexically, allowing assertions to remain independent of a particular output format (f.e., graph, table, or tensor.)
 
-```turtle
+``` turtle
 btx:Assertion
     a owl:Class ;
     rdfs:label "Assertion" ;
@@ -49,7 +55,12 @@ btx:subject
     rdfs:domain btx:Assertion ;
     rdfs:range xsd:string ;
     rdfs:label "subject" ;
-    rdfs:comment "The lexical representation of the subject of an assertion." .
+    rdfs:comment
+        "The lexical representation of the subject of an assertion.
+        The value MUST be deterministically resolvable to an absolute
+        IRI, either directly or through a declared identifier 
+        resolution rule. This preserves subject identity independently 
+        of subsequent tabular, graph, or tensor projections." .
 
 btx:predicate
     a owl:DatatypeProperty ;
@@ -66,11 +77,19 @@ btx:value
     rdfs:comment "The lexical representation of the value of an assertion." .
 ```
 
-Using datatype properties here is intentional. Betwixt does not assume that a subject, predicate, or value is already an RDF resource. A filename, local inventory number, Wikibase QID, natural-language predicate, or unresolved concept can therefore participate in the same review process.
+The subject must be deterministically resolvable to an absolute IRI. The predicate identifies the semantic relationship represented by the assertion, normally corresponding to a semantically defined column in its containing table. The value may represent a literal or a resource identifier, with its intended interpretation and datatype preserved through the table schema or associated metadata.
+
+The lexical representation does not imply that all values are semantically strings. It separates the storage of assertion components from their interpretation in subsequent projections.
+
+Using datatype properties here is intentional. Betwixt records the lexical components of assertions without requiring their immediate interpretation as RDF resources or typed RDF literals.
+
+A subject may be represented by a local inventory number, Wikibase QID, or absolute IRI, provided its identity can be resolved deterministically. Predicates may be defined within the table's own namespace, and values may remain literals or be mapped to identified resources.
+
+The vocabulary therefore preserves semantic commitments without requiring a graph representation. RDF resource identification and literal typing are applied when appropriate during projection.
 
 A concrete assertion can consequently be represented as:
 
-```turtle
+``` turtle
 :assertion-5
     a btx:Assertion ;
     btx:subject "Q223" ;
@@ -81,13 +100,112 @@ A concrete assertion can consequently be represented as:
 
 This is valid RDF, but it does **not** assert the domain triple `Q223 depicts cardigan`. Instead, it describes an intermediate assertion whose semantic components can subsequently be resolved and projected.
 
-`btx:assertion` associates assertions with a containing resource, while `btx:rowNumber` preserves the coordinate from the review from which an assertion was projected.
+`btx:assertion` associates assertions with a containing resource, while `btx:rowId` and `btx:assertionId` identify their table-scoped row and assertion coordinates, respectively.
+
+## Tables and coordinates
+
+`btx:Table` represents an identified collection of rows and semantically classified columns, maintained according to tidy-data principles. A table is the semantic unit within which Betwixt organizes assertions and their coordinates.
+
+```
+btx:Table
+    a owl:Class ;
+    rdfs:label "Table"@en ;
+    rdfs:comment
+        "An identified collection of rows and
+        semantically classified columns, maintained
+        according to tidy-data principles and supporting
+        stable semantic assertions and multiple data
+        projections."@en 
+        
+btx:rowId
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:integer ;
+    rdfs:label "row identifier" ;
+    rdfs:comment
+        "The integer coordinate identifying the source
+        row of an assertion within its containing
+        Betwixt table. Row identifiers are scoped to a
+        table; transformations producing a new table
+        establish new coordinates, while source
+        coordinates may be retained as provenance." .
+
+btx:assertionId
+    a owl:DatatypeProperty ;
+    rdfs:domain btx:Assertion ;
+    rdfs:range xsd:integer ;
+    rdfs:label "assertion identifier" ;
+    rdfs:comment
+        "The integer coordinate identifying an assertion
+        within a Betwixt table. Assertion identifiers
+        are unique within their containing table. A
+        transformation producing a new table establishes
+        new assertion coordinates." .
+```
+Each table has a stable IRI (`table_iri`) and may have a human-readable local identifier (`table_id`). The table IRI establishes the identification context for its rows and locally defined predicates.
+
+For example:
+
+```         
+@prefix tbl: <https://example.org/museum-objects#> .
+
+<https://example.org/museum-objects>
+    a btx:Table ;
+    rdfs:label "museum_objects"@en ;
+    btx:assertion tbl:assertion_1 .
+
+tbl:assertion_1
+    a btx:Assertion ;
+    btx:rowId 1 ;
+    btx:assertionId 1 ;
+    btx:subject "Q101" ;
+    btx:predicate "height_cm" ;
+    btx:value "120" ;
+    btx:status btx:Corroborated .
+```
+
+In this example, `Q101` is assumed to resolve through a declared identifier rule, and `height_cm` identifies a predicate defined within the table's semantic context.
+
+`btx:rowId` identifies the source row of an assertion, while `btx:assertionId` identifies the individual assertion. Both coordinates are integers scoped to their containing table.
+
+When two tables are joined or bound into a new identified table, the resulting table receives its own IRI and coordinate system. Original row identifiers may be retained as provenance, together with the identities of their source tables.
+
+The coordinates of an assertion must therefore be interpreted together with its containing table. They are not global identifiers.
+
+### Column definitions and datatypes
+
+Betwixt does not require separate `btx:Row` or `btx:Column` classes. Rows are represented through table-scoped coordinates, while column semantics are maintained through table conventions, predicate identities, and schema metadata.
+
+Each reviewable column represents a semantic predicate. Its values may have a native datatype in the tabular representation, such as integer, numeric, logical, or character.
+
+For example, an R integer column:
+
+```         
+height_cm = c(120L, 145L, 180L)
+```
+
+may be represented lexically in Betwixt assertions while retaining its datatype through the table schema.
+
+An RDF graph projection can then produce:
+
+```         
+<https://example.org/Q101>     
+    tbl:height_cm "120"^^xsd:integer .
+```
+
+The typed literal is derived from the declared column semantics, not inferred merely from the lexical value `"120"`.
+
+A tabular projection can preserve the integer column directly. A tensor projection can use an appropriate numerical representation.
+
+This approach separates semantic typing from the particular mechanisms used to store or exchange values. It also requires that datatype information remain available through the table schema or associated metadata whenever assertions are exported independently of their original table.
+
+Betwixt does not need to reproduce an entire tabular schema vocabulary. Existing mechanisms, including native R types, CSVW metadata, and RDF datatype declarations, can provide the required typing information.
 
 ## Review state
 
 Review state is represented separately from the content of an assertion.
 
-```turtle
+``` turtle
 ...
 ```
 
@@ -112,7 +230,13 @@ long <- project_review_long(review)
 head(long)
 ```
 
-Each row in the long projection represents one assertion. `row_id` retains its relationship to the original review matrix, while `assertion_number` identifies the assertion within the projection.
+Each row in the long projection represents one assertion. row_id identifies the source row within the containing Betwixt table, while assertion_number provides the assertion coordinate in the canonical projection.
+
+These correspond conceptually to `btx:rowId` and `btx:assertionId` in the vocabulary.
+
+The coordinates are scoped to the identified table. When a transformation creates a new Betwixt table, new coordinates are established, while source table identities and coordinates may be preserved as provenance.
+
+The long projection provides an assertion-oriented representation of the reviewed table. It can support subsequent tabular, RDF graph, or tensor projections without making any one of these the required final representation.
 
 This transformation provides the bridge between a human-oriented review matrix and the assertion-oriented representation used by the Betwixt RDF vocabulary.
 
@@ -122,7 +246,7 @@ Keeping assertions lexical allows semantic resolution to happen separately from 
 
 Mappings can apply to any of the three structural positions of an assertion:
 
-```turtle
+``` turtle
 btx:AssertionRole
     a owl:Class ;
     rdfs:label "Assertion role" .
@@ -134,7 +258,7 @@ btx:Value a btx:AssertionRole .
 
 For example:
 
-```turtle
+``` turtle
 :mapping-1
     a btx:Mapping ;
     btx:source "depicts" ;
@@ -150,7 +274,7 @@ This distinction is deliberate: **Betwixt does not align ontologies. It records 
 
 Consider a reviewed assertion:
 
-```turtle
+``` turtle
 :assertion-5
     a btx:Assertion ;
     btx:subject "Q223" ;
@@ -161,18 +285,21 @@ Consider a reviewed assertion:
 
 Together with reviewed mappings for its three components, this may warrant a projection such as:
 
-```turtle
+``` turtle
 wd:Q223 wdt:P121 wd:Q456 .
 ```
 
-The projected triple belongs to the target semantic environment; the Betwixt assertion remains the intermediate representation from which it was derived.
+The projected triple belongs to the target semantic environment. The Betwixt assertion remains the representation-independent intermediate statement from which the projection was derived.
 
-This establishes an intentional boundary. Betwixt does not attempt to replace Wikibase, Schema.org, CIDOC CRM, RiC-O, or another domain model. It represents reviewed assertions and their correspondences sufficiently explicitly that transformations into such environments can be reproducible and auditable.
+RDF graph projection is one possible use of Betwixt. The same reviewed assertions may also support typed tabular datasets or tensor representations, subject to the semantics and constraints of those formats.
 
-In this sense, Betwixt sits literally **betwixt** documentary or computational evidence and the domain knowledge graph:
+Betwixt does not attempt to replace Wikibase, Schema.org, CIDOC CRM, RiC-O, or another domain model. It preserves semantic assertions and reviewed correspondences sufficiently explicitly that transformations into these environments can be reproducible and auditable.
 
-**candidate knowledge → human review → stabilised assertion → bounded semantic projection**
+In this sense, Betwixt sits literally *betwixt* documentary or computational evidence and its subsequent semantic representations:
 
+**candidate knowledge → human review → stabilised assertions → reproducible semantic projections**
+
+These projections may produce typed tables, RDF graphs, or tensors. Where a projection crosses independently governed semantic environments, Betwixt supports bounded correspondence through explicit, reviewable mappings.
 
 ## From mappings to federation
 
@@ -188,23 +315,23 @@ Consider the Finno-Ugric Data Sharing Space (FUDSS) and Wikidata. Both can expre
 
 In FUDSS:
 
-```turtle
+``` turtle
 fudss:Q5613 fudsst:P14 fudss:Q6 .
 ```
 
 In Wikidata:
 
-```turtle
+``` turtle
 wd:Q83326 wdt:P31 wd:Q5 .
 ```
 
 The propositions are readily recognisable to a human as corresponding. Computationally, however, every component is different.
 
-| Role | FUDSS | Wikidata |
-|---|---|---|
-| subject | `fudss:Q5613` | `wd:Q83326` |
-| predicate | `fudsst:P14` | `wdt:P31` |
-| value | `fudss:Q6` | `wd:Q5` |
+| Role      | FUDSS         | Wikidata    |
+|-----------|---------------|-------------|
+| subject   | `fudss:Q5613` | `wd:Q83326` |
+| predicate | `fudsst:P14`  | `wdt:P31`   |
+| value     | `fudss:Q6`    | `wd:Q5`     |
 
 Nothing in the RDF statements themselves establishes these correspondences.
 
@@ -218,7 +345,7 @@ Rather than immediately asserting global equivalence between the resources, Betw
 
 For the Bartók assertion, three correspondences are required:
 
-```text
+``` text
 subject:    fudss:Q5613  →  wd:Q83326
 predicate:  fudsst:P14   →  wdt:P31
 value:      fudss:Q6     →  wd:Q5
@@ -259,7 +386,7 @@ This is important because mappings are not necessarily permanent or universal. A
 
 Once the relevant correspondences have been reviewed, Betwixt can represent them explicitly:
 
-```turtle
+``` turtle
 :mapping-subject
     a btx:Mapping ;
     btx:source "https://reprexbase.eu/fu/entity/Q5613" ;
@@ -281,7 +408,7 @@ Once the relevant correspondences have been reviewed, Betwixt can represent them
 
 Together with the reviewed source assertion, these correspondences provide the warrant for the bounded projection:
 
-```turtle
+``` turtle
 wd:Q83326 wdt:P31 wd:Q5 .
 ```
 
@@ -311,7 +438,7 @@ Conversely, when no satisfactory correspondence exists, the correct outcome can 
 
 The purpose of Betwixt is therefore not to eliminate semantic difference between federated graphs. It is to make the decisions required to cross those differences **explicit, reviewable, reproducible and revisable**.
 
-```turtle
+``` turtle
 @prefix btx: <https://usebetwixt.com/ns/> .
 @prefix wd: <http://www.wikidata.org/entity/> .
 @prefix wdt: <http://www.wikidata.org/prop/direct/> .

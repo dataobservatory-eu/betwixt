@@ -22,7 +22,8 @@ create_candidate_dataset(
   data_manager_iri = "",
   data_manager_email = "",
   table_id = "",
-  project_id = ""
+  project_id = "",
+  table_iri = ""
 )
 }
 \arguments{
@@ -89,13 +90,19 @@ data manager, such as an ORCID, ISNI, or Wikidata URI.}
 \item{data_manager_email}{Character string containing the data manager's
 email address.}
 
-\item{table_id}{Character string identifying the table across its successive
-states within the project.}
+\item{table_id}{Character string identifying the table within a project.
+The identifier is local to the project and need not be an IRI.}
 
 \item{project_id}{Character string identifying the larger knowledge-production
 project within which the table is created and reviewed. The optional
 \code{project_id} can help identify and relate tables belonging to the same
 project.}
+
+\item{table_iri}{Optional absolute IRI identifying the logical
+Betwixt table across its successive states and representations.
+The IRI may resolve to the latest published state, while
+historical states can be retained as separately identified
+versions. Defaults to \code{""}.}
 }
 \value{
 A tibble representing the initial Betwixt candidate dataset, with one row

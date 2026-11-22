@@ -323,11 +323,105 @@ test_that("candidate dataset records provenance", {
   p <- attr(x, "provenance")
 
   expect_equal(p$data_manager, "Daniel Antal")
-  expect_equal(p$data_manager_iri, "https://orcid.org/0000-0001-7513-6760")
+  expect_equal(
+    p$data_manager_iri,
+    "https://orcid.org/0000-0001-7513-6760"
+  )
   expect_equal(p$data_manager_email, "daniel@example.org")
   expect_equal(p$project_id, "example-project")
   expect_equal(p$table_id, "example-table")
+  expect_equal(
+    p$table_iri,
+    "https://example.com/example-project/example-table"
+  )
 })
+
+
+test_that("candidate dataset preserves an explicit table IRI", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org",
+    project_id = "example-project",
+    table_id = "example-table",
+    table_iri = "https://data.example.org/tables/123"
+  )
+
+  p <- attr(x, "provenance")
+
+  expect_equal(
+    p$table_iri,
+    "https://data.example.org/tables/123"
+  )
+})
+
+
+test_that("candidate dataset generates table IRI from table_id alone", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org",
+    table_id = "example-table",
+    table_iri = ""
+  )
+
+  p <- attr(x, "provenance")
+
+  expect_equal(
+    p$table_iri,
+    "https://example.com/example-table"
+  )
+})
+
+
+test_that("candidate dataset handles missing table IRI values", {
+  for (missing_iri in list(NULL, "", NA_character_)) {
+    x <- create_candidate_dataset(
+      subject = "Example",
+      input_url = "https://example.org",
+      project_id = "example-project",
+      table_id = "example-table",
+      table_iri = missing_iri
+    )
+
+    expect_equal(
+      attr(x, "provenance")$table_iri,
+      "https://example.com/example-project/example-table"
+    )
+  }
+})
+
+
+test_that("project_id alone does not generate a table IRI", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org",
+    project_id = "example-project"
+  )
+
+  p <- attr(x, "provenance")
+
+  expect_equal(p$project_id, "example-project")
+  expect_equal(p$table_id, "")
+  expect_equal(p$table_iri, "")
+})
+
+
+test_that("missing project_id does not prevent table IRI generation", {
+  x <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org",
+    table_id = "example-table"
+  )
+
+  p <- attr(x, "provenance")
+
+  expect_equal(p$project_id, "")
+  expect_equal(p$table_id, "example-table")
+  expect_equal(
+    p$table_iri,
+    "https://example.com/example-table"
+  )
+})
+
 
 test_that("candidate provenance records generation metadata", {
   x <- create_candidate_dataset(

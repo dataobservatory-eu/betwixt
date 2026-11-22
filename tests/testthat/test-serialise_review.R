@@ -543,3 +543,51 @@ test_that("Turtle serialisation omits missing provenance values", {
   expect_true(grepl("a btx:Assertion", ttl, fixed = TRUE))
   expect_true(grepl("prov:wasInformedBy", ttl, fixed = TRUE))
 })
+
+# Source table identity -------------------------------------------------------
+
+test_that("serialise_review() preserves explicit table_iri", {
+  review <- read_review(test_path(
+    "fixtures",
+    "small_countries_dataset_extended_1-finalised.html"
+  ))
+
+  review$metadata$table_iri <- "https://data.example.org/tables/123"
+
+  ttl <- serialise_review(
+    review,
+    prefix = "https://usebetwixt.com/examples/",
+    filename = "table-identity.ttl"
+  )
+
+  expect_match(
+    ttl,
+    "prov:wasDerivedFrom <https://data.example.org/tables/123>",
+    fixed = TRUE
+  )
+})
+
+
+test_that("serialise_review() generates table_iri for legacy reviews", {
+  review <- read_review(test_path(
+    "fixtures",
+    "small_countries_dataset_extended_1-finalised.html"
+  ))
+
+  # Simulate an older review without an explicit table IRI.
+  review$metadata$project_id <- "example-project"
+  review$metadata$table_id <- "example-table"
+  review$metadata$table_iri <- NA_character_
+
+  ttl <- serialise_review(
+    review,
+    prefix = "https://usebetwixt.com/examples/",
+    filename = "table-identity.ttl"
+  )
+
+  expect_match(
+    ttl,
+    "prov:wasDerivedFrom <https://example.com/example-project/example-table>",
+    fixed = TRUE
+  )
+})

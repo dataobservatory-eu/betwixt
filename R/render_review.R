@@ -177,6 +177,39 @@ render_web_html_review <- function(
   # Prepare the candidate data for rendering.
   context <- prepare_review_context(candidate)
 
+  # Resolve table identity from candidate provenance.
+  candidate_provenance <- context$provenance
+
+  if (is.null(candidate_provenance)) {
+    candidate_provenance <- list()
+  }
+
+  # Normalise missing identifiers.
+  normalise_id <- function(x) {
+    if (is.null(x) ||
+      length(x) != 1L ||
+      is.na(x)) {
+      return("")
+    }
+    as.character(x)
+  }
+
+  candidate_project_id <- normalise_id(candidate_provenance$project_id)
+  candidate_table_id <- normalise_id(candidate_provenance$table_id)
+  candidate_table_iri <- normalise_id(candidate_provenance$table_iri)
+
+  # Candidate identity takes precedence over renderer defaults.
+  if (nzchar(candidate_project_id)) {
+    project_id <- candidate_project_id
+  }
+
+  if (nzchar(candidate_table_id)) {
+    table_id <- candidate_table_id
+  }
+
+  table_iri <- candidate_table_iri
+
+
   # Generate the review table.
   table_html <- review_context_html(
     context,
@@ -222,6 +255,10 @@ render_web_html_review <- function(
   # Render non-empty candidate provenance above the site footer.
   provenance <- context$provenance
 
+  provenance$project_id <- project_id
+  provenance$table_id <- table_id
+  provenance$table_iri <- table_iri
+
   provenance_items <- c(
     if (nzchar(provenance$data_manager)) {
       paste0("Data manager: ", escape_html(provenance$data_manager))
@@ -229,8 +266,20 @@ render_web_html_review <- function(
     if (nzchar(provenance$data_manager_iri)) {
       paste0("IRI: ", escape_html(provenance$data_manager_iri))
     },
-    if (nzchar(provenance$table_id)) {
-      paste0("Project: ", escape_html(provenance$table_id))
+    if (!is.null(provenance$project_id) &&
+      !is.na(provenance$project_id) &&
+      nzchar(provenance$project_id)) {
+      paste0("Project: ", escape_html(provenance$project_id))
+    },
+    if (!is.null(provenance$table_id) &&
+      !is.na(provenance$table_id) &&
+      nzchar(provenance$table_id)) {
+      paste0("Table: ", escape_html(provenance$table_id))
+    },
+    if (!is.null(provenance$table_iri) &&
+      !is.na(provenance$table_iri) &&
+      nzchar(provenance$table_iri)) {
+      paste0("Table IRI: ", escape_html(provenance$table_iri))
     },
     if (!is.na(provenance$generated_at) &&
       nzchar(provenance$generated_at)) {
@@ -271,6 +320,7 @@ render_web_html_review <- function(
     reviewer_iri = reviewer_iri,
     project_id = project_id,
     table_id = table_id,
+    table_iri = table_iri,
     sequence = sequence,
     original_filename = original_filename,
     original_created_at = original_created_at,

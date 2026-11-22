@@ -146,7 +146,8 @@ test_that("candidate provenance survives rendering", {
     data_manager_name = "Daniel Antal",
     data_manager_iri = "https://orcid.org/0000-0001-7513-6760",
     data_manager_email = "daniel@example.org",
-    table_id = "example-project"
+    table_id = "example-table",
+    project_id = "example-project"
   )
 
   html <- render_review(candidate)
@@ -155,7 +156,12 @@ test_that("candidate provenance survives rendering", {
   expect_match(html, "Project: example-project", fixed = TRUE)
   expect_match(html, "Generated:", fixed = TRUE)
   expect_match(html, "Betwixt", fixed = TRUE)
-
+  expect_match(html, "Table: example-table", fixed = TRUE)
+  expect_match(
+    html,
+    "Table IRI: https://example.com/example-project/example-table",
+    fixed = TRUE
+  )
   expect_match(html, 'data-provenance="data_manager"', fixed = TRUE)
   expect_match(html, 'value="Daniel Antal"', fixed = TRUE)
   expect_match(html, 'data-provenance="data_manager_iri"', fixed = TRUE)
@@ -302,6 +308,7 @@ test_that("render_review() produces one site footer", {
 # Input evidence links
 # -------------------------------------------------------------------------
 
+
 test_that("render_review() forwards input link targets", {
   candidate <- create_candidate_dataset(
     subject = "urn:test:article:1",
@@ -311,21 +318,191 @@ test_that("render_review() forwards input link targets", {
 
   # Default behaviour remains a new browser tab.
   default_html <- render_review(candidate)
-  blank_html <- render_review(candidate, input_link_target = "blank")
+  blank_html <- render_review(
+    candidate,
+    input_link_target = "blank"
+  )
 
   expect_identical(default_html, blank_html)
+
   expect_match(
     blank_html,
-    'class="evidence-link" href="https://example.org/article.html" target="_blank" rel="noopener"',
+    paste0(
+      'class="evidence-link input-url" ',
+      'href="https://example.org/article.html" ',
+      'title="https://example.org/article.html" ',
+      'target="_blank" rel="noopener"'
+    ),
     fixed = TRUE
   )
 
   # Modal behaviour is forwarded to the web HTML renderer.
-  modal_html <- render_review(candidate, input_link_target = "modal")
+  modal_html <- render_review(
+    candidate,
+    input_link_target = "modal"
+  )
 
   expect_match(
     modal_html,
-    'class="evidence-link" href="https://example.org/article.html" target="evidence-viewer" data-open="modal"',
+    paste0(
+      'class="evidence-link input-url" ',
+      'href="https://example.org/article.html" ',
+      'title="https://example.org/article.html" ',
+      'target="evidence-viewer" data-open="modal"'
+    ),
+    fixed = TRUE
+  )
+})
+
+
+# -------------------------------------------------------------------------
+# Table identity
+# -------------------------------------------------------------------------
+
+test_that("render_review() preserves candidate table identity", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org",
+    project_id = "example-project",
+    table_id = "example-table"
+  )
+
+  html <- render_review(candidate)
+
+  expect_match(
+    html,
+    'id="project-id" type="text" value="example-project" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-id" type="text" value="example-table" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="https://example.com/example-project/example-table" readonly',
+    fixed = TRUE
+  )
+})
+
+
+test_that("render_review() preserves an explicit table IRI", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org",
+    project_id = "example-project",
+    table_id = "example-table",
+    table_iri = "https://data.example.org/tables/123"
+  )
+
+  html <- render_review(candidate)
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="https://data.example.org/tables/123" readonly',
+    fixed = TRUE
+  )
+})
+
+
+test_that("candidate identity takes precedence over renderer arguments", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org",
+    project_id = "candidate-project",
+    table_id = "candidate-table"
+  )
+
+  html <- render_review(
+    candidate,
+    project_id = "renderer-project",
+    table_id = "renderer-table"
+  )
+
+  expect_match(
+    html,
+    'id="project-id" type="text" value="candidate-project" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-id" type="text" value="candidate-table" readonly',
+    fixed = TRUE
+  )
+
+  expect_false(grepl(
+    'value="renderer-project"',
+    html,
+    fixed = TRUE
+  ))
+
+  expect_false(grepl(
+    'value="renderer-table"',
+    html,
+    fixed = TRUE
+  ))
+})
+
+
+test_that("renderer identifiers are used when candidate identifiers are empty", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org"
+  )
+
+  html <- render_review(
+    candidate,
+    project_id = "renderer-project",
+    table_id = "renderer-table"
+  )
+
+  expect_match(
+    html,
+    'id="project-id" type="text" value="renderer-project" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-id" type="text" value="renderer-table" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="" readonly',
+    fixed = TRUE
+  )
+})
+
+
+test_that("render_review() supports missing table identity", {
+  candidate <- create_candidate_dataset(
+    subject = "Example",
+    input_url = "https://example.org"
+  )
+
+  html <- render_review(candidate)
+
+  expect_match(
+    html,
+    'id="project-id" type="text" value="" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-id" type="text" value="" readonly',
+    fixed = TRUE
+  )
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="" readonly',
     fixed = TRUE
   )
 })

@@ -100,3 +100,77 @@ test_that("candidate and context columns can be combined", {
     "held_by"
   ) %in% names(x)))
 })
+
+
+# Row count ---------------------------------------------------------------
+
+test_that("omitted n creates a header-only template", {
+  x <- create_candidate_template()
+
+  expect_equal(nrow(x), 0L)
+  expect_identical(x$row_id, integer())
+})
+
+test_that("NULL and zero create header-only templates", {
+  for (n in list(NULL, 0L, 0)) {
+    x <- create_candidate_template(n = n)
+
+    expect_equal(nrow(x), 0L)
+    expect_identical(x$row_id, integer())
+  }
+})
+
+test_that("positive n creates sequentially numbered rows", {
+  for (n in c(1L, 3L, 70L)) {
+    x <- create_candidate_template(n = n)
+
+    expect_equal(nrow(x), n)
+    expect_identical(x$row_id, seq_len(n))
+    expect_true(is.integer(x$row_id))
+  }
+})
+
+test_that("positive n preserves the template schema", {
+  empty <- create_candidate_template(
+    columns = "instance_of",
+    context = "held_by"
+  )
+
+  populated <- create_candidate_template(
+    n = 3L,
+    columns = "instance_of",
+    context = "held_by"
+  )
+
+  expect_named(populated, names(empty))
+  expect_equal(nrow(populated), 3L)
+
+  expect_true(all(vapply(
+    populated[-1],
+    \(x) is.character(x) && all(is.na(x)),
+    logical(1)
+  )))
+})
+
+test_that("invalid n values produce informative errors", {
+  invalid_n <- list(
+    -1L,
+    1.5,
+    NA_integer_,
+    NaN,
+    Inf,
+    -Inf,
+    "3",
+    TRUE,
+    c(1L, 2L),
+    numeric()
+  )
+
+  for (n in invalid_n) {
+    expect_error(
+      create_candidate_template(n = n),
+      "`n` must be a single, non-negative, finite whole number",
+      fixed = TRUE
+    )
+  }
+})

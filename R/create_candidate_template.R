@@ -65,8 +65,23 @@ create_candidate_template <- function(
   subject_range = TRUE,
   subject_definition = TRUE,
   columns = NULL,
-  context = NULL
+  context = NULL,
+  n = 0
 ) {
+  if (!is.null(n)) {
+    if (
+      length(n) != 1L ||  !is.numeric(n) ||
+      is.na(n) || !is.finite(n) ||
+      n < 0 || n != floor(n)
+    ) {
+      stop(
+        "`n` must be a single, non-negative, finite whole number ",
+        "specifying the number of rows to create.",
+        call. = FALSE
+      )
+    }
+  }
+
   names <- c(
     "row_id",
     if (input_url) "input_url",
@@ -97,8 +112,18 @@ create_candidate_template <- function(
 
   names <- c(names, context)
 
+  # Create the header or an empty, 0-row data.frame
   out <- stats::setNames(rep(list(character()), length(names)), names)
   out$row_id <- integer()
+
+  if (!is.null(n) && n > 0L) {
+    # If non-empty template was requested with n rows
+    out <- stats::setNames(
+      rep(list(rep(NA_character_, n)), length(names)),
+      names
+    )
+    out$row_id <- seq_len(n)
+  }
 
   as.data.frame(out, stringsAsFactors = FALSE)
 }

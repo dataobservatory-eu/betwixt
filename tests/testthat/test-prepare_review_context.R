@@ -261,3 +261,53 @@ test_that("candidate provenance survives context preparation", {
 
   expect_equal(context$provenance, original)
 })
+
+
+
+test_that("candidate assertion order follows source column order", {
+
+  candidate <- data.frame(
+    row_id = 1L,
+    first = "A",
+    first_definition = "https://example.org/A",
+    second = "B",
+    second_range = "B | C",
+    third = "C",
+    third_range = "C | D",
+    third_definition = "https://example.org/C",
+    subject = "Q123",
+    subject_definition = "https://example.org/Q123"
+  )
+
+  context <- prepare_review_context(candidate)
+
+  expected <- c("first", "second", "third", "subject")
+
+  # Column order in the rendering context.
+  expect_identical(
+    context$candidate_columns,
+    expected
+  )
+
+  # Assertion order within the rendered rows.
+  expect_identical(
+    vapply(
+      context$rows[[1]]$assertions,
+      function(x) x$name,
+      character(1)
+    ),
+    expected
+  )
+
+  # Source data must remain unchanged.
+  expect_identical(
+    names(candidate),
+    c(
+      "row_id",
+      "first", "first_definition",
+      "second", "second_range",
+      "third", "third_range", "third_definition",
+      "subject", "subject_definition"
+    )
+  )
+})

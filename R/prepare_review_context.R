@@ -69,8 +69,11 @@ prepare_review_context <- function(candidate) {
   range_names <- sub("_range$", "", range_cols)
   definition_names <- sub("_definition$", "", definition_cols)
 
-  candidate_cols <- union(range_names, definition_names)
-  candidate_cols <- candidate_cols[candidate_cols %in% names(candidate)]
+  # Identify reviewable assertions while preserving source column order.
+  candidate_cols <- names(candidate)[
+    names(candidate) %in% union(range_names, definition_names)
+  ]
+
   context_cols <- grep("^context_", names(candidate), value = TRUE)
 
   # Determine whether the optional evidence relation is present.
@@ -173,3 +176,4 @@ prepare_review_context <- function(candidate) {
     provenance = provenance
   )
 }
+

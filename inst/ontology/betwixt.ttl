@@ -19,36 +19,49 @@ btx:Assertion
     rdfs:comment "An intermediate semantic assertion represented independently of a domain ontology." .
 
 btx:subject
-    a owl:DatatypeProperty ;
+    a owl:ObjectProperty ;
     rdfs:domain btx:Assertion ;
-    rdfs:range xsd:string ;
     rdfs:label "subject" ;
     rdfs:comment
-        "The lexical representation of the subject of an assertion.
-        The value MUST be deterministically resolvable to an absolute IRI,
-        either directly or through a declared identifier resolution rule.
-        This preserves subject identity independently of subsequent tabular,
-        graph, or tensor projections." .
+        "The resource about which an assertion is made.
+        In tabular representations, its identifier is stored as a
+        character string and may be abbreviated, provided that
+        the abbreviated identifier can be deterministically
+        resolved to an absolute IRI. In RDF representations,
+        the subject is expressed as an IRI resource." .
 
 btx:predicate
-    a owl:DatatypeProperty ;
+    a owl:ObjectProperty ;
     rdfs:domain btx:Assertion ;
-    rdfs:range xsd:string ;
+    rdfs:range rdf:Property ;
     rdfs:label "predicate" ;
-    rdfs:comment "The lexical representation of the predicate of an assertion." .
+    rdfs:comment
+        "The property expressed by an assertion.
+        In tabular representations, its identifier is stored as a
+        character string and may be abbreviated, provided that
+        the abbreviated identifier can be deterministically
+        resolved to an absolute IRI. In RDF representations,
+        the predicate is expressed as an IRI resource." .
 
 btx:value
     a owl:DatatypeProperty ;
     rdfs:domain btx:Assertion ;
     rdfs:range xsd:string ;
     rdfs:label "value" ;
-    rdfs:comment "The lexical representation of the value of an assertion." .
-
+    rdfs:comment
+        "The lexical representation of the value of an assertion.
+        The value may denote a literal or an RDF resource.
+        When it denotes a resource, its identifier may be abbreviated,
+        provided that it can be deterministically resolved to an
+        absolute IRI. Its interpretation as a literal or resource
+        is determined by the applicable semantic mapping." .
 btx:assertion
     a owl:ObjectProperty ;
     rdfs:range btx:Assertion ;
     rdfs:label "assertion" ;
-    rdfs:comment "Associates a resource with an assertion contained in it." .
+    rdfs:comment
+         "Associates a containing resource, such as a Betwixt
+          table or dataset, with an assertion belonging to it." .
 
 btx:alignedWith
     a owl:ObjectProperty, owl:SymmetricProperty ;

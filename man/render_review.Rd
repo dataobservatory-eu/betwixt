@@ -16,6 +16,7 @@ render_local_html_review(
   reviewer_name = "",
   reviewer_iri = "",
   table_id = "",
+  table_iri = NULL,
   project_id = "",
   sequence = 0L,
   row_comment = FALSE,
@@ -36,6 +37,7 @@ render_web_html_review(
   reviewer_name = "",
   reviewer_iri = "",
   table_id = "",
+  table_iri = NULL,
   project_id = "",
   sequence = 0L,
   row_comment = FALSE,
@@ -66,6 +68,10 @@ than \code{0} append the sequence number.}
 or Wikidata URI.}
 
 \item{table_id}{Identifier of the table across successive review states.}
+
+\item{table_iri}{Optional IRI identifying the source candidate table.
+Candidate provenance takes precedence when present. If omitted,
+an IRI is generated from \code{project_id} and \code{table_id}.}
 
 \item{project_id}{Identifier of the larger knowledge-production project.}
 

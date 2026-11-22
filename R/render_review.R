@@ -50,6 +50,9 @@
 #'   or Wikidata URI.
 #' @param project_id Identifier of the larger knowledge-production project.
 #' @param table_id Identifier of the table across successive review states.
+#' @param table_iri Optional IRI identifying the source candidate table.
+#'   Candidate provenance takes precedence when present. If omitted,
+#'   an IRI is generated from `project_id` and `table_id`.
 #' @param sequence Single non-negative integer identifying the review sequence.
 #'   Defaults to `0`, representing the initial candidate review.
 #' @param row_comment Logical. Add an optional comment field to each review row.
@@ -114,6 +117,7 @@ render_web_html_review <- function(
   reviewer_name = "",
   reviewer_iri = "",
   table_id = "",
+  table_iri = NULL,
   project_id = "",
   sequence = 0L,
   row_comment = FALSE,
@@ -207,7 +211,15 @@ render_web_html_review <- function(
     table_id <- candidate_table_id
   }
 
-  table_iri <- candidate_table_iri
+  table_iri <- default_table_iri(
+    table_iri = if (nzchar(candidate_table_iri)) {
+      candidate_table_iri
+    } else {
+      table_iri
+    },
+    table_id = table_id,
+    project_id = project_id
+  )
 
 
   # Generate the review table.

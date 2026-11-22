@@ -48,6 +48,7 @@ render_local_html_review <- function(
   reviewer_name = "",
   reviewer_iri = "",
   table_id = "",
+  table_iri = NULL,
   project_id = "",
   sequence = 0L,
   row_comment = FALSE,
@@ -144,7 +145,15 @@ render_local_html_review <- function(
     table_id <- candidate_table_id
   }
 
-  table_iri <- candidate_table_iri
+  table_iri <- default_table_iri(
+    table_iri = if (nzchar(candidate_table_iri)) {
+      candidate_table_iri
+    } else {
+      table_iri
+    },
+    table_id = table_id,
+    project_id = project_id
+  )
 
 
   # Generate the review table.

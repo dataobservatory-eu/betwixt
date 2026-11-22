@@ -377,3 +377,23 @@ test_that("local review supports missing table identity", {
     fixed = TRUE
   )
 })
+
+
+test_that("local review accepts an explicit renderer table IRI", {
+  candidate <- create_candidate_dataset(
+    subject = "Example"
+  )
+
+  html <- render_local_html_review(
+    candidate,
+    project_id = "finfair",
+    table_id = "udmurt_clothing_example-1",
+    table_iri = "https://doi.org/10.5281/zenodo.1234567"
+  )
+
+  expect_match(
+    html,
+    'id="table-iri" type="text" value="https://doi.org/10.5281/zenodo.1234567" readonly',
+    fixed = TRUE
+  )
+})

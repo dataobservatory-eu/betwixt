@@ -21,3 +21,4 @@
 ^\.github$
 ^codemeta\.json$
 ^fixtures$
+^working_papers$

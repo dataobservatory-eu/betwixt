@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Udmurt Ethnographic Clothing</title>
+<style>
+* { box-sizing:border-box; }
+:root { --border:#d8d8d8; --muted:#666; --header:#f5f5f5;
+        --green:#dff2df; --yellow:#fff2b8; --red:#ffd6d6; }
+body { margin:0; background:#fff; color:#202124; font-family:Roboto,Arial,sans-serif; font-size:14px; }
+main { padding:28px 32px 40px; }
+h1 { margin:0 0 8px; font-size:24px; font-weight:500; }
+.intro { max-width:1000px; line-height:1.5; color:#444; margin-bottom:20px; }
+
+/* Browser/page is the only horizontal scrolling surface. */
+html, body { overflow:visible; }
+
+/* The page may grow to the full width required by the review table. */
+main { width:100%; min-width:0; }
+
+/* No internal horizontal scrolling. */
+.scroll-top { display:none; }
+.table-wrap { overflow:visible; width:max-content; }
+
+table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; }
+th,td { border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+        padding:10px; vertical-align:top; text-align:left; background:#fff; }
+
+/* Header row stays visible during vertical page scrolling. */
+th { background:var(--header); font-weight:500; white-space:nowrap;
+     position:sticky; top:0; z-index:2; }
+
+tr:first-child th { border-top:1px solid var(--border); }
+th:first-child,td:first-child { border-left:1px solid var(--border); }
+
+/* Exactly the first two columns are sticky horizontally. */
+th:nth-child(1), td:nth-child(1) {
+  position:sticky;
+  left:32px;
+  z-index:3;
+}
+th:nth-child(2), td:nth-child(2) {
+  position:sticky;
+  left:78px;
+  z-index:3;
+  box-shadow:2px 0 3px rgba(0,0,0,.08);
+}
+
+/* Top-left two cells are sticky in both axes. */
+th:nth-child(1), th:nth-child(2) {
+  background:var(--header);
+  z-index:5;
+}
+td:nth-child(1), td:nth-child(2) {
+  background:#fff;
+}
+
+.num { width:46px; min-width:46px; text-align:right; color:var(--muted); }
+.evidence {
+  width:190px;
+  min-width:190px; }
+.evidence img {
+  display:block;
+  max-width:165px;
+  max-height:130px;
+  object-fit:contain; }
+/* Truncate long input URLs without changing their destinations. */
+.input-url {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.label { width:230px; min-width:230px; }
+.media-id { margin-top:6px; font-size:12px; color:var(--muted); }
+.label { width:230px; min-width:230px; }
+.description { width:300px; min-width:300px; }
+.evidence-description{width:285px;min-width:285px}
+.relation{width:175px;min-width:175px}
+.subject { width:245px; min-width:245px; }
+.predicate-cell,.heritage-cell { width:230px; min-width:230px; }
+.finalise-cell,.finalise-head { width:78px; min-width:78px; text-align:center; }
+.context,.context-head { width:260px; min-width:260px; }
+.context { background:#fafafa; color:#444; line-height:1.4; }
+.context-head small { display:block; font-weight:400; color:var(--muted); margin-top:3px; }
+.text-input,.subject-input,select,.write-in,textarea {
+  width:100%; padding:7px; border:1px solid #c9c9c9; border-radius:3px;
+  background:#fff; font:inherit;
+}
+textarea { min-height:78px; resize:vertical; line-height:1.4; }
+.write-in { display:none; margin-top:7px; }
+.entity-link { display:inline-block; padding:7px 8px; border:1px solid #c9c9c9; border-radius:3px;
+               color:#174ea6; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+.create-item { margin-top:7px; padding:5px 8px; border:1px solid #999; border-radius:3px;
+               background:#fff; cursor:pointer; font:inherit; }
+.definition-link { display:inline-block; margin-top:8px; color:#3c4043; font-size:12px; }
+.definition-link::after { content:" ↗"; }
+.qualify { display:flex; gap:10px; margin-top:8px; }
+.qualify button { border:0; background:transparent; padding:0; color:#555;
+                  text-decoration:underline; cursor:pointer; font:inherit; }
+.semantic-cell[data-qualification="defer"] { background:var(--yellow); }
+.semantic-cell[data-qualification="reject"] { background:var(--red); }
+tr[data-finalised="true"] .semantic-cell[data-qualification="none"] { background:var(--green); }
+.finalise-control { position:relative; display:inline-flex; }
+.finalise-check { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.finalise-check:focus-visible + .finalise-mark { outline:2px solid #174ea6; outline-offset:2px; }
+.finalise-mark { width:28px; height:28px; border:1px solid #aaa; border-radius:4px;
+                 display:inline-flex; align-items:center; justify-content:center;
+                 background:#fff; font-size:19px; font-weight:700; cursor:pointer; }
+tr[data-finalised="true"][data-outcome="accept"] .finalise-mark {
+  background:var(--green); border-color:#6e9d6e; color:#276427;
+}
+tr[data-finalised="true"][data-outcome="defer"] .finalise-mark {
+  background:var(--yellow); border-color:#c6a33a; color:#7a6200;
+}
+tr[data-finalised="true"][data-outcome="reject"] .finalise-mark {
+  background:var(--red); border-color:#c66; color:#9a2020;
+}
+.predicate-heading { display:flex; flex-direction:column; gap:3px; }
+.predicate-heading small { font-weight:400; color:var(--muted); }
+.footer { margin-top:18px; display:flex; gap:14px; align-items:center; }
+.footer button { padding:8px 14px; border:1px solid #999; border-radius:3px; background:#fff; cursor:pointer; }
+#summary { color:var(--muted); }
+
+.review-header{max-width:920px;margin:0 0 22px}.instructions{margin:0 0 8px;line-height:1.5;color:#444}
+.review-about{margin:0;font-size:13px}.review-about a{color:#174ea6;text-underline-offset:2px}
+.review-meta{max-width:920px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.review-meta h2{margin:0 0 10px;font-size:15px;font-weight:500}.reviewer-bottom{display:flex;flex-wrap:wrap;gap:14px 20px}
+.reviewer-bottom label{display:grid;gap:4px;color:var(--muted);font-size:12px}.reviewer-bottom input{min-width:240px;padding:7px;border:1px solid var(--border);border-radius:3px;font:inherit}
+.project-id-input{min-width:120px!important;width:140px}
+.save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
+#save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:var(--muted);font-size:12px}
+.site-footer{max-width:920px;margin-top:20px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+.row-comment { width:260px; min-width:260px; }
+.review-comment { max-width:920px; }
+
+
+/* Modal evidence viewer ----------------------------------------------- */
+
+#evidence-dialog {
+  width: min(1000px, 90vw);
+  height: min(800px, 85vh);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#evidence-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+#evidence-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.evidence-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.evidence-dialog-close {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#evidence-dialog iframe {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: none;
+  background: white;
+}
+</style>
+</head>
+<body>
+<main>
+<header class="review-header">
+<h1>Udmurt Ethnographic Clothing</h1>
+<p class="instructions">Review the proposed descriptions and metadata of Udmurt ethnographic clothing objects. Classification: select the exhibition room. Description: if necessary, create a more suitable description for  the exhibition's target audience.</p>
+</header>
+<div class="table-wrap">
+<table id="review-table"><thead><tr><th class="num">#</th><th>Input</th><th>Label</th><th>Description</th><th>Alternative description</th><th>subject</th><th>exhibition_room</th><th>accession_number</th><th>institution</th><th>permission</th><th class="finalise-head">Finalise</th><th class="row-comment">Reviewer comment</th><th class="context-head">context_label_en<small>Context — not reviewed</small></th><th class="context-head">context_label_hu<small>Context — not reviewed</small></th><th class="context-head">context_label_lv<small>Context — not reviewed</small></th><th class="context-head">context_label_ru<small>Context — not reviewed</small></th><th class="context-head">context_label_udm<small>Context — not reviewed</small></th><th class="context-head">context_description_en<small>Context — not reviewed</small></th><th class="context-head">context_description_hu<small>Context — not reviewed</small></th><th class="context-head">context_description_lv<small>Context — not reviewed</small></th><th class="context-head">context_description_ru<small>Context — not reviewed</small></th><th class="context-head">context_description_udm<small>Context — not reviewed</small></th></tr></thead><tbody><tr data-row="4" data-finalised="false" data-outcome="accept"><td class="num">4</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/060408_ERM_B159_107_060408.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/060408_ERM_B159_107_060408.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:060408_ERM_B159_107_060408.jpg" title="https://commons.wikimedia.org/wiki/File:060408_ERM_B159_107_060408.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:060408_ERM_B159_107_060408.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="skirt (ERM B 159:107)" data-candidate="skirt (ERM B 159:107)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt woman's skirt. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 159:107, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/613380">Traditional Udmurt woman's skirt. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 159:107, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/613380</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::Item:Q7310"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q7310" target="_blank" rel="noopener">fuds::Item:Q7310</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="Garments for Women"><select class="candidate-select"><option value="Garments for Women" selected>Garments for Women</option><option value="Garments for Men">Garments for Men</option><option value="No Exhibition Room">No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 159:107"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107" selected>ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab">ERM B 152:55/ab</option><option value="ERM B 176:40/ab">ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50">ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11">ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab">ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2">SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1">SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="http://www.muis.ee/museaalview/613380" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum" selected>Estonian National Museum</option><option value="National Museum of Finland">National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="PD-old-100"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100" selected>PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]">[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="skirt (ERM B 159:107)">skirt (ERM B 159:107)</td><td class="context" data-context="context_label_hu" data-value="szoknya (ERM B 159:107)">szoknya (ERM B 159:107)</td><td class="context" data-context="context_label_lv" data-value="brunči (ERM B 159:107)">brunči (ERM B 159:107)</td><td class="context" data-context="context_label_ru" data-value="юбка (ERM B 159:107)">юбка (ERM B 159:107)</td><td class="context" data-context="context_label_udm" data-value="Удмурт нылкышно юбка (ERM B 159:107)">Удмурт нылкышно юбка (ERM B 159:107)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt woman's skirt. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 159:107, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/613380">Traditional Udmurt woman's skirt. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 159:107, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/613380</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt női szoknya. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: seelik, ERM B 159:107, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/613380">Hagyományos udmurt női szoknya. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: seelik, ERM B 159:107, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/613380</td><td class="context" data-context="context_description_lv" data-value="Tradicionāli udmurtu sieviešu brunči. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: seelik, ERM B 159:107, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/613380">Tradicionāli udmurtu sieviešu brunči. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: seelik, ERM B 159:107, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/613380</td><td class="context" data-context="context_description_ru" data-value="Традиционная удмуртская женская юбка. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: seelik, ERM B 159:107, Эстонский национальный музей, http://www.muis.ee/museaalview/613380">Традиционная удмуртская женская юбка. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: seelik, ERM B 159:107, Эстонский национальный музей, http://www.muis.ee/museaalview/613380</td><td class="context" data-context="context_description_udm" data-value="Удмурт нылкышно юбка. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: seelik, ERM B 159:107, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/613380">Удмурт нылкышно юбка. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: seelik, ERM B 159:107, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/613380</td></tr>
+<tr data-row="6" data-finalised="false" data-outcome="accept"><td class="num">6</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/082595_ERM_B152_55-ab_082595.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/082595_ERM_B152_55-ab_082595.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:082595_ERM_B152_55-ab_082595.jpg" title="https://commons.wikimedia.org/wiki/File:082595_ERM_B152_55-ab_082595.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:082595_ERM_B152_55-ab_082595.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="socks (ERM B 152:55/ab)" data-candidate="socks (ERM B 152:55/ab)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt socks. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 152:55/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619070">Traditional Udmurt socks. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 152:55/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619070</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::Item:Q7302"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q7302" target="_blank" rel="noopener">fuds::Item:Q7302</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="No Exhibition Room"><select class="candidate-select"><option value="Garments for Women">Garments for Women</option><option value="Garments for Men">Garments for Men</option><option value="No Exhibition Room" selected>No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 152:55/ab"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107">ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab" selected>ERM B 152:55/ab</option><option value="ERM B 176:40/ab">ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50">ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11">ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab">ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2">SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1">SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="http://www.muis.ee/museaalview/619070" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum" selected>Estonian National Museum</option><option value="National Museum of Finland">National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="PD-old-100"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100" selected>PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]">[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="socks (ERM B 152:55/ab)">socks (ERM B 152:55/ab)</td><td class="context" data-context="context_label_hu" data-value="zokni (ERM B 152:55/ab)">zokni (ERM B 152:55/ab)</td><td class="context" data-context="context_label_lv" data-value="zeķes (ERM B 152:55/ab)">zeķes (ERM B 152:55/ab)</td><td class="context" data-context="context_label_ru" data-value="носки (ERM B 152:55/ab)">носки (ERM B 152:55/ab)</td><td class="context" data-context="context_label_udm" data-value="Удмурт пыдвыл (ERM B 152:55/ab)">Удмурт пыдвыл (ERM B 152:55/ab)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt socks. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 152:55/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619070">Traditional Udmurt socks. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 152:55/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619070</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt zokni. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: sokid, ERM B 152:55/ab, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/619070">Hagyományos udmurt zokni. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: sokid, ERM B 152:55/ab, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/619070</td><td class="context" data-context="context_description_lv" data-value="Tradicionālas udmurtu zeķes. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: sokid, ERM B 152:55/ab, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/619070">Tradicionālas udmurtu zeķes. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: sokid, ERM B 152:55/ab, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/619070</td><td class="context" data-context="context_description_ru" data-value="Традиционные удмуртские носки. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: sokid, ERM B 152:55/ab, Эстонский национальный музей, http://www.muis.ee/museaalview/619070">Традиционные удмуртские носки. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: sokid, ERM B 152:55/ab, Эстонский национальный музей, http://www.muis.ee/museaalview/619070</td><td class="context" data-context="context_description_udm" data-value="Удмурт пыдвыл. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: sokid, ERM B 152:55/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619070">Удмурт пыдвыл. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: sokid, ERM B 152:55/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619070</td></tr>
+<tr data-row="7" data-finalised="false" data-outcome="accept"><td class="num">7</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/082623_ERM_B176_40-ab_082623.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/082623_ERM_B176_40-ab_082623.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:082623_ERM_B176_40-ab_082623.jpg" title="https://commons.wikimedia.org/wiki/File:082623_ERM_B176_40-ab_082623.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:082623_ERM_B176_40-ab_082623.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="stockings (ERM B 176:40/ab)" data-candidate="stockings (ERM B 176:40/ab)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt woman's stockings. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sukad, ERM B 176:40/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/617569">Traditional Udmurt woman's stockings. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sukad, ERM B 176:40/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/617569</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::Item:Q7285"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q7285" target="_blank" rel="noopener">fuds::Item:Q7285</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="Garments for Women"><select class="candidate-select"><option value="Garments for Women" selected>Garments for Women</option><option value="Garments for Men">Garments for Men</option><option value="No Exhibition Room">No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 176:40/ab"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107">ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab">ERM B 152:55/ab</option><option value="ERM B 176:40/ab" selected>ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50">ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11">ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab">ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2">SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1">SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="http://www.muis.ee/museaalview/617569" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum" selected>Estonian National Museum</option><option value="National Museum of Finland">National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="PD-old-100"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100" selected>PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]">[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="stockings (ERM B 176:40/ab)">stockings (ERM B 176:40/ab)</td><td class="context" data-context="context_label_hu" data-value="harisnya (ERM B 176:40/ab)">harisnya (ERM B 176:40/ab)</td><td class="context" data-context="context_label_lv" data-value="zeķes (ERM B 176:40/ab)">zeķes (ERM B 176:40/ab)</td><td class="context" data-context="context_label_ru" data-value="чулки (ERM B 176:40/ab)">чулки (ERM B 176:40/ab)</td><td class="context" data-context="context_label_udm" data-value="Удмурт нылкышно чулка (ERM B 176:40/ab)">Удмурт нылкышно чулка (ERM B 176:40/ab)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt woman's stockings. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sukad, ERM B 176:40/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/617569">Traditional Udmurt woman's stockings. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sukad, ERM B 176:40/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/617569</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt női harisnya. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: sukad, ERM B 176:40/ab, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/617569">Hagyományos udmurt női harisnya. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: sukad, ERM B 176:40/ab, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/617569</td><td class="context" data-context="context_description_lv" data-value="Tradicionālas udmurtu sieviešu zeķes. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: sukad, ERM B 176:40/ab, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/617569">Tradicionālas udmurtu sieviešu zeķes. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: sukad, ERM B 176:40/ab, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/617569</td><td class="context" data-context="context_description_ru" data-value="Традиционные удмуртские женские чулки. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: sukad, ERM B 176:40/ab, Эстонский национальный музей, http://www.muis.ee/museaalview/617569">Традиционные удмуртские женские чулки. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: sukad, ERM B 176:40/ab, Эстонский национальный музей, http://www.muis.ee/museaalview/617569</td><td class="context" data-context="context_description_udm" data-value="Удмурт нылкышно чулка. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: sukad, ERM B 176:40/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/617569">Удмурт нылкышно чулка. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: sukad, ERM B 176:40/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/617569</td></tr>
+<tr data-row="10" data-finalised="false" data-outcome="accept"><td class="num">10</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/126799_ERM_B139_50_126799.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/126799_ERM_B139_50_126799.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:126799_ERM_B139_50_126799.jpg" title="https://commons.wikimedia.org/wiki/File:126799_ERM_B139_50_126799.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:126799_ERM_B139_50_126799.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="sash (ERM B 139:50)" data-candidate="sash (ERM B 139:50)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt man's sash. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vöö, meeste, ERM B 139:50, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619033">Traditional Udmurt man's sash. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vöö, meeste, ERM B 139:50, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619033</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::Item:Q7298"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q7298" target="_blank" rel="noopener">fuds::Item:Q7298</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="Garments for Men"><select class="candidate-select"><option value="Garments for Women">Garments for Women</option><option value="Garments for Men" selected>Garments for Men</option><option value="No Exhibition Room">No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 139:50"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107">ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab">ERM B 152:55/ab</option><option value="ERM B 176:40/ab">ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50" selected>ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11">ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab">ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2">SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1">SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="http://www.muis.ee/museaalview/619033" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum" selected>Estonian National Museum</option><option value="National Museum of Finland">National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="PD-old-100"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100" selected>PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]">[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="sash (ERM B 139:50)">sash (ERM B 139:50)</td><td class="context" data-context="context_label_hu" data-value="szőtt öv (ERM B 139:50)">szőtt öv (ERM B 139:50)</td><td class="context" data-context="context_label_lv" data-value="josta (ERM B 139:50)">josta (ERM B 139:50)</td><td class="context" data-context="context_label_ru" data-value="пояс (ERM B 139:50)">пояс (ERM B 139:50)</td><td class="context" data-context="context_label_udm" data-value="Удмурт пиосмурт кускерттон (ERM B 139:50)">Удмурт пиосмурт кускерттон (ERM B 139:50)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt man's sash. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vöö, meeste, ERM B 139:50, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619033">Traditional Udmurt man's sash. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vöö, meeste, ERM B 139:50, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619033</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt férfi szőtt öv. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: vöö, meeste, ERM B 139:50, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/619033">Hagyományos udmurt férfi szőtt öv. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: vöö, meeste, ERM B 139:50, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/619033</td><td class="context" data-context="context_description_lv" data-value="Tradicionāla udmurtu vīriešu josta. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: vöö, meeste, ERM B 139:50, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/619033">Tradicionāla udmurtu vīriešu josta. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: vöö, meeste, ERM B 139:50, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/619033</td><td class="context" data-context="context_description_ru" data-value="Традиционный удмуртский мужской пояс. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: vöö, meeste, ERM B 139:50, Эстонский национальный музей, http://www.muis.ee/museaalview/619033">Традиционный удмуртский мужской пояс. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: vöö, meeste, ERM B 139:50, Эстонский национальный музей, http://www.muis.ee/museaalview/619033</td><td class="context" data-context="context_description_udm" data-value="Удмурт пиосмурт кускерттон. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: vöö, meeste, ERM B 139:50, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619033">Удмурт пиосмурт кускерттон. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: vöö, meeste, ERM B 139:50, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619033</td></tr>
+<tr data-row="15" data-finalised="false" data-outcome="accept"><td class="num">15</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/204973_ERM_B106_11_204973.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/204973_ERM_B106_11_204973.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:204973_ERM_B106_11_204973.jpg" title="https://commons.wikimedia.org/wiki/File:204973_ERM_B106_11_204973.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:204973_ERM_B106_11_204973.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="headgear (ERM B 106:11)" data-candidate="headgear (ERM B 106:11)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt woman's headgear. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: peakate, naiste, ERM B 106:11, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/616062">Traditional Udmurt woman's headgear. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: peakate, naiste, ERM B 106:11, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/616062</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::Item:Q7265"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q7265" target="_blank" rel="noopener">fuds::Item:Q7265</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="Garments for Women"><select class="candidate-select"><option value="Garments for Women" selected>Garments for Women</option><option value="Garments for Men">Garments for Men</option><option value="No Exhibition Room">No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 106:11"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107">ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab">ERM B 152:55/ab</option><option value="ERM B 176:40/ab">ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50">ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11" selected>ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab">ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2">SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1">SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="http://www.muis.ee/museaalview/616062" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum" selected>Estonian National Museum</option><option value="National Museum of Finland">National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="PD-old-100"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100" selected>PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]">[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="headgear (ERM B 106:11)">headgear (ERM B 106:11)</td><td class="context" data-context="context_label_hu" data-value="fejfedő (ERM B 106:11)">fejfedő (ERM B 106:11)</td><td class="context" data-context="context_label_lv" data-value="galvassega (ERM B 106:11)">galvassega (ERM B 106:11)</td><td class="context" data-context="context_label_ru" data-value="головной убор (ERM B 106:11)">головной убор (ERM B 106:11)</td><td class="context" data-context="context_label_udm" data-value="Удмурт нылкышно горд сюлык (ERM B 106:11)">Удмурт нылкышно горд сюлык (ERM B 106:11)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt woman's headgear. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: peakate, naiste, ERM B 106:11, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/616062">Traditional Udmurt woman's headgear. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: peakate, naiste, ERM B 106:11, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/616062</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt női fejék. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: peakate, naiste, ERM B 106:11, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/616062">Hagyományos udmurt női fejék. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: peakate, naiste, ERM B 106:11, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/616062</td><td class="context" data-context="context_description_lv" data-value="Tradicionāla udmurtu sieviešu galvassega. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: peakate, naiste, ERM B 106:11, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/616062">Tradicionāla udmurtu sieviešu galvassega. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: peakate, naiste, ERM B 106:11, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/616062</td><td class="context" data-context="context_description_ru" data-value="Традиционный удмуртский женский головной убор. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: peakate, naiste, ERM B 106:11, Эстонский национальный музей, http://www.muis.ee/museaalview/616062">Традиционный удмуртский женский головной убор. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: peakate, naiste, ERM B 106:11, Эстонский национальный музей, http://www.muis.ee/museaalview/616062</td><td class="context" data-context="context_description_udm" data-value="Удмурт нылкышно горд сюлык. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. peakate, naiste, ERM B 106:11, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/616062">Удмурт нылкышно горд сюлык. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. peakate, naiste, ERM B 106:11, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/616062</td></tr>
+<tr data-row="58" data-finalised="false" data-outcome="accept"><td class="num">58</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Bast_shoes_-_ERM_B_176-136-ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Bast_shoes_-_ERM_B_176-136-ab.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Bast_shoes_-_ERM_B_176-136-ab.jpg" title="https://commons.wikimedia.org/wiki/File:Bast_shoes_-_ERM_B_176-136-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Bast_shoes_-_ERM_B_176-136-ab.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="bast shoes (ERM B 176:136/ab)" data-candidate="bast shoes (ERM B 176:136/ab)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt bast shoes. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 176:136/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619262">Traditional Udmurt bast shoes. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 176:136/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619262</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::Item:Q7306"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q7306" target="_blank" rel="noopener">fuds::Item:Q7306</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="No Exhibition Room"><select class="candidate-select"><option value="Garments for Women">Garments for Women</option><option value="Garments for Men">Garments for Men</option><option value="No Exhibition Room" selected>No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 176:136/ab"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107">ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab">ERM B 152:55/ab</option><option value="ERM B 176:40/ab">ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50">ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11">ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab" selected>ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2">SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1">SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="http://www.muis.ee/museaalview/619262" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum" selected>Estonian National Museum</option><option value="National Museum of Finland">National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="PD-old-100"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100" selected>PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]">[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="bast shoes (ERM B 176:136/ab)">bast shoes (ERM B 176:136/ab)</td><td class="context" data-context="context_label_hu" data-value="háncscipő (ERM B 176:136/ab)">háncscipő (ERM B 176:136/ab)</td><td class="context" data-context="context_label_lv" data-value="vīzes (ERM B 176:136/ab)">vīzes (ERM B 176:136/ab)</td><td class="context" data-context="context_label_ru" data-value="лапти (ERM B 176:136/ab)">лапти (ERM B 176:136/ab)</td><td class="context" data-context="context_label_udm" data-value="Удмурт кут (ERM B 176:136/ab)">Удмурт кут (ERM B 176:136/ab)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt bast shoes. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 176:136/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619262">Traditional Udmurt bast shoes. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 176:136/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619262</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt háncscipő. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: viisud, ERM B 176:136/ab, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/619262">Hagyományos udmurt háncscipő. Az Észt Nemzeti Múzeum finnugor műtárgygyűjteménye. Eredeti műtárgy: viisud, ERM B 176:136/ab, Észt Nemzeti Múzeum, http://www.muis.ee/museaalview/619262</td><td class="context" data-context="context_description_lv" data-value="Tradicionālas udmurtu vīzes. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: viisud, ERM B 176:136/ab, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/619262">Tradicionālas udmurtu vīzes. Igaunijas Nacionālā muzejs Somugru materiālu kolekcija. Oriģinālais priekšmets: viisud, ERM B 176:136/ab, Igaunijas Nacionālais muzejs, http://www.muis.ee/museaalview/619262</td><td class="context" data-context="context_description_ru" data-value="Традиционные удмуртские лапти. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: viisud, ERM B 176:136/ab, Эстонский национальный музей, http://www.muis.ee/museaalview/619262">Традиционные удмуртские лапти. Финно-угорская коллекция Эстонского национального музея. Оригинальный предмет: viisud, ERM B 176:136/ab, Эстонский национальный музей, http://www.muis.ee/museaalview/619262</td><td class="context" data-context="context_description_udm" data-value="Удмурт кут. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: viisud, ERM B 176:136/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619262">Удмурт кут. Эстон йӧскалык музейысь финн-угор артефактъёсын люкам. Оригинальной артефакт: viisud, ERM B 176:136/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/619262</td></tr>
+<tr data-row="65" data-finalised="false" data-outcome="accept"><td class="num">65</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Dress_-_SU6191-2.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Dress_-_SU6191-2.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Dress_-_SU6191-2.jpg" title="https://commons.wikimedia.org/wiki/File:Dress_-_SU6191-2.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Dress_-_SU6191-2.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="dress (SU6191:2)" data-candidate="dress (SU6191:2)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt woman's dress. Collected in Nizhnee Kotnyrevo, Alnashsky district, Russia (current Udmurtia) in 1970s-1980s. Finno-Ugric Collections, National Museum of Finland. Original artefact: paitamekko; paita. https://finna.fi/Record/museovirasto.2cac293e-bda2-4e2e-810a-c336b30d4817?sid=5352330702">Traditional Udmurt woman's dress. Collected in Nizhnee Kotnyrevo, Alnashsky district, Russia (current Udmurtia) in 1970s-1980s. Finno-Ugric Collections, National Museum of Finland. Original artefact: paitamekko; paita. https://finna.fi/Record/museovirasto.2cac293e-bda2-4e2e-810a-c336b30d4817?sid=5352330702</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::NA"><input class="subject-input" type="text" value="fuds::NA"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="Garments for Women"><select class="candidate-select"><option value="Garments for Women" selected>Garments for Women</option><option value="Garments for Men">Garments for Men</option><option value="No Exhibition Room">No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU6191:2"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107">ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab">ERM B 152:55/ab</option><option value="ERM B 176:40/ab">ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50">ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11">ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab">ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2" selected>SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1">SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://finna.fi/Record/museovirasto.2cac293e-bda2-4e2e-810a-c336b30d4817?sid=5352330702" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum">Estonian National Museum</option><option value="National Museum of Finland" selected>National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="[Creative Commons Attribution 4.0 International]"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100">PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]" selected>[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="dress (SU6191:2)">dress (SU6191:2)</td><td class="context" data-context="context_label_hu" data-value="ruha (SU6191:2)">ruha (SU6191:2)</td><td class="context" data-context="context_label_lv" data-value="kleita (SU6191:2)">kleita (SU6191:2)</td><td class="context" data-context="context_label_ru" data-value="платье (SU6191:2)">платье (SU6191:2)</td><td class="context" data-context="context_label_udm" data-value="Нылкышно дэрем (SU6191:2)">Нылкышно дэрем (SU6191:2)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt woman's dress. Collected in Nizhnee Kotnyrevo, Alnashsky district, Russia (current Udmurtia) in 1970s-1980s. Finno-Ugric Collections, National Museum of Finland. Original artefact: paitamekko; paita. https://finna.fi/Record/museovirasto.2cac293e-bda2-4e2e-810a-c336b30d4817?sid=5352330702">Traditional Udmurt woman's dress. Collected in Nizhnee Kotnyrevo, Alnashsky district, Russia (current Udmurtia) in 1970s-1980s. Finno-Ugric Collections, National Museum of Finland. Original artefact: paitamekko; paita. https://finna.fi/Record/museovirasto.2cac293e-bda2-4e2e-810a-c336b30d4817?sid=5352330702</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt női ruha. Az 1970-es és 1980-as évek időintervallumában gyűjtötték Nyizsnyij Kotnyrevóban, Alnaszszkij járásban, Oroszországban (a mai Udmurtia területén). Finnugor gyűjtemény, Finn Nemzeti Múzeum">Hagyományos udmurt női ruha. Az 1970-es és 1980-as évek időintervallumában gyűjtötték Nyizsnyij Kotnyrevóban, Alnaszszkij járásban, Oroszországban (a mai Udmurtia területén). Finnugor gyűjtemény, Finn Nemzeti Múzeum</td><td class="context" data-context="context_description_lv" data-value="Tradicionāla udmurtu sievietes kleita. Savākta Ņižņij Kotņirevo, Alnašu rajonā, Krievijā (mūsdienu Udmurtija) 1970.–1980. gados. Somugru kolekcijas, Somijas Nacionālais muzejs.">Tradicionāla udmurtu sievietes kleita. Savākta Ņižņij Kotņirevo, Alnašu rajonā, Krievijā (mūsdienu Udmurtija) 1970.–1980. gados. Somugru kolekcijas, Somijas Nacionālais muzejs.</td><td class="context" data-context="context_description_ru" data-value="Традиционное женское платье удмуртов. Собрано в Нижнем Котнырево, Алнашский район, Россия (современная Удмуртия) в 1970–1980-х годах. Финно-угорские коллекции, Национальный музей Финляндии.">Традиционное женское платье удмуртов. Собрано в Нижнем Котнырево, Алнашский район, Россия (современная Удмуртия) в 1970–1980-х годах. Финно-угорские коллекции, Национальный музей Финляндии.</td><td class="context" data-context="context_description_udm" data-value="Удмурт калык дӥськут. Нылкышно дэрем. Люкамын Улын Котныр гуртын, Алнаш ёрос, Россия (туала Удмуртия) 1970–1980-тӥ аръёсын. Фин-угор коллекциос, Финляндиысь Йӧскалык музей. Оригинальной артефакт: paitamekko; paita. https://finna.fi/Record/museovirasto.2cac293e-bda2-4e2e-810a-c336b30d4817?sid=5352330702">Удмурт калык дӥськут. Нылкышно дэрем. Люкамын Улын Котныр гуртын, Алнаш ёрос, Россия (туала Удмуртия) 1970–1980-тӥ аръёсын. Фин-угор коллекциос, Финляндиысь Йӧскалык музей. Оригинальной артефакт: paitamekko; paita. https://finna.fi/Record/museovirasto.2cac293e-bda2-4e2e-810a-c336b30d4817?sid=5352330702</td></tr>
+<tr data-row="67" data-finalised="false" data-outcome="accept"><td class="num">67</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Shirt_-_SU_2191-1.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Shirt_-_SU_2191-1.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Shirt_-_SU_2191-1.jpg" title="https://commons.wikimedia.org/wiki/File:Shirt_-_SU_2191-1.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Shirt_-_SU_2191-1.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="shirt (SU2191:1)" data-candidate="shirt (SU2191:1)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Udmurt man's shirt; created before 1880. Collected in the region of Izhevsk, Udmurtia, Russia. Original artefact: miehen paita; paita. Finno-Ugric Collections, National Museum of Finland. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0">Traditional Udmurt man's shirt; created before 1880. Collected in the region of Izhevsk, Udmurtia, Russia. Original artefact: miehen paita; paita. Finno-Ugric Collections, National Museum of Finland. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Optional changes for exhibition]">[Optional changes for exhibition]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="fuds::NA"><input class="subject-input" type="text" value="fuds::NA"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="exhibition_room" data-qualification="none" data-candidate="Garments for Men"><select class="candidate-select"><option value="Garments for Women">Garments for Women</option><option value="Garments for Men" selected>Garments for Men</option><option value="No Exhibition Room">No Exhibition Room</option><option value="__other__">Other [curator entered]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU2191:1"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="ERM B 74:1">ERM B 74:1</option><option value="ERM B 159:6">ERM B 159:6</option><option value="ERM B 114:90">ERM B 114:90</option><option value="ERM B 159:107">ERM B 159:107</option><option value="ERM B 166:13/ab">ERM B 166:13/ab</option><option value="ERM B 152:55/ab">ERM B 152:55/ab</option><option value="ERM B 176:40/ab">ERM B 176:40/ab</option><option value="ERM B 128:48/ab">ERM B 128:48/ab</option><option value="ERM B 49:2/ab">ERM B 49:2/ab</option><option value="ERM B 139:50">ERM B 139:50</option><option value="ERM B 102:126">ERM B 102:126</option><option value="ERM B 106:20">ERM B 106:20</option><option value="ERM B 114:51">ERM B 114:51</option><option value="ERM B 106:68">ERM B 106:68</option><option value="ERM B 106:11">ERM B 106:11</option><option value="ERM B 114:46">ERM B 114:46</option><option value="ERM B 123:10">ERM B 123:10</option><option value="ERM B 114:58">ERM B 114:58</option><option value="ERM B 146:82">ERM B 146:82</option><option value="ERM B 114:20">ERM B 114:20</option><option value="ERM B 159:5">ERM B 159:5</option><option value="ERM B 123:72">ERM B 123:72</option><option value="ERM B 128:66">ERM B 128:66</option><option value="ERM B 70:4">ERM B 70:4</option><option value="ERM B 70:11">ERM B 70:11</option><option value="ERM B 114:72">ERM B 114:72</option><option value="ERM B 102:118">ERM B 102:118</option><option value="ERM B 123:20">ERM B 123:20</option><option value="ERM B 123:21">ERM B 123:21</option><option value="ERM B 123:22">ERM B 123:22</option><option value="ERM B 152:36">ERM B 152:36</option><option value="ERM B 152:74">ERM B 152:74</option><option value="ERM B 102:1">ERM B 102:1</option><option value="ERM B 102:95">ERM B 102:95</option><option value="ERM B 102:117">ERM B 102:117</option><option value="ERM B 102:67">ERM B 102:67</option><option value="ERM B 77:24">ERM B 77:24</option><option value="ERM B 77:27">ERM B 77:27</option><option value="ERM B 114:54">ERM B 114:54</option><option value="ERM B 70:14">ERM B 70:14</option><option value="ERM B 146:40">ERM B 146:40</option><option value="ERM B 123:53">ERM B 123:53</option><option value="ERM B 106:9">ERM B 106:9</option><option value="ERM B 152:56">ERM B 152:56</option><option value="ERM B 123:27">ERM B 123:27</option><option value="ERM B 128:4">ERM B 128:4</option><option value="ERM B 123:14">ERM B 123:14</option><option value="ERM B 77:2">ERM B 77:2</option><option value="ERM B 77:1">ERM B 77:1</option><option value="ERM B 106:133">ERM B 106:133</option><option value="ERM B 77:21">ERM B 77:21</option><option value="ERM B 123:32">ERM B 123:32</option><option value="SU2191:12">SU2191:12</option><option value="SU4817:54">SU4817:54</option><option value="SU4817:57">SU4817:57</option><option value="ERM B 102:79/ab">ERM B 102:79/ab</option><option value="ERM B 176:136/ab">ERM B 176:136/ab</option><option value="SU4817:52">SU4817:52</option><option value="SU4817:53">SU4817:53</option><option value="SU4817:68">SU4817:68</option><option value="SU4817:69">SU4817:69</option><option value="SU2191:4">SU2191:4</option><option value="SU4817:47">SU4817:47</option><option value="SU6191:2">SU6191:2</option><option value="SU2191:3">SU2191:3</option><option value="SU2191:1" selected>SU2191:1</option><option value="SU2191:5">SU2191:5</option><option value="SU5994:62">SU5994:62</option><option value="SU4817:44">SU4817:44</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><select class="candidate-select"><option value="__other__">Other [curator entered]</option><option value="Estonian National Museum">Estonian National Museum</option><option value="National Museum of Finland" selected>National Museum of Finland</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="permission" data-qualification="none" data-candidate="NA"><select class="candidate-select"><option value="__no_value__">No value possible</option><option value="__other__">Other [curator entered]</option><option value="PD-old-100">PD-old-100</option><option value="Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.">Released under Creative Commons Attribution 4.0 by Eesti Rahva Muuseum.</option><option value="[Creative Commons Attribution 4.0 International]">[Creative Commons Attribution 4.0 International]</option><option value="[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]">[https://creativecommons.org/licenses/by/4.0/deed.fi CC BY 4.0]</option></select><input class="write-in" placeholder="Enter another value"><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td><td class="context" data-context="context_label_en" data-value="shirt (SU2191:1)">shirt (SU2191:1)</td><td class="context" data-context="context_label_hu" data-value="ing (SU2191:1)">ing (SU2191:1)</td><td class="context" data-context="context_label_lv" data-value="krekls (SU2191:1)">krekls (SU2191:1)</td><td class="context" data-context="context_label_ru" data-value="рубаха (SU2191:1)">рубаха (SU2191:1)</td><td class="context" data-context="context_label_udm" data-value="Пиосмурт дэрем (SU2191:1)">Пиосмурт дэрем (SU2191:1)</td><td class="context" data-context="context_description_en" data-value="Traditional Udmurt man's shirt; created before 1880. Collected in the region of Izhevsk, Udmurtia, Russia. Original artefact: miehen paita; paita. Finno-Ugric Collections, National Museum of Finland. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0">Traditional Udmurt man's shirt; created before 1880. Collected in the region of Izhevsk, Udmurtia, Russia. Original artefact: miehen paita; paita. Finno-Ugric Collections, National Museum of Finland. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0</td><td class="context" data-context="context_description_hu" data-value="Hagyományos udmurt férfi ing; 1880 előtt készült. Izhevszk környékén, Udmurtia tartományban, Oroszországban gyűjtötték. Eredeti tárgy: miehen paita; paita. Finn-ugor gyűjtemények, Finn Nemzeti Múzeum. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0">Hagyományos udmurt férfi ing; 1880 előtt készült. Izhevszk környékén, Udmurtia tartományban, Oroszországban gyűjtötték. Eredeti tárgy: miehen paita; paita. Finn-ugor gyűjtemények, Finn Nemzeti Múzeum. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0</td><td class="context" data-context="context_description_lv" data-value="Tradicionāls udmurtu vīrieša krekls; izgatavots pirms 1880. gada. Iegūts Iževskas reģionā, Udmurtijā, Krievijā. Oriģinālais priekšmets: miehen paita; paita. Somugru kolekcijas, Somijas Nacionālais muzejs. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0">Tradicionāls udmurtu vīrieša krekls; izgatavots pirms 1880. gada. Iegūts Iževskas reģionā, Udmurtijā, Krievijā. Oriģinālais priekšmets: miehen paita; paita. Somugru kolekcijas, Somijas Nacionālais muzejs. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0</td><td class="context" data-context="context_description_ru" data-value="Традиционная удмуртская мужская рубаха; создана до 1880 года. Собрана в районе Ижевска, Удмуртия, Россия. Оригинальный предмет: miehen paita; paita. Финно-угорские коллекции, Национальный музей Финляндии. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0">Традиционная удмуртская мужская рубаха; создана до 1880 года. Собрана в районе Ижевска, Удмуртия, Россия. Оригинальный предмет: miehen paita; paita. Финно-угорские коллекции, Национальный музей Финляндии. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0</td><td class="context" data-context="context_description_udm" data-value="Удмурт калык дӥськут. Пиосмурт дэрем; лэсьтэмын 1880-тӥ арлэсь азьло. Люкамын Ижевск улосын, Удмуртия, Россия. Оригинальной артефакт: miehen paita; paita. Фин-угор коллекциос, Финляндиысь Йӧскалык музей. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0">Удмурт калык дӥськут. Пиосмурт дэрем; лэсьтэмын 1880-тӥ арлэсь азьло. Люкамын Ижевск улосын, Удмуртия, Россия. Оригинальной артефакт: miehen paita; paita. Фин-угор коллекциос, Финляндиысь Йӧскалык музей. https://finna.fi/Record/museovirasto.5d6470e2-ed8f-4d77-9ea3-53128e1f67e0</td></tr></tbody></table><div id="candidate-provenance" hidden><input data-provenance="data_manager" value=""><input data-provenance="data_manager_iri" value=""><input data-provenance="data_manager_email" value=""><input data-provenance="table_id" value=""><input data-provenance="generated_at" value="NA"><input data-provenance="software_agent" value="Betwixt"><input data-provenance="software_version" value="0.0.8002"></div>
+</div>
+<div class="footer">
+<span id="summary"></span>
+</div>
+<section class="review-meta">
+<h2>Review metadata</h2>
+<div class="reviewer-bottom">
+<label>Reviewer<input id="reviewer-name" type="text" value="Ieva Pigozne"></label>
+<label>Reviewer email<input id="reviewer-email" type="email"></label>
+<label>Reviewer IRI (e.g. ORCID, ISNI, Wikidata)<input id="reviewer-iri" class="reviewer-iri-input" type="text" value="https://orcid.org/0000-0003-1726-0928"></label>
+<label>Project ID<input id="project-id" type="text" value="finfair" readonly></label>
+<label>Table ID<input id="table-id" type="text" value="udmurt_clothing_example-1" readonly></label>
+<label>Table IRI<input id="table-iri" type="text" value="https://doi.org/10.5281/zenodo.24448050" readonly></label>
+<label>State sequence<input id="review-sequence" type="number" value="0" readonly></label>
+<label>Original filename<input id="original-filename" type="text" value="udmurt_exhibition_example_clothing.html" readonly></label>
+<label>Filename<input id="review-filename" type="text" value="udmurt_exhibition_example_clothing.html" readonly></label>
+<label>Original created at<input id="original-created-at" type="text" value="2026-11-22T19:49:05Z" readonly></label>
+<label>Started at<input id="review-started-at" type="text" readonly></label>
+<label>Last saved at<input id="review-last-saved-at" type="text" readonly></label>
+<label>Ended at<input id="review-ended-at" type="text" readonly></label>
+<label>Status<input id="review-status" type="text" value="in-progress" readonly></label>
+</div>
+<label class="review-comment">Review comment<textarea id="review-comment" placeholder="Optional comment on review"></textarea></label>
+<input id="filename-stem" type="hidden" value="udmurt_exhibition_example_clothing">
+<div class="save-actions">
+<button id="save-draft" type="button">Save draft</button>
+<button id="save-final" type="button">Finalise review</button>
+</div>
+<div id="save-status" class="save-status"></div>
+</section>
+<div class="candidate-provenance">Project: finfair · Table: udmurt_clothing_example-1 · Table IRI: https://doi.org/10.5281/zenodo.24448050 · Betwixt 0.0.8002</div>
+<footer class="site-footer">Created with Betwixt semantic review · <a href="https://github.com/dataobservatory-eu/betwixt" target="_blank" rel="noopener">GitHub</a> · <a href="https://doi.org/10.5281/zenodo.22091535" target="_blank" rel="noopener">doi:10.5281/zenodo.22091535</a></footer>
+</main>
+<script>
+(() => {
+  const rows = [...document.querySelectorAll("tbody tr")];
+
+  // Find Input links configured to open in a modal.
+  const modalLinks = document.querySelectorAll(
+    'a[data-open="modal"]'
+  );
+
+  if (modalLinks.length > 0) {
+    const dialog = document.createElement("dialog");
+    dialog.id = "evidence-dialog";
+
+    dialog.innerHTML = `
+      <div class="evidence-dialog-header">
+        <span>Input evidence</span>
+        <button type="button" class="evidence-dialog-close"
+                aria-label="Close evidence viewer">×</button>
+      </div>
+      <iframe name="evidence-viewer"
+              title="Input evidence"></iframe>
+    `;
+
+    document.body.appendChild(dialog);
+
+    const frame = dialog.querySelector("iframe");
+    const close = dialog.querySelector(".evidence-dialog-close");
+
+    // Display the dialog when a modal evidence link is selected.
+    modalLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        dialog.showModal();
+      });
+    });
+
+    // Close the dialog using its close button.
+    close.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    // Clear the previous resource when the dialog closes.
+    dialog.addEventListener("close", () => {
+      frame.src = "about:blank";
+    });
+  }
+
+  // Determine the overall outcome of a review row.
+  function outcome(row) {
+    const cells = [...row.querySelectorAll(".semantic-cell")];
+
+    if (cells.some(cell => cell.dataset.qualification === "reject")) {
+      return "reject";
+    }
+
+    if (cells.some(cell => cell.dataset.qualification === "defer")) {
+      return "defer";
+    }
+
+    return "accept";
+  }
+
+  // Update the finalisation marker for a row.
+  function paint(row) {
+    row.dataset.outcome = outcome(row);
+
+    const mark = row.querySelector(".finalise-mark");
+
+    if (row.dataset.finalised !== "true") {
+      mark.textContent = "";
+      return;
+    }
+
+    if (row.dataset.outcome === "reject") {
+      mark.textContent = "×";
+    } else if (row.dataset.outcome === "defer") {
+      mark.textContent = "○";
+    } else {
+      mark.textContent = "✓";
+    }
+  }
+
+  // Update the review summary.
+  function summary() {
+    const finalised = rows.filter(
+      row => row.dataset.finalised === "true"
+    ).length;
+
+    const deferred = document.querySelectorAll(
+      '.semantic-cell[data-qualification="defer"]'
+    ).length;
+
+    const rejected = document.querySelectorAll(
+      '.semantic-cell[data-qualification="reject"]'
+    ).length;
+
+    document.getElementById("summary").textContent =
+      `${finalised} finalised · ${deferred} deferred cells · ` +
+      `${rejected} rejected cells`;
+  }
+
+  // Apply a qualification and update the row state.
+  function qualify(cell, state) {
+    cell.dataset.qualification = state;
+    paint(cell.closest("tr"));
+    summary();
+  }
+
+  // Return an ISO 8601 UTC timestamp at one-second precision.
+  function utcTimestamp() {
+    return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
+  // Build a lookup from the initial candidate-definition pairs.
+  const definitions = new Map();
+
+  document.querySelectorAll(".semantic-cell").forEach(cell => {
+    const definition = cell.querySelector(".definition-link");
+
+    if (!definition) {
+      return;
+    }
+
+    const key =
+      `${cell.dataset.column}::${cell.dataset.candidate}`;
+
+    definitions.set(key, definition.href);
+  });
+
+  // Attach review controls to each row.
+  rows.forEach(row => {
+    row.querySelectorAll("[data-qualify]").forEach(button => {
+      button.addEventListener("click", () => {
+        const cell = button.closest(".semantic-cell");
+        const qualification = button.dataset.qualify;
+        const current = cell.dataset.qualification;
+
+        qualify(
+          cell,
+          current === qualification ? "none" : qualification
+        );
+      });
+    });
+
+    row.querySelectorAll(".candidate-select").forEach(select => {
+      const cell = select.closest(".semantic-cell");
+      const writeIn = cell.querySelector(".write-in");
+      const definition = cell.querySelector(".definition-link");
+
+      const updateSelection = () => {
+        const show = select.value === "__other__";
+
+        writeIn.style.display = show ? "block" : "none";
+
+        if (!show) {
+          writeIn.value = "";
+        }
+
+        if (show) {
+          writeIn.focus();
+        }
+
+        if (definition) {
+          const key =
+            `${cell.dataset.column}::${select.value}`;
+
+          const href = definitions.get(key);
+
+          if (href) {
+            definition.href = href;
+            definition.style.display = "";
+          } else {
+            definition.style.display = "none";
+          }
+        }
+      };
+
+      select.addEventListener("change", updateSelection);
+      updateSelection();
+    });
+
+    const check = row.querySelector(".finalise-check");
+
+    check.addEventListener("change", () => {
+      row.dataset.finalised = check.checked ? "true" : "false";
+      paint(row);
+      summary();
+    });
+
+    // Attach creation controls to every unresolved assertion.
+    row.querySelectorAll(".create-item").forEach(create => {
+      create.addEventListener("click", () => {
+        const cell = create.closest(".semantic-cell");
+        const input = cell.querySelector(".subject-input");
+
+        cell.innerHTML =
+          `<a class="entity-link" href="#">` +
+          `fuds:QNEW${row.dataset.row}</a>` +
+          `<div style="margin-top:6px;font-size:12px;color:#666">` +
+          `Prototype registration for “${input.value}”</div>` +
+          `<div class="qualify">` +
+          `<button data-qualify="defer">Defer</button>` +
+          `<button data-qualify="reject">Reject</button>` +
+          `</div>`;
+
+        // Restore qualification controls in the replaced cell.
+        cell.querySelectorAll("[data-qualify]").forEach(button => {
+          button.addEventListener("click", () => {
+            const qualification = button.dataset.qualify;
+            const current = cell.dataset.qualification;
+
+            qualify(
+              cell,
+              current === qualification ? "none" : qualification
+            );
+          });
+        });
+      });
+    });
+  });
+
+  // Initialise row presentation and review summary.
+  rows.forEach(paint);
+  summary();
+
+  const startedAt = document.getElementById("review-started-at");
+
+  if (startedAt && !startedAt.value) {
+    startedAt.value = utcTimestamp();
+  }
+
+  // Copy the live review state into the HTML to be saved.
+  function persistStateIntoClone(clone) {
+    const sourceInputs = [...document.querySelectorAll("input:not([data-provenance])")];
+    const clonedInputs = [...clone.querySelectorAll("input:not([data-provenance])")];
+
+    sourceInputs.forEach((source, index) => {
+      const target = clonedInputs[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.setAttribute("value", source.value);
+
+      if (source.type === "checkbox") {
+        if (source.checked) {
+          target.setAttribute("checked", "");
+        } else {
+          target.removeAttribute("checked");
+        }
+      }
+    });
+
+    const sourceTextareas = [...document.querySelectorAll("textarea")];
+    const clonedTextareas = [...clone.querySelectorAll("textarea")];
+
+    sourceTextareas.forEach((source, index) => {
+      if (clonedTextareas[index]) {
+        clonedTextareas[index].textContent = source.value;
+      }
+    });
+
+    const sourceSelects = [...document.querySelectorAll("select")];
+    const clonedSelects = [...clone.querySelectorAll("select")];
+
+    sourceSelects.forEach((source, index) => {
+      const target = clonedSelects[index];
+
+      if (!target) {
+        return;
+      }
+
+      [...target.options].forEach(option => {
+        if (option.value === source.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+    });
+
+    const sourceCells = [
+      ...document.querySelectorAll(".semantic-cell")
+    ];
+    const clonedCells = [
+      ...clone.querySelectorAll(".semantic-cell")
+    ];
+
+    sourceCells.forEach((source, index) => {
+      if (clonedCells[index]) {
+        clonedCells[index].dataset.qualification =
+          source.dataset.qualification;
+      }
+    });
+
+    const sourceRows = [...document.querySelectorAll("tbody tr")];
+    const clonedRows = [...clone.querySelectorAll("tbody tr")];
+
+    sourceRows.forEach((source, index) => {
+      const target = clonedRows[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.dataset.finalised =
+        source.dataset.finalised || "false";
+
+      target.dataset.outcome =
+        source.dataset.outcome || "accept";
+    });
+  }
+
+  // Save the current review as a draft or finalised HTML file.
+  function saveReview(finaliseReview) {
+    const now = utcTimestamp();
+    const sequenceInput =
+      document.getElementById("review-sequence");
+
+    const filenameStem =
+      document.getElementById("filename-stem").value.trim() ||
+      "betwixt-review";
+
+    let sequence = Number(sequenceInput.value || 0);
+
+    // The first browser save starts review sequence 1.
+    if (sequence === 0) {
+      sequence = 1;
+      sequenceInput.value = sequence;
+    }
+
+    document.getElementById("review-last-saved-at").value = now;
+
+    document.getElementById("review-status").value =
+      finaliseReview ? "finalised" : "in-progress";
+
+    if (finaliseReview) {
+      document.getElementById("review-ended-at").value = now;
+    }
+
+    // Draft and finalised files belong to the same review sequence.
+    const stem = `${filenameStem}_${sequence}`;
+    const suffix = finaliseReview ? "-finalised" : "-draft";
+    const filename = `${stem}${suffix}.html`;
+    document.getElementById("review-filename").value = filename;
+
+    // Preserve the updated state in the downloaded HTML.
+    const clone = document.documentElement.cloneNode(true);
+    persistStateIntoClone(clone);
+
+    // Exclude the temporary evidence viewer from the saved review.
+    clone.querySelector("#evidence-dialog")?.remove();
+
+    const blob = new Blob(
+      ["<!doctype html>\n" + clone.outerHTML],
+      { type: "text/html;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    document.getElementById("save-status").textContent =
+      (finaliseReview
+        ? "Finalised review saved at "
+        : "Draft saved at ") + now;
+  }
+
+  // Attach the review save actions.
+  document
+    .getElementById("save-draft")
+    .addEventListener("click", () => saveReview(false));
+
+  document
+    .getElementById("save-final")
+    .addEventListener("click", () => saveReview(true));
+})();
+</script>
+</body>
+</html>
+

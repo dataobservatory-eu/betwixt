@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traditional Livonian Clothing: Room 1</title>
+<style>
+* { box-sizing:border-box; }
+:root { --border:#d8d8d8; --muted:#666; --header:#f5f5f5;
+        --green:#dff2df; --yellow:#fff2b8; --red:#ffd6d6; }
+body { margin:0; background:#fff; color:#202124; font-family:Roboto,Arial,sans-serif; font-size:14px; }
+main { padding:28px 32px 40px; }
+h1 { margin:0 0 8px; font-size:24px; font-weight:500; }
+.intro { max-width:1000px; line-height:1.5; color:#444; margin-bottom:20px; }
+
+/* Browser/page is the only horizontal scrolling surface. */
+html, body { overflow:visible; }
+
+/* The page may grow to the full width required by the review table. */
+main { width:100%; min-width:0; }
+
+/* No internal horizontal scrolling. */
+.scroll-top { display:none; }
+.table-wrap { overflow:visible; width:max-content; }
+
+table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; }
+th,td { border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+        padding:10px; vertical-align:top; text-align:left; background:#fff; }
+
+/* Header row stays visible during vertical page scrolling. */
+th { background:var(--header); font-weight:500; white-space:nowrap;
+     position:sticky; top:0; z-index:2; }
+
+tr:first-child th { border-top:1px solid var(--border); }
+th:first-child,td:first-child { border-left:1px solid var(--border); }
+
+/* Exactly the first two columns are sticky horizontally. */
+th:nth-child(1), td:nth-child(1) {
+  position:sticky;
+  left:32px;
+  z-index:3;
+}
+th:nth-child(2), td:nth-child(2) {
+  position:sticky;
+  left:78px;
+  z-index:3;
+  box-shadow:2px 0 3px rgba(0,0,0,.08);
+}
+
+/* Top-left two cells are sticky in both axes. */
+th:nth-child(1), th:nth-child(2) {
+  background:var(--header);
+  z-index:5;
+}
+td:nth-child(1), td:nth-child(2) {
+  background:#fff;
+}
+
+.num { width:46px; min-width:46px; text-align:right; color:var(--muted); }
+.evidence {
+  width:190px;
+  min-width:190px; }
+.evidence img {
+  display:block;
+  max-width:165px;
+  max-height:130px;
+  object-fit:contain; }
+/* Truncate long input URLs without changing their destinations. */
+.input-url {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.label { width:230px; min-width:230px; }
+.media-id { margin-top:6px; font-size:12px; color:var(--muted); }
+.label { width:230px; min-width:230px; }
+.description { width:300px; min-width:300px; }
+.evidence-description{width:285px;min-width:285px}
+.relation{width:175px;min-width:175px}
+.subject { width:245px; min-width:245px; }
+.predicate-cell,.heritage-cell { width:230px; min-width:230px; }
+.finalise-cell,.finalise-head { width:78px; min-width:78px; text-align:center; }
+.context,.context-head { width:260px; min-width:260px; }
+.context { background:#fafafa; color:#444; line-height:1.4; }
+.context-head small { display:block; font-weight:400; color:var(--muted); margin-top:3px; }
+.text-input,.subject-input,select,.write-in,textarea {
+  width:100%; padding:7px; border:1px solid #c9c9c9; border-radius:3px;
+  background:#fff; font:inherit;
+}
+textarea { min-height:78px; resize:vertical; line-height:1.4; }
+.write-in { display:none; margin-top:7px; }
+.entity-link { display:inline-block; padding:7px 8px; border:1px solid #c9c9c9; border-radius:3px;
+               color:#174ea6; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+.create-item { margin-top:7px; padding:5px 8px; border:1px solid #999; border-radius:3px;
+               background:#fff; cursor:pointer; font:inherit; }
+.definition-link { display:inline-block; margin-top:8px; color:#3c4043; font-size:12px; }
+.definition-link::after { content:" ↗"; }
+.qualify { display:flex; gap:10px; margin-top:8px; }
+.qualify button { border:0; background:transparent; padding:0; color:#555;
+                  text-decoration:underline; cursor:pointer; font:inherit; }
+.semantic-cell[data-qualification="defer"] { background:var(--yellow); }
+.semantic-cell[data-qualification="reject"] { background:var(--red); }
+tr[data-finalised="true"] .semantic-cell[data-qualification="none"] { background:var(--green); }
+.finalise-control { position:relative; display:inline-flex; }
+.finalise-check { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.finalise-check:focus-visible + .finalise-mark { outline:2px solid #174ea6; outline-offset:2px; }
+.finalise-mark { width:28px; height:28px; border:1px solid #aaa; border-radius:4px;
+                 display:inline-flex; align-items:center; justify-content:center;
+                 background:#fff; font-size:19px; font-weight:700; cursor:pointer; }
+tr[data-finalised="true"][data-outcome="accept"] .finalise-mark {
+  background:var(--green); border-color:#6e9d6e; color:#276427;
+}
+tr[data-finalised="true"][data-outcome="defer"] .finalise-mark {
+  background:var(--yellow); border-color:#c6a33a; color:#7a6200;
+}
+tr[data-finalised="true"][data-outcome="reject"] .finalise-mark {
+  background:var(--red); border-color:#c66; color:#9a2020;
+}
+.predicate-heading { display:flex; flex-direction:column; gap:3px; }
+.predicate-heading small { font-weight:400; color:var(--muted); }
+.footer { margin-top:18px; display:flex; gap:14px; align-items:center; }
+.footer button { padding:8px 14px; border:1px solid #999; border-radius:3px; background:#fff; cursor:pointer; }
+#summary { color:var(--muted); }
+
+.review-header{max-width:920px;margin:0 0 22px}.instructions{margin:0 0 8px;line-height:1.5;color:#444}
+.review-about{margin:0;font-size:13px}.review-about a{color:#174ea6;text-underline-offset:2px}
+.review-meta{max-width:920px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.review-meta h2{margin:0 0 10px;font-size:15px;font-weight:500}.reviewer-bottom{display:flex;flex-wrap:wrap;gap:14px 20px}
+.reviewer-bottom label{display:grid;gap:4px;color:var(--muted);font-size:12px}.reviewer-bottom input{min-width:240px;padding:7px;border:1px solid var(--border);border-radius:3px;font:inherit}
+.project-id-input{min-width:120px!important;width:140px}
+.save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
+#save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:var(--muted);font-size:12px}
+.site-footer{max-width:920px;margin-top:20px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+.row-comment { width:260px; min-width:260px; }
+.review-comment { max-width:920px; }
+
+
+/* Modal evidence viewer ----------------------------------------------- */
+
+#evidence-dialog {
+  width: min(1000px, 90vw);
+  height: min(800px, 85vh);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#evidence-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+#evidence-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.evidence-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.evidence-dialog-close {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#evidence-dialog iframe {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: none;
+  background: white;
+}
+</style>
+</head>
+<body>
+<main>
+<header class="review-header">
+<h1>Traditional Livonian Clothing: Room 1</h1>
+<p class="instructions">Review the descriptions and metadata of photographs documenting traditional Livonian clothing. Verify museum accession numbers, institutions, and exhibition classifications.</p>
+</header>
+<div class="table-wrap">
+<table id="review-table"><thead><tr><th class="num">#</th><th>Input</th><th>Label</th><th>Description</th><th>Alternative description</th><th>subject</th><th>accession_number</th><th>institution</th><th>room_number</th><th class="finalise-head">Finalise</th><th class="row-comment">Reviewer comment</th></tr></thead><tbody><tr data-row="1" data-finalised="false" data-outcome="accept"><td class="num">1</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woman's_festive_shirt_SU4920_15.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woman's_festive_shirt_SU4920_15.jpg" alt="Input Traditional festive linen shirt worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. paita; naisten paita. SU4920:15."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woman's_festive_shirt_SU4920_15.jpg" title="https://commons.wikimedia.org/wiki/File:Woman's_festive_shirt_SU4920_15.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woman's_festive_shirt_SU4920_15.jpg</a><div class="media-id">Traditional festive linen shirt worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. paita; naisten paita. SU4920:15.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional festive linen shirt worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags" data-candidate="Traditional festive linen shirt worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags"></td><td class="description"><textarea data-field="description" data-candidate="Traditional festive linen shirt worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. paita; naisten paita. SU4920:15.">Traditional festive linen shirt worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. paita; naisten paita. SU4920:15.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woman's_festive_shirt_SU4920_15.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woman's_festive_shirt_SU4920_15.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woman's_festive_shirt_SU4920_15.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:15"><input class="subject-input" type="text" value="SU4920:15"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="2" data-finalised="false" data-outcome="accept"><td class="num">2</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Women's_shirt_ERM_B_17_1.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Women's_shirt_ERM_B_17_1.jpg" alt="Input Traditional Livonian women's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, naiste, ERM B 17:1, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635778 ERM B 17:1."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Women's_shirt_ERM_B_17_1.jpg" title="https://commons.wikimedia.org/wiki/File:Women's_shirt_ERM_B_17_1.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Women's_shirt_ERM_B_17_1.jpg</a><div class="media-id">Traditional Livonian women's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, naiste, ERM B 17:1, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635778 ERM B 17:1.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's linen shirt" data-candidate="Traditional Livonian women's linen shirt"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, naiste, ERM B 17:1, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635778 ERM B 17:1.">Traditional Livonian women's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, naiste, ERM B 17:1, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635778 ERM B 17:1.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Women's_shirt_ERM_B_17_1.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Women's_shirt_ERM_B_17_1.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Women's_shirt_ERM_B_17_1.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 17:1"><a class="entity-link" href="http://www.muis.ee/museaalview/635778" target="_blank" rel="noopener">ERM B 17:1</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="3" data-finalised="false" data-outcome="accept"><td class="num">3</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Bodice_SU4106_411.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Bodice_SU4106_411.jpg" alt="Input Traditional Livonian women's bodice, collected by A. O. Heikel in 1902 in Mazirbe. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liivi; naisen liivi; bodice. SU4106:411."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Bodice_SU4106_411.jpg" title="https://commons.wikimedia.org/wiki/File:Bodice_SU4106_411.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Bodice_SU4106_411.jpg</a><div class="media-id">Traditional Livonian women's bodice, collected by A. O. Heikel in 1902 in Mazirbe. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liivi; naisen liivi; bodice. SU4106:411.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's bodice, collected by A" data-candidate="Traditional Livonian women's bodice, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's bodice, collected by A. O. Heikel in 1902 in Mazirbe. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liivi; naisen liivi; bodice. SU4106:411.">Traditional Livonian women's bodice, collected by A. O. Heikel in 1902 in Mazirbe. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liivi; naisen liivi; bodice. SU4106:411.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Bodice_SU4106_411.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Bodice_SU4106_411.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Bodice_SU4106_411.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4106:411"><input class="subject-input" type="text" value="SU4106:411"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="4" data-finalised="false" data-outcome="accept"><td class="num">4</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woman's_festive_jacket_SU4920_16.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woman's_festive_jacket_SU4920_16.jpg" alt="Input Traditional festive woollen jacket worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Sikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; jacket; röijy. SU4920:16."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woman's_festive_jacket_SU4920_16.jpg" title="https://commons.wikimedia.org/wiki/File:Woman's_festive_jacket_SU4920_16.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woman's_festive_jacket_SU4920_16.jpg</a><div class="media-id">Traditional festive woollen jacket worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Sikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; jacket; röijy. SU4920:16.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional festive woollen jacket worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Sikrog)" data-candidate="Traditional festive woollen jacket worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Sikrog)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional festive woollen jacket worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Sikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; jacket; röijy. SU4920:16.">Traditional festive woollen jacket worn by Livonian women, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Sikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; jacket; röijy. SU4920:16.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woman's_festive_jacket_SU4920_16.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woman's_festive_jacket_SU4920_16.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woman's_festive_jacket_SU4920_16.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:16"><input class="subject-input" type="text" value="SU4920:16"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="5" data-finalised="false" data-outcome="accept"><td class="num">5</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Women's_jacket_ERM_B_17_3.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Women's_jacket_ERM_B_17_3.jpg" alt="Input Traditional Livonian women's woollen jacket. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kampsun, naiste, ERM B 17:3, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635780 ERM B 17:3."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Women's_jacket_ERM_B_17_3.jpg" title="https://commons.wikimedia.org/wiki/File:Women's_jacket_ERM_B_17_3.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Women's_jacket_ERM_B_17_3.jpg</a><div class="media-id">Traditional Livonian women's woollen jacket. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kampsun, naiste, ERM B 17:3, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635780 ERM B 17:3.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen jacket" data-candidate="Traditional Livonian women's woollen jacket"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen jacket. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kampsun, naiste, ERM B 17:3, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635780 ERM B 17:3.">Traditional Livonian women's woollen jacket. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kampsun, naiste, ERM B 17:3, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635780 ERM B 17:3.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Women's_jacket_ERM_B_17_3.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Women's_jacket_ERM_B_17_3.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Women's_jacket_ERM_B_17_3.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 17:3"><a class="entity-link" href="http://www.muis.ee/museaalview/635780" target="_blank" rel="noopener">ERM B 17:3</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="6" data-finalised="false" data-outcome="accept"><td class="num">6</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_skirt_SU4106_383.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_skirt_SU4106_383.jpg" alt="Input Traditional Livonian women's festive woollen skirt, collected by A. O. Heikel in 1902 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hame; skirt; raitainen hame. SU4106:383."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4106_383.jpg" title="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4106_383.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4106_383.jpg</a><div class="media-id">Traditional Livonian women's festive woollen skirt, collected by A. O. Heikel in 1902 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hame; skirt; raitainen hame. SU4106:383.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's festive woollen skirt, collected by A" data-candidate="Traditional Livonian women's festive woollen skirt, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's festive woollen skirt, collected by A. O. Heikel in 1902 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hame; skirt; raitainen hame. SU4106:383.">Traditional Livonian women's festive woollen skirt, collected by A. O. Heikel in 1902 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hame; skirt; raitainen hame. SU4106:383.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4106_383.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4106_383.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4106_383.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4106:383"><input class="subject-input" type="text" value="SU4106:383"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="7" data-finalised="false" data-outcome="accept"><td class="num">7</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_skirt_SU4920_17.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_skirt_SU4920_17.jpg" alt="Input Traditional Livonian women's festive woollen skirt, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Siikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. hame; vyötäröhame. SU4920:17."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4920_17.jpg" title="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4920_17.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4920_17.jpg</a><div class="media-id">Traditional Livonian women's festive woollen skirt, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Siikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. hame; vyötäröhame. SU4920:17.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's festive woollen skirt, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Siikrog)" data-candidate="Traditional Livonian women's festive woollen skirt, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Siikrog)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's festive woollen skirt, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Siikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. hame; vyötäröhame. SU4920:17.">Traditional Livonian women's festive woollen skirt, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sīkrags (Siikrog). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. hame; vyötäröhame. SU4920:17.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4920_17.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4920_17.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_skirt_SU4920_17.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:17"><input class="subject-input" type="text" value="SU4920:17"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="8" data-finalised="false" data-outcome="accept"><td class="num">8</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Festive_skirt_ERM_B_8_84.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Festive_skirt_ERM_B_8_84.jpg" alt="Input Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:84, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633039 ERM B 8:84."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_84.jpg" title="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_84.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_84.jpg</a><div class="media-id">Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:84, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633039 ERM B 8:84.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's festive woollen skirt" data-candidate="Traditional Livonian women's festive woollen skirt"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:84, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633039 ERM B 8:84.">Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:84, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633039 ERM B 8:84.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_84.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_84.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_84.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 8:84"><a class="entity-link" href="http://www.muis.ee/museaalview/633039" target="_blank" rel="noopener">ERM B 8:84</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="9" data-finalised="false" data-outcome="accept"><td class="num">9</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Festive_skirt_ERM_B_8_85.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Festive_skirt_ERM_B_8_85.jpg" alt="Input Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in Košrags (Koštrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:85, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633040 ERM B 8:85."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_85.jpg" title="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_85.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_85.jpg</a><div class="media-id">Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in Košrags (Koštrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:85, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633040 ERM B 8:85.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's festive woollen skirt" data-candidate="Traditional Livonian women's festive woollen skirt"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in Košrags (Koštrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:85, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633040 ERM B 8:85.">Traditional Livonian women's festive woollen skirt. Collected by Oskar Loorits on the Livonian Coast in Košrags (Koštrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelik, ERM B 8:85, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633040 ERM B 8:85.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_85.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_85.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Festive_skirt_ERM_B_8_85.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 8:85"><a class="entity-link" href="http://www.muis.ee/museaalview/633040" target="_blank" rel="noopener">ERM B 8:85</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="10" data-finalised="false" data-outcome="accept"><td class="num">10</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg" alt="Input Fabric of a woman's skirt, fragment. Linen warp, woollen weft. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; hamekangas. SU4106:389."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg" title="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg</a><div class="media-id">Fabric of a woman's skirt, fragment. Linen warp, woollen weft. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; hamekangas. SU4106:389.</div></td><td class="label"><input class="text-input" data-field="label" value="Fabric of a woman's skirt, fragment" data-candidate="Fabric of a woman's skirt, fragment"></td><td class="description"><textarea data-field="description" data-candidate="Fabric of a woman's skirt, fragment. Linen warp, woollen weft. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; hamekangas. SU4106:389.">Fabric of a woman's skirt, fragment. Linen warp, woollen weft. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; hamekangas. SU4106:389.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_skirt,_fragment_SU4106_389.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4106:389"><input class="subject-input" type="text" value="SU4106:389"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="11" data-finalised="false" data-outcome="accept"><td class="num">11</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg" alt="Input Fabric from a traditional Livonian women's festive woollen skirt. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in Lielirbe (Iira) in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelikuriie, katkend, ERM B 18:9, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635798 ERM B 18:9."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg" title="https://commons.wikimedia.org/wiki/File:Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg</a><div class="media-id">Fabric from a traditional Livonian women's festive woollen skirt. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in Lielirbe (Iira) in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelikuriie, katkend, ERM B 18:9, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635798 ERM B 18:9.</div></td><td class="label"><input class="text-input" data-field="label" value="Fabric from a traditional Livonian women's festive woollen skirt" data-candidate="Fabric from a traditional Livonian women's festive woollen skirt"></td><td class="description"><textarea data-field="description" data-candidate="Fabric from a traditional Livonian women's festive woollen skirt. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in Lielirbe (Iira) in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelikuriie, katkend, ERM B 18:9, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635798 ERM B 18:9.">Fabric from a traditional Livonian women's festive woollen skirt. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in Lielirbe (Iira) in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: seelikuriie, katkend, ERM B 18:9, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635798 ERM B 18:9.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fabric_of_a_skirt,_fragment_ERM_B_18_9.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 18:9"><a class="entity-link" href="http://www.muis.ee/museaalview/635798" target="_blank" rel="noopener">ERM B 18:9</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="12" data-finalised="false" data-outcome="accept"><td class="num">12</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Apron_SU4920_18.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Apron_SU4920_18.jpg" alt="Input Traditional Livonian festive apron collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; apron. SU4920:18."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Apron_SU4920_18.jpg" title="https://commons.wikimedia.org/wiki/File:Apron_SU4920_18.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Apron_SU4920_18.jpg</a><div class="media-id">Traditional Livonian festive apron collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; apron. SU4920:18.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian festive apron collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags" data-candidate="Traditional Livonian festive apron collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian festive apron collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; apron. SU4920:18.">Traditional Livonian festive apron collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. puku; apron. SU4920:18.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Apron_SU4920_18.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Apron_SU4920_18.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Apron_SU4920_18.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:18"><input class="subject-input" type="text" value="SU4920:18"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="13" data-finalised="false" data-outcome="accept"><td class="num">13</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Apron_ERM_B_10_18.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Apron_ERM_B_10_18.jpg" alt="Input Traditional festive Livonian women's silk apron. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: põll, ERM B 10:18, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633062 ERM B 10:18."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Apron_ERM_B_10_18.jpg" title="https://commons.wikimedia.org/wiki/File:Apron_ERM_B_10_18.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Apron_ERM_B_10_18.jpg</a><div class="media-id">Traditional festive Livonian women's silk apron. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: põll, ERM B 10:18, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633062 ERM B 10:18.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional festive Livonian women's silk apron" data-candidate="Traditional festive Livonian women's silk apron"></td><td class="description"><textarea data-field="description" data-candidate="Traditional festive Livonian women's silk apron. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: põll, ERM B 10:18, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633062 ERM B 10:18.">Traditional festive Livonian women's silk apron. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: põll, ERM B 10:18, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633062 ERM B 10:18.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Apron_ERM_B_10_18.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Apron_ERM_B_10_18.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Apron_ERM_B_10_18.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 10:18"><a class="entity-link" href="http://www.muis.ee/museaalview/633062" target="_blank" rel="noopener">ERM B 10:18</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="14" data-finalised="false" data-outcome="accept"><td class="num">14</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_ERM_B_8_76.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_ERM_B_8_76.jpg" alt="Input Traditional Livonian women's woollen festive shawl, usually worn around the shoulders. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kõrik, ERM B 8:76, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633031 ERM B 8:76."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_ERM_B_8_76.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_shawl_ERM_B_8_76.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_ERM_B_8_76.jpg</a><div class="media-id">Traditional Livonian women's woollen festive shawl, usually worn around the shoulders. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kõrik, ERM B 8:76, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633031 ERM B 8:76.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen festive shawl, usually worn around the shoulders" data-candidate="Traditional Livonian women's woollen festive shawl, usually worn around the shoulders"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen festive shawl, usually worn around the shoulders. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kõrik, ERM B 8:76, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633031 ERM B 8:76.">Traditional Livonian women's woollen festive shawl, usually worn around the shoulders. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: kõrik, ERM B 8:76, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/633031 ERM B 8:76.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_shawl_ERM_B_8_76.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_ERM_B_8_76.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_ERM_B_8_76.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 8:76"><a class="entity-link" href="http://www.muis.ee/museaalview/633031" target="_blank" rel="noopener">ERM B 8:76</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="15" data-finalised="false" data-outcome="accept"><td class="num">15</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_SU4106_384.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_SU4106_384.jpg" alt="Input Traditional Livonian women's woollen shoulder shawl from 1830-1840, collected by A. O. Heikel in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. shawl; huivi; hartiahuivi. SU4106:384."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_384.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_384.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_384.jpg</a><div class="media-id">Traditional Livonian women's woollen shoulder shawl from 1830-1840, collected by A. O. Heikel in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. shawl; huivi; hartiahuivi. SU4106:384.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen shoulder shawl from 1830-1840, collected by A" data-candidate="Traditional Livonian women's woollen shoulder shawl from 1830-1840, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen shoulder shawl from 1830-1840, collected by A. O. Heikel in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. shawl; huivi; hartiahuivi. SU4106:384.">Traditional Livonian women's woollen shoulder shawl from 1830-1840, collected by A. O. Heikel in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. shawl; huivi; hartiahuivi. SU4106:384.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_384.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_384.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_384.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4106:384"><input class="subject-input" type="text" value="SU4106:384"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="16" data-finalised="false" data-outcome="accept"><td class="num">16</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_SU4106_385.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_SU4106_385.jpg" alt="Input Traditional Livonian women's woollen shoulder shawl, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hartiahuivi; huivi. SU4106:385."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_385.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_385.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_385.jpg</a><div class="media-id">Traditional Livonian women's woollen shoulder shawl, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hartiahuivi; huivi. SU4106:385.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen shoulder shawl, collected by A" data-candidate="Traditional Livonian women's woollen shoulder shawl, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen shoulder shawl, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hartiahuivi; huivi. SU4106:385.">Traditional Livonian women's woollen shoulder shawl, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. hartiahuivi; huivi. SU4106:385.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_385.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_385.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4106_385.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4106:385"><input class="subject-input" type="text" value="SU4106:385"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="17" data-finalised="false" data-outcome="accept"><td class="num">17</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_SU4920_12.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_shawl_SU4920_12.jpg" alt="Input Traditional Livonian women's woollen festive shawl, usually worn around the shoulders, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. kaulaliina.  SU4920:12."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4920_12.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4920_12.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4920_12.jpg</a><div class="media-id">Traditional Livonian women's woollen festive shawl, usually worn around the shoulders, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. kaulaliina.  SU4920:12.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen festive shawl, usually worn around the shoulders, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags" data-candidate="Traditional Livonian women's woollen festive shawl, usually worn around the shoulders, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen festive shawl, usually worn around the shoulders, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. kaulaliina.  SU4920:12.">Traditional Livonian women's woollen festive shawl, usually worn around the shoulders, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Sikrags. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. kaulaliina.  SU4920:12.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4920_12.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4920_12.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_shawl_SU4920_12.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:12"><input class="subject-input" type="text" value="SU4920:12"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="18" data-finalised="false" data-outcome="accept"><td class="num">18</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg" alt="Input Fabric of a woman's shawl, fragment. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; vaippakangas. SU4106:390."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg" title="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg</a><div class="media-id">Fabric of a woman's shawl, fragment. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; vaippakangas. SU4106:390.</div></td><td class="label"><input class="text-input" data-field="label" value="Fabric of a woman's shawl, fragment" data-candidate="Fabric of a woman's shawl, fragment"></td><td class="description"><textarea data-field="description" data-candidate="Fabric of a woman's shawl, fragment. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; vaippakangas. SU4106:390.">Fabric of a woman's shawl, fragment. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. kangas; vaippakangas. SU4106:390.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fabric_of_a_woman's_shawl,_fragment_SU4106_390.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4106:390"><input class="subject-input" type="text" value="SU4106:390"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="19" data-finalised="false" data-outcome="accept"><td class="num">19</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_male_shirt_SU4920_14.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_male_shirt_SU4920_14.jpg" alt="Input Traditional handwoven and handsewn Livonian men’s linen shirt, made at the end of the 19th century. It is made of coarse, unbleached linen fabric and decorated with embroidery. Collected by the Finnish ethnographer Emil Nestor Setälä in 1912 in the village of Sīkrags (Siikrog) on the Livonian Coast. Original artefact: Setälä, E. N. paita; miesten paita. SU4920:14."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Livonian_male_shirt_SU4920_14.jpg" title="https://commons.wikimedia.org/wiki/File:Livonian_male_shirt_SU4920_14.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_male_shirt_SU4920_14.jpg</a><div class="media-id">Traditional handwoven and handsewn Livonian men’s linen shirt, made at the end of the 19th century. It is made of coarse, unbleached linen fabric and decorated with embroidery. Collected by the Finnish ethnographer Emil Nestor Setälä in 1912 in the village of Sīkrags (Siikrog) on the Livonian Coast. Original artefact: Setälä, E. N. paita; miesten paita. SU4920:14.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional handwoven and handsewn Livonian men’s linen shirt, made at the end of the 19th century" data-candidate="Traditional handwoven and handsewn Livonian men’s linen shirt, made at the end of the 19th century"></td><td class="description"><textarea data-field="description" data-candidate="Traditional handwoven and handsewn Livonian men’s linen shirt, made at the end of the 19th century. It is made of coarse, unbleached linen fabric and decorated with embroidery. Collected by the Finnish ethnographer Emil Nestor Setälä in 1912 in the village of Sīkrags (Siikrog) on the Livonian Coast. Original artefact: Setälä, E. N. paita; miesten paita. SU4920:14.">Traditional handwoven and handsewn Livonian men’s linen shirt, made at the end of the 19th century. It is made of coarse, unbleached linen fabric and decorated with embroidery. Collected by the Finnish ethnographer Emil Nestor Setälä in 1912 in the village of Sīkrags (Siikrog) on the Livonian Coast. Original artefact: Setälä, E. N. paita; miesten paita. SU4920:14.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Livonian_male_shirt_SU4920_14.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Livonian_male_shirt_SU4920_14.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_male_shirt_SU4920_14.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:14"><input class="subject-input" type="text" value="SU4920:14"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="NA"><input class="subject-input" type="text" value="NA"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="20" data-finalised="false" data-outcome="accept"><td class="num">20</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_shirt_SU4106-405.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_shirt_SU4106-405.jpg" alt="Input Livonian men's woollen shirt, collected by A. O. Heikel on the Livonian coast in 1901 in Mazirbe (Ire). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. man's shirt; paita; miehen paita. SU4106:405."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Men's_shirt_SU4106-405.jpg" title="https://commons.wikimedia.org/wiki/File:Men's_shirt_SU4106-405.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_shirt_SU4106-405.jpg</a><div class="media-id">Livonian men's woollen shirt, collected by A. O. Heikel on the Livonian coast in 1901 in Mazirbe (Ire). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. man's shirt; paita; miehen paita. SU4106:405.</div></td><td class="label"><input class="text-input" data-field="label" value="Livonian men's woollen shirt, collected by A" data-candidate="Livonian men's woollen shirt, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Livonian men's woollen shirt, collected by A. O. Heikel on the Livonian coast in 1901 in Mazirbe (Ire). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. man's shirt; paita; miehen paita. SU4106:405.">Livonian men's woollen shirt, collected by A. O. Heikel on the Livonian coast in 1901 in Mazirbe (Ire). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. man's shirt; paita; miehen paita. SU4106:405.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Men's_shirt_SU4106-405.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Men's_shirt_SU4106-405.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_shirt_SU4106-405.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4106:405"><input class="subject-input" type="text" value="SU4106:405"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="21" data-finalised="false" data-outcome="accept"><td class="num">21</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_shirt_ERM_B_17_2.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_shirt_ERM_B_17_2.jpg" alt="Input Traditional Livonian men's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, meeste, ERM B 17:2, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635779 ERM B 17:2."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Men's_shirt_ERM_B_17_2.jpg" title="https://commons.wikimedia.org/wiki/File:Men's_shirt_ERM_B_17_2.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_shirt_ERM_B_17_2.jpg</a><div class="media-id">Traditional Livonian men's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, meeste, ERM B 17:2, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635779 ERM B 17:2.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian men's linen shirt" data-candidate="Traditional Livonian men's linen shirt"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian men's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, meeste, ERM B 17:2, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635779 ERM B 17:2.">Traditional Livonian men's linen shirt. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: särk, meeste, ERM B 17:2, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635779 ERM B 17:2.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Men's_shirt_ERM_B_17_2.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Men's_shirt_ERM_B_17_2.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_shirt_ERM_B_17_2.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 17:2"><a class="entity-link" href="http://www.muis.ee/museaalview/635779" target="_blank" rel="noopener">ERM B 17:2</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="22" data-finalised="false" data-outcome="accept"><td class="num">22</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_vest_ERM_B_17_6.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_vest_ERM_B_17_6.jpg" alt="Input Traditional Livonian men's woollen vest. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vest, meeste, ERM B 17:6, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635783 ERM B 17:6."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Men's_vest_ERM_B_17_6.jpg" title="https://commons.wikimedia.org/wiki/File:Men's_vest_ERM_B_17_6.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_vest_ERM_B_17_6.jpg</a><div class="media-id">Traditional Livonian men's woollen vest. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vest, meeste, ERM B 17:6, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635783 ERM B 17:6.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian men's woollen vest" data-candidate="Traditional Livonian men's woollen vest"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian men's woollen vest. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vest, meeste, ERM B 17:6, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635783 ERM B 17:6.">Traditional Livonian men's woollen vest. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vest, meeste, ERM B 17:6, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635783 ERM B 17:6.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Men's_vest_ERM_B_17_6.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Men's_vest_ERM_B_17_6.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_vest_ERM_B_17_6.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 17:6"><a class="entity-link" href="http://www.muis.ee/museaalview/635783" target="_blank" rel="noopener">ERM B 17:6</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="23" data-finalised="false" data-outcome="accept"><td class="num">23</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_jacket_ERM_B_17_5.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Men's_jacket_ERM_B_17_5.jpg" alt="Input Traditional Livonian men's woollen jacket with bone buttons. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vammus, pihtkuub, meeste, ERM B 17:5, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635782 ERM B 17:5."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Men's_jacket_ERM_B_17_5.jpg" title="https://commons.wikimedia.org/wiki/File:Men's_jacket_ERM_B_17_5.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_jacket_ERM_B_17_5.jpg</a><div class="media-id">Traditional Livonian men's woollen jacket with bone buttons. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vammus, pihtkuub, meeste, ERM B 17:5, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635782 ERM B 17:5.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian men's woollen jacket with bone buttons" data-candidate="Traditional Livonian men's woollen jacket with bone buttons"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian men's woollen jacket with bone buttons. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vammus, pihtkuub, meeste, ERM B 17:5, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635782 ERM B 17:5.">Traditional Livonian men's woollen jacket with bone buttons. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: vammus, pihtkuub, meeste, ERM B 17:5, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635782 ERM B 17:5.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Men's_jacket_ERM_B_17_5.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Men's_jacket_ERM_B_17_5.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Men's_jacket_ERM_B_17_5.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 17:5"><a class="entity-link" href="http://www.muis.ee/museaalview/635782" target="_blank" rel="noopener">ERM B 17:5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="1"><select class="candidate-select"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/1" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr></tbody></table><div id="candidate-provenance" hidden><input data-provenance="data_manager" value=""><input data-provenance="data_manager_iri" value=""><input data-provenance="data_manager_email" value=""><input data-provenance="table_id" value=""><input data-provenance="generated_at" value="NA"><input data-provenance="software_agent" value="Betwixt"><input data-provenance="software_version" value="0.0.8002"></div>
+</div>
+<div class="footer">
+<span id="summary"></span>
+</div>
+<section class="review-meta">
+<h2>Review metadata</h2>
+<div class="reviewer-bottom">
+<label>Reviewer<input id="reviewer-name" type="text" value="Ieva Pigozne"></label>
+<label>Reviewer email<input id="reviewer-email" type="email"></label>
+<label>Reviewer IRI (e.g. ORCID, ISNI, Wikidata)<input id="reviewer-iri" class="reviewer-iri-input" type="text" value="https://orcid.org/0000-0003-1726-0928"></label>
+<label>Project ID<input id="project-id" type="text" value="finfair" readonly></label>
+<label>Table ID<input id="table-id" type="text" value="livonian_exhibition_1" readonly></label>
+<label>Table IRI<input id="table-iri" type="text" value="https://example.com/finfair/livonian_exhibition_1" readonly></label>
+<label>State sequence<input id="review-sequence" type="number" value="0" readonly></label>
+<label>Original filename<input id="original-filename" type="text" value="livonian_exhibition_1_review.html" readonly></label>
+<label>Filename<input id="review-filename" type="text" value="livonian_exhibition_1_review.html" readonly></label>
+<label>Original created at<input id="original-created-at" type="text" value="2026-11-22T21:00:19Z" readonly></label>
+<label>Started at<input id="review-started-at" type="text" readonly></label>
+<label>Last saved at<input id="review-last-saved-at" type="text" readonly></label>
+<label>Ended at<input id="review-ended-at" type="text" readonly></label>
+<label>Status<input id="review-status" type="text" value="in-progress" readonly></label>
+</div>
+<label class="review-comment">Review comment<textarea id="review-comment" placeholder="Optional comment on review"></textarea></label>
+<input id="filename-stem" type="hidden" value="livonian_exhibition_1_review">
+<div class="save-actions">
+<button id="save-draft" type="button">Save draft</button>
+<button id="save-final" type="button">Finalise review</button>
+</div>
+<div id="save-status" class="save-status"></div>
+</section>
+<div class="candidate-provenance">Project: finfair · Table: livonian_exhibition_1 · Table IRI: https://example.com/finfair/livonian_exhibition_1 · Betwixt 0.0.8002</div>
+<footer class="site-footer">Created with Betwixt semantic review · <a href="https://github.com/dataobservatory-eu/betwixt" target="_blank" rel="noopener">GitHub</a> · <a href="https://doi.org/10.5281/zenodo.22091535" target="_blank" rel="noopener">doi:10.5281/zenodo.22091535</a></footer>
+</main>
+<script>
+(() => {
+  const rows = [...document.querySelectorAll("tbody tr")];
+
+  // Find Input links configured to open in a modal.
+  const modalLinks = document.querySelectorAll(
+    'a[data-open="modal"]'
+  );
+
+  if (modalLinks.length > 0) {
+    const dialog = document.createElement("dialog");
+    dialog.id = "evidence-dialog";
+
+    dialog.innerHTML = `
+      <div class="evidence-dialog-header">
+        <span>Input evidence</span>
+        <button type="button" class="evidence-dialog-close"
+                aria-label="Close evidence viewer">×</button>
+      </div>
+      <iframe name="evidence-viewer"
+              title="Input evidence"></iframe>
+    `;
+
+    document.body.appendChild(dialog);
+
+    const frame = dialog.querySelector("iframe");
+    const close = dialog.querySelector(".evidence-dialog-close");
+
+    // Display the dialog when a modal evidence link is selected.
+    modalLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        dialog.showModal();
+      });
+    });
+
+    // Close the dialog using its close button.
+    close.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    // Clear the previous resource when the dialog closes.
+    dialog.addEventListener("close", () => {
+      frame.src = "about:blank";
+    });
+  }
+
+  // Determine the overall outcome of a review row.
+  function outcome(row) {
+    const cells = [...row.querySelectorAll(".semantic-cell")];
+
+    if (cells.some(cell => cell.dataset.qualification === "reject")) {
+      return "reject";
+    }
+
+    if (cells.some(cell => cell.dataset.qualification === "defer")) {
+      return "defer";
+    }
+
+    return "accept";
+  }
+
+  // Update the finalisation marker for a row.
+  function paint(row) {
+    row.dataset.outcome = outcome(row);
+
+    const mark = row.querySelector(".finalise-mark");
+
+    if (row.dataset.finalised !== "true") {
+      mark.textContent = "";
+      return;
+    }
+
+    if (row.dataset.outcome === "reject") {
+      mark.textContent = "×";
+    } else if (row.dataset.outcome === "defer") {
+      mark.textContent = "○";
+    } else {
+      mark.textContent = "✓";
+    }
+  }
+
+  // Update the review summary.
+  function summary() {
+    const finalised = rows.filter(
+      row => row.dataset.finalised === "true"
+    ).length;
+
+    const deferred = document.querySelectorAll(
+      '.semantic-cell[data-qualification="defer"]'
+    ).length;
+
+    const rejected = document.querySelectorAll(
+      '.semantic-cell[data-qualification="reject"]'
+    ).length;
+
+    document.getElementById("summary").textContent =
+      `${finalised} finalised · ${deferred} deferred cells · ` +
+      `${rejected} rejected cells`;
+  }
+
+  // Apply a qualification and update the row state.
+  function qualify(cell, state) {
+    cell.dataset.qualification = state;
+    paint(cell.closest("tr"));
+    summary();
+  }
+
+  // Return an ISO 8601 UTC timestamp at one-second precision.
+  function utcTimestamp() {
+    return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
+  // Build a lookup from the initial candidate-definition pairs.
+  const definitions = new Map();
+
+  document.querySelectorAll(".semantic-cell").forEach(cell => {
+    const definition = cell.querySelector(".definition-link");
+
+    if (!definition) {
+      return;
+    }
+
+    const key =
+      `${cell.dataset.column}::${cell.dataset.candidate}`;
+
+    definitions.set(key, definition.href);
+  });
+
+  // Attach review controls to each row.
+  rows.forEach(row => {
+    row.querySelectorAll("[data-qualify]").forEach(button => {
+      button.addEventListener("click", () => {
+        const cell = button.closest(".semantic-cell");
+        const qualification = button.dataset.qualify;
+        const current = cell.dataset.qualification;
+
+        qualify(
+          cell,
+          current === qualification ? "none" : qualification
+        );
+      });
+    });
+
+    row.querySelectorAll(".candidate-select").forEach(select => {
+      const cell = select.closest(".semantic-cell");
+      const writeIn = cell.querySelector(".write-in");
+      const definition = cell.querySelector(".definition-link");
+
+      const updateSelection = () => {
+        const show = select.value === "__other__";
+
+        writeIn.style.display = show ? "block" : "none";
+
+        if (!show) {
+          writeIn.value = "";
+        }
+
+        if (show) {
+          writeIn.focus();
+        }
+
+        if (definition) {
+          const key =
+            `${cell.dataset.column}::${select.value}`;
+
+          const href = definitions.get(key);
+
+          if (href) {
+            definition.href = href;
+            definition.style.display = "";
+          } else {
+            definition.style.display = "none";
+          }
+        }
+      };
+
+      select.addEventListener("change", updateSelection);
+      updateSelection();
+    });
+
+    const check = row.querySelector(".finalise-check");
+
+    check.addEventListener("change", () => {
+      row.dataset.finalised = check.checked ? "true" : "false";
+      paint(row);
+      summary();
+    });
+
+    // Attach creation controls to every unresolved assertion.
+    row.querySelectorAll(".create-item").forEach(create => {
+      create.addEventListener("click", () => {
+        const cell = create.closest(".semantic-cell");
+        const input = cell.querySelector(".subject-input");
+
+        cell.innerHTML =
+          `<a class="entity-link" href="#">` +
+          `fuds:QNEW${row.dataset.row}</a>` +
+          `<div style="margin-top:6px;font-size:12px;color:#666">` +
+          `Prototype registration for “${input.value}”</div>` +
+          `<div class="qualify">` +
+          `<button data-qualify="defer">Defer</button>` +
+          `<button data-qualify="reject">Reject</button>` +
+          `</div>`;
+
+        // Restore qualification controls in the replaced cell.
+        cell.querySelectorAll("[data-qualify]").forEach(button => {
+          button.addEventListener("click", () => {
+            const qualification = button.dataset.qualify;
+            const current = cell.dataset.qualification;
+
+            qualify(
+              cell,
+              current === qualification ? "none" : qualification
+            );
+          });
+        });
+      });
+    });
+  });
+
+  // Initialise row presentation and review summary.
+  rows.forEach(paint);
+  summary();
+
+  const startedAt = document.getElementById("review-started-at");
+
+  if (startedAt && !startedAt.value) {
+    startedAt.value = utcTimestamp();
+  }
+
+  // Copy the live review state into the HTML to be saved.
+  function persistStateIntoClone(clone) {
+    const sourceInputs = [...document.querySelectorAll("input:not([data-provenance])")];
+    const clonedInputs = [...clone.querySelectorAll("input:not([data-provenance])")];
+
+    sourceInputs.forEach((source, index) => {
+      const target = clonedInputs[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.setAttribute("value", source.value);
+
+      if (source.type === "checkbox") {
+        if (source.checked) {
+          target.setAttribute("checked", "");
+        } else {
+          target.removeAttribute("checked");
+        }
+      }
+    });
+
+    const sourceTextareas = [...document.querySelectorAll("textarea")];
+    const clonedTextareas = [...clone.querySelectorAll("textarea")];
+
+    sourceTextareas.forEach((source, index) => {
+      if (clonedTextareas[index]) {
+        clonedTextareas[index].textContent = source.value;
+      }
+    });
+
+    const sourceSelects = [...document.querySelectorAll("select")];
+    const clonedSelects = [...clone.querySelectorAll("select")];
+
+    sourceSelects.forEach((source, index) => {
+      const target = clonedSelects[index];
+
+      if (!target) {
+        return;
+      }
+
+      [...target.options].forEach(option => {
+        if (option.value === source.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+    });
+
+    const sourceCells = [
+      ...document.querySelectorAll(".semantic-cell")
+    ];
+    const clonedCells = [
+      ...clone.querySelectorAll(".semantic-cell")
+    ];
+
+    sourceCells.forEach((source, index) => {
+      if (clonedCells[index]) {
+        clonedCells[index].dataset.qualification =
+          source.dataset.qualification;
+      }
+    });
+
+    const sourceRows = [...document.querySelectorAll("tbody tr")];
+    const clonedRows = [...clone.querySelectorAll("tbody tr")];
+
+    sourceRows.forEach((source, index) => {
+      const target = clonedRows[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.dataset.finalised =
+        source.dataset.finalised || "false";
+
+      target.dataset.outcome =
+        source.dataset.outcome || "accept";
+    });
+  }
+
+  // Save the current review as a draft or finalised HTML file.
+  function saveReview(finaliseReview) {
+    const now = utcTimestamp();
+    const sequenceInput =
+      document.getElementById("review-sequence");
+
+    const filenameStem =
+      document.getElementById("filename-stem").value.trim() ||
+      "betwixt-review";
+
+    let sequence = Number(sequenceInput.value || 0);
+
+    // The first browser save starts review sequence 1.
+    if (sequence === 0) {
+      sequence = 1;
+      sequenceInput.value = sequence;
+    }
+
+    document.getElementById("review-last-saved-at").value = now;
+
+    document.getElementById("review-status").value =
+      finaliseReview ? "finalised" : "in-progress";
+
+    if (finaliseReview) {
+      document.getElementById("review-ended-at").value = now;
+    }
+
+    // Draft and finalised files belong to the same review sequence.
+    const stem = `${filenameStem}_${sequence}`;
+    const suffix = finaliseReview ? "-finalised" : "-draft";
+    const filename = `${stem}${suffix}.html`;
+    document.getElementById("review-filename").value = filename;
+
+    // Preserve the updated state in the downloaded HTML.
+    const clone = document.documentElement.cloneNode(true);
+    persistStateIntoClone(clone);
+
+    // Exclude the temporary evidence viewer from the saved review.
+    clone.querySelector("#evidence-dialog")?.remove();
+
+    const blob = new Blob(
+      ["<!doctype html>\n" + clone.outerHTML],
+      { type: "text/html;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    document.getElementById("save-status").textContent =
+      (finaliseReview
+        ? "Finalised review saved at "
+        : "Draft saved at ") + now;
+  }
+
+  // Attach the review save actions.
+  document
+    .getElementById("save-draft")
+    .addEventListener("click", () => saveReview(false));
+
+  document
+    .getElementById("save-final")
+    .addEventListener("click", () => saveReview(true));
+})();
+</script>
+</body>
+</html>
+

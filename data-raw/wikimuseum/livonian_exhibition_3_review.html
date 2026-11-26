@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traditional Livonian Clothing: Room 3</title>
+<style>
+* { box-sizing:border-box; }
+:root { --border:#d8d8d8; --muted:#666; --header:#f5f5f5;
+        --green:#dff2df; --yellow:#fff2b8; --red:#ffd6d6; }
+body { margin:0; background:#fff; color:#202124; font-family:Roboto,Arial,sans-serif; font-size:14px; }
+main { padding:28px 32px 40px; }
+h1 { margin:0 0 8px; font-size:24px; font-weight:500; }
+.intro { max-width:1000px; line-height:1.5; color:#444; margin-bottom:20px; }
+
+/* Browser/page is the only horizontal scrolling surface. */
+html, body { overflow:visible; }
+
+/* The page may grow to the full width required by the review table. */
+main { width:100%; min-width:0; }
+
+/* No internal horizontal scrolling. */
+.scroll-top { display:none; }
+.table-wrap { overflow:visible; width:max-content; }
+
+table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; }
+th,td { border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+        padding:10px; vertical-align:top; text-align:left; background:#fff; }
+
+/* Header row stays visible during vertical page scrolling. */
+th { background:var(--header); font-weight:500; white-space:nowrap;
+     position:sticky; top:0; z-index:2; }
+
+tr:first-child th { border-top:1px solid var(--border); }
+th:first-child,td:first-child { border-left:1px solid var(--border); }
+
+/* Exactly the first two columns are sticky horizontally. */
+th:nth-child(1), td:nth-child(1) {
+  position:sticky;
+  left:32px;
+  z-index:3;
+}
+th:nth-child(2), td:nth-child(2) {
+  position:sticky;
+  left:78px;
+  z-index:3;
+  box-shadow:2px 0 3px rgba(0,0,0,.08);
+}
+
+/* Top-left two cells are sticky in both axes. */
+th:nth-child(1), th:nth-child(2) {
+  background:var(--header);
+  z-index:5;
+}
+td:nth-child(1), td:nth-child(2) {
+  background:#fff;
+}
+
+.num { width:46px; min-width:46px; text-align:right; color:var(--muted); }
+.evidence {
+  width:190px;
+  min-width:190px; }
+.evidence img {
+  display:block;
+  max-width:165px;
+  max-height:130px;
+  object-fit:contain; }
+/* Truncate long input URLs without changing their destinations. */
+.input-url {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.label { width:230px; min-width:230px; }
+.media-id { margin-top:6px; font-size:12px; color:var(--muted); }
+.label { width:230px; min-width:230px; }
+.description { width:300px; min-width:300px; }
+.evidence-description{width:285px;min-width:285px}
+.relation{width:175px;min-width:175px}
+.subject { width:245px; min-width:245px; }
+.predicate-cell,.heritage-cell { width:230px; min-width:230px; }
+.finalise-cell,.finalise-head { width:78px; min-width:78px; text-align:center; }
+.context,.context-head { width:260px; min-width:260px; }
+.context { background:#fafafa; color:#444; line-height:1.4; }
+.context-head small { display:block; font-weight:400; color:var(--muted); margin-top:3px; }
+.text-input,.subject-input,select,.write-in,textarea {
+  width:100%; padding:7px; border:1px solid #c9c9c9; border-radius:3px;
+  background:#fff; font:inherit;
+}
+textarea { min-height:78px; resize:vertical; line-height:1.4; }
+.write-in { display:none; margin-top:7px; }
+.entity-link { display:inline-block; padding:7px 8px; border:1px solid #c9c9c9; border-radius:3px;
+               color:#174ea6; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+.create-item { margin-top:7px; padding:5px 8px; border:1px solid #999; border-radius:3px;
+               background:#fff; cursor:pointer; font:inherit; }
+.definition-link { display:inline-block; margin-top:8px; color:#3c4043; font-size:12px; }
+.definition-link::after { content:" ↗"; }
+.qualify { display:flex; gap:10px; margin-top:8px; }
+.qualify button { border:0; background:transparent; padding:0; color:#555;
+                  text-decoration:underline; cursor:pointer; font:inherit; }
+.semantic-cell[data-qualification="defer"] { background:var(--yellow); }
+.semantic-cell[data-qualification="reject"] { background:var(--red); }
+tr[data-finalised="true"] .semantic-cell[data-qualification="none"] { background:var(--green); }
+.finalise-control { position:relative; display:inline-flex; }
+.finalise-check { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.finalise-check:focus-visible + .finalise-mark { outline:2px solid #174ea6; outline-offset:2px; }
+.finalise-mark { width:28px; height:28px; border:1px solid #aaa; border-radius:4px;
+                 display:inline-flex; align-items:center; justify-content:center;
+                 background:#fff; font-size:19px; font-weight:700; cursor:pointer; }
+tr[data-finalised="true"][data-outcome="accept"] .finalise-mark {
+  background:var(--green); border-color:#6e9d6e; color:#276427;
+}
+tr[data-finalised="true"][data-outcome="defer"] .finalise-mark {
+  background:var(--yellow); border-color:#c6a33a; color:#7a6200;
+}
+tr[data-finalised="true"][data-outcome="reject"] .finalise-mark {
+  background:var(--red); border-color:#c66; color:#9a2020;
+}
+.predicate-heading { display:flex; flex-direction:column; gap:3px; }
+.predicate-heading small { font-weight:400; color:var(--muted); }
+.footer { margin-top:18px; display:flex; gap:14px; align-items:center; }
+.footer button { padding:8px 14px; border:1px solid #999; border-radius:3px; background:#fff; cursor:pointer; }
+#summary { color:var(--muted); }
+
+.review-header{max-width:920px;margin:0 0 22px}.instructions{margin:0 0 8px;line-height:1.5;color:#444}
+.review-about{margin:0;font-size:13px}.review-about a{color:#174ea6;text-underline-offset:2px}
+.review-meta{max-width:920px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.review-meta h2{margin:0 0 10px;font-size:15px;font-weight:500}.reviewer-bottom{display:flex;flex-wrap:wrap;gap:14px 20px}
+.reviewer-bottom label{display:grid;gap:4px;color:var(--muted);font-size:12px}.reviewer-bottom input{min-width:240px;padding:7px;border:1px solid var(--border);border-radius:3px;font:inherit}
+.project-id-input{min-width:120px!important;width:140px}
+.save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
+#save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:var(--muted);font-size:12px}
+.site-footer{max-width:920px;margin-top:20px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+.row-comment { width:260px; min-width:260px; }
+.review-comment { max-width:920px; }
+
+
+/* Modal evidence viewer ----------------------------------------------- */
+
+#evidence-dialog {
+  width: min(1000px, 90vw);
+  height: min(800px, 85vh);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#evidence-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+#evidence-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.evidence-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.evidence-dialog-close {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#evidence-dialog iframe {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: none;
+  background: white;
+}
+</style>
+</head>
+<body>
+<main>
+<header class="review-header">
+<h1>Traditional Livonian Clothing: Room 3</h1>
+<p class="instructions">Review the descriptions and metadata of photographs documenting traditional Livonian clothing. Verify museum accession numbers, institutions, and exhibition classifications.</p>
+</header>
+<div class="table-wrap">
+<table id="review-table"><thead><tr><th class="num">#</th><th>Input</th><th>Label</th><th>Description</th><th>Alternative description</th><th>subject</th><th>accession_number</th><th>institution</th><th>room_number</th><th class="finalise-head">Finalise</th><th class="row-comment">Reviewer comment</th></tr></thead><tbody><tr data-row="1" data-finalised="false" data-outcome="accept"><td class="num">1</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Women's_socks_SU4106_377ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Women's_socks_SU4106_377ab.jpg" alt="Input Traditional Livonian women's woollen socks, collected by A.O. Heikel on the Livonian coast in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. villasukat; sukat; naisten sukat. SU4106:377ab."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Women's_socks_SU4106_377ab.jpg" title="https://commons.wikimedia.org/wiki/File:Women's_socks_SU4106_377ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Women's_socks_SU4106_377ab.jpg</a><div class="media-id">Traditional Livonian women's woollen socks, collected by A.O. Heikel on the Livonian coast in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. villasukat; sukat; naisten sukat. SU4106:377ab.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen socks, collected by A" data-candidate="Traditional Livonian women's woollen socks, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen socks, collected by A.O. Heikel on the Livonian coast in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. villasukat; sukat; naisten sukat. SU4106:377ab.">Traditional Livonian women's woollen socks, collected by A.O. Heikel on the Livonian coast in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. villasukat; sukat; naisten sukat. SU4106:377ab.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Women's_socks_SU4106_377ab.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Women's_socks_SU4106_377ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Women's_socks_SU4106_377ab.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="NA"><input class="subject-input" type="text" value="NA"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="2" data-finalised="false" data-outcome="accept"><td class="num">2</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Man's_socks_SU4920_20.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Man's_socks_SU4920_20.jpg" alt="Input Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. sukka; miehen sukka. SU4920:20."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Man's_socks_SU4920_20.jpg" title="https://commons.wikimedia.org/wiki/File:Man's_socks_SU4920_20.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Man's_socks_SU4920_20.jpg</a><div class="media-id">Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. sukka; miehen sukka. SU4920:20.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh)" data-candidate="Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. sukka; miehen sukka. SU4920:20.">Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. sukka; miehen sukka. SU4920:20.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Man's_socks_SU4920_20.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Man's_socks_SU4920_20.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Man's_socks_SU4920_20.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:20"><input class="subject-input" type="text" value="SU4920:20"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="3" data-finalised="false" data-outcome="accept"><td class="num">3</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_sock_SU4920_21.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_sock_SU4920_21.jpg" alt="Input Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. miehen sukka; sukka. SU4920:21."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_sock_SU4920_21.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_sock_SU4920_21.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_sock_SU4920_21.jpg</a><div class="media-id">Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. miehen sukka; sukka. SU4920:21.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh)" data-candidate="Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. miehen sukka; sukka. SU4920:21.">Traditional woollen socks worn by Livonian men, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, E. N. miehen sukka; sukka. SU4920:21.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_sock_SU4920_21.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_sock_SU4920_21.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_sock_SU4920_21.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:21"><input class="subject-input" type="text" value="SU4920:21"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="4" data-finalised="false" data-outcome="accept"><td class="num">4</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_socks_SU4106_378ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_socks_SU4106_378ab.jpg" alt="Input Traditional Livonian women's woollen socks, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat. SU4106:378ab."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_socks_SU4106_378ab.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_socks_SU4106_378ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_socks_SU4106_378ab.jpg</a><div class="media-id">Traditional Livonian women's woollen socks, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat. SU4106:378ab.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen socks, collected by A" data-candidate="Traditional Livonian women's woollen socks, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen socks, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat. SU4106:378ab.">Traditional Livonian women's woollen socks, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat. SU4106:378ab.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_socks_SU4106_378ab.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_socks_SU4106_378ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_socks_SU4106_378ab.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="NA"><input class="subject-input" type="text" value="NA"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="5" data-finalised="false" data-outcome="accept"><td class="num">5</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_stockings_SU4106_379ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_stockings_SU4106_379ab.jpg" alt="Input Traditional Livonian women's woollen stockings, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat; polvisukat. SU4106:379ab."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4106_379ab.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4106_379ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4106_379ab.jpg</a><div class="media-id">Traditional Livonian women's woollen stockings, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat; polvisukat. SU4106:379ab.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian women's woollen stockings, collected by A" data-candidate="Traditional Livonian women's woollen stockings, collected by A"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's woollen stockings, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat; polvisukat. SU4106:379ab.">Traditional Livonian women's woollen stockings, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. naisten sukat; sukat; polvisukat. SU4106:379ab.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4106_379ab.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4106_379ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4106_379ab.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="NA"><input class="subject-input" type="text" value="NA"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="6" data-finalised="false" data-outcome="accept"><td class="num">6</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_stockings_SU4920_22.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_stockings_SU4920_22.jpg" alt="Input Traditional woollen stockings worn by Livonian women, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: sukat; villasukat; socks; strumpor. SU4920:22."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4920_22.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4920_22.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4920_22.jpg</a><div class="media-id">Traditional woollen stockings worn by Livonian women, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: sukat; villasukat; socks; strumpor. SU4920:22.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional woollen stockings worn by Livonian women, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh)" data-candidate="Traditional woollen stockings worn by Livonian women, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional woollen stockings worn by Livonian women, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: sukat; villasukat; socks; strumpor. SU4920:22.">Traditional woollen stockings worn by Livonian women, ornamented with decorative patterns, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lūžņa (Luuzh). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: sukat; villasukat; socks; strumpor. SU4920:22.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4920_22.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4920_22.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_stockings_SU4920_22.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SU4920:22"><input class="subject-input" type="text" value="SU4920:22"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="7" data-finalised="false" data-outcome="accept"><td class="num">7</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_socks_ERM_B_17_8-ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_socks_ERM_B_17_8-ab.jpg" alt="Input Traditional Livonian woollen socks. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 17:8/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635785 ERM B 17:8/ab."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_socks_ERM_B_17_8-ab.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_socks_ERM_B_17_8-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_socks_ERM_B_17_8-ab.jpg</a><div class="media-id">Traditional Livonian woollen socks. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 17:8/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635785 ERM B 17:8/ab.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian woollen socks" data-candidate="Traditional Livonian woollen socks"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian woollen socks. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 17:8/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635785 ERM B 17:8/ab.">Traditional Livonian woollen socks. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: sokid, ERM B 17:8/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/635785 ERM B 17:8/ab.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Woollen_socks_ERM_B_17_8-ab.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Woollen_socks_ERM_B_17_8-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_socks_ERM_B_17_8-ab.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 17:8"><a class="entity-link" href="http://www.muis.ee/museaalview/635785" target="_blank" rel="noopener">ERM B 17:8</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="8" data-finalised="false" data-outcome="accept"><td class="num">8</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Bast_shoes_ERM_B_8_73-ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Bast_shoes_ERM_B_8_73-ab.jpg" alt="Input Traditional Livonian bast shoes. Collected by Oskar Loorits on the Livonian Coast in Mazirbe (Ire) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 8:73/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/632396 ERM B 8:73/ab."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Bast_shoes_ERM_B_8_73-ab.jpg" title="https://commons.wikimedia.org/wiki/File:Bast_shoes_ERM_B_8_73-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Bast_shoes_ERM_B_8_73-ab.jpg</a><div class="media-id">Traditional Livonian bast shoes. Collected by Oskar Loorits on the Livonian Coast in Mazirbe (Ire) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 8:73/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/632396 ERM B 8:73/ab.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian bast shoes" data-candidate="Traditional Livonian bast shoes"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian bast shoes. Collected by Oskar Loorits on the Livonian Coast in Mazirbe (Ire) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 8:73/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/632396 ERM B 8:73/ab.">Traditional Livonian bast shoes. Collected by Oskar Loorits on the Livonian Coast in Mazirbe (Ire) in 1924. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: viisud, ERM B 8:73/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/632396 ERM B 8:73/ab.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Bast_shoes_ERM_B_8_73-ab.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Bast_shoes_ERM_B_8_73-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Bast_shoes_ERM_B_8_73-ab.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 8:73"><a class="entity-link" href="http://www.muis.ee/museaalview/632396" target="_blank" rel="noopener">ERM B 8:73</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="9" data-finalised="false" data-outcome="accept"><td class="num">9</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/One-piece_leather_shoes_ERM_B_68_50-ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/One-piece_leather_shoes_ERM_B_68_50-ab.jpg" alt="Input Traditional Livonian one-piece leather shoes tied with laces. Collected by Jüri Linnus and Mati Ruljand on the Livonian Coast in 1970. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: pastlad, ERM B 68:50/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/620459 ERM B 68:50/ab."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:One-piece_leather_shoes_ERM_B_68_50-ab.jpg" title="https://commons.wikimedia.org/wiki/File:One-piece_leather_shoes_ERM_B_68_50-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:One-piece_leather_shoes_ERM_B_68_50-ab.jpg</a><div class="media-id">Traditional Livonian one-piece leather shoes tied with laces. Collected by Jüri Linnus and Mati Ruljand on the Livonian Coast in 1970. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: pastlad, ERM B 68:50/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/620459 ERM B 68:50/ab.</div></td><td class="label"><input class="text-input" data-field="label" value="Traditional Livonian one-piece leather shoes tied with laces" data-candidate="Traditional Livonian one-piece leather shoes tied with laces"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian one-piece leather shoes tied with laces. Collected by Jüri Linnus and Mati Ruljand on the Livonian Coast in 1970. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: pastlad, ERM B 68:50/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/620459 ERM B 68:50/ab.">Traditional Livonian one-piece leather shoes tied with laces. Collected by Jüri Linnus and Mati Ruljand on the Livonian Coast in 1970. Finno-Ugric Artefact Collection of the Estonian National Museum. Original artefact: pastlad, ERM B 68:50/ab, Eesti Rahva Muuseum, http://www.muis.ee/museaalview/620459 ERM B 68:50/ab.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:One-piece_leather_shoes_ERM_B_68_50-ab.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:One-piece_leather_shoes_ERM_B_68_50-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:One-piece_leather_shoes_ERM_B_68_50-ab.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="ERM B 68:50"><a class="entity-link" href="http://www.muis.ee/museaalview/620459" target="_blank" rel="noopener">ERM B 68:50</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="Estonian National Museum"><input class="subject-input" type="text" value="Estonian National Museum"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="3"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/3" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr></tbody></table><div id="candidate-provenance" hidden><input data-provenance="data_manager" value=""><input data-provenance="data_manager_iri" value=""><input data-provenance="data_manager_email" value=""><input data-provenance="table_id" value=""><input data-provenance="generated_at" value="NA"><input data-provenance="software_agent" value="Betwixt"><input data-provenance="software_version" value="0.0.8002"></div>
+</div>
+<div class="footer">
+<span id="summary"></span>
+</div>
+<section class="review-meta">
+<h2>Review metadata</h2>
+<div class="reviewer-bottom">
+<label>Reviewer<input id="reviewer-name" type="text" value="Ieva Pigozne"></label>
+<label>Reviewer email<input id="reviewer-email" type="email"></label>
+<label>Reviewer IRI (e.g. ORCID, ISNI, Wikidata)<input id="reviewer-iri" class="reviewer-iri-input" type="text" value="https://orcid.org/0000-0003-1726-0928"></label>
+<label>Project ID<input id="project-id" type="text" value="finfair" readonly></label>
+<label>Table ID<input id="table-id" type="text" value="livonian_exhibition_3" readonly></label>
+<label>Table IRI<input id="table-iri" type="text" value="https://example.com/finfair/livonian_exhibition_3" readonly></label>
+<label>State sequence<input id="review-sequence" type="number" value="0" readonly></label>
+<label>Original filename<input id="original-filename" type="text" value="livonian_exhibition_3_review.html" readonly></label>
+<label>Filename<input id="review-filename" type="text" value="livonian_exhibition_3_review.html" readonly></label>
+<label>Original created at<input id="original-created-at" type="text" value="2026-11-22T21:00:24Z" readonly></label>
+<label>Started at<input id="review-started-at" type="text" readonly></label>
+<label>Last saved at<input id="review-last-saved-at" type="text" readonly></label>
+<label>Ended at<input id="review-ended-at" type="text" readonly></label>
+<label>Status<input id="review-status" type="text" value="in-progress" readonly></label>
+</div>
+<label class="review-comment">Review comment<textarea id="review-comment" placeholder="Optional comment on review"></textarea></label>
+<input id="filename-stem" type="hidden" value="livonian_exhibition_3_review">
+<div class="save-actions">
+<button id="save-draft" type="button">Save draft</button>
+<button id="save-final" type="button">Finalise review</button>
+</div>
+<div id="save-status" class="save-status"></div>
+</section>
+<div class="candidate-provenance">Project: finfair · Table: livonian_exhibition_3 · Table IRI: https://example.com/finfair/livonian_exhibition_3 · Betwixt 0.0.8002</div>
+<footer class="site-footer">Created with Betwixt semantic review · <a href="https://github.com/dataobservatory-eu/betwixt" target="_blank" rel="noopener">GitHub</a> · <a href="https://doi.org/10.5281/zenodo.22091535" target="_blank" rel="noopener">doi:10.5281/zenodo.22091535</a></footer>
+</main>
+<script>
+(() => {
+  const rows = [...document.querySelectorAll("tbody tr")];
+
+  // Find Input links configured to open in a modal.
+  const modalLinks = document.querySelectorAll(
+    'a[data-open="modal"]'
+  );
+
+  if (modalLinks.length > 0) {
+    const dialog = document.createElement("dialog");
+    dialog.id = "evidence-dialog";
+
+    dialog.innerHTML = `
+      <div class="evidence-dialog-header">
+        <span>Input evidence</span>
+        <button type="button" class="evidence-dialog-close"
+                aria-label="Close evidence viewer">×</button>
+      </div>
+      <iframe name="evidence-viewer"
+              title="Input evidence"></iframe>
+    `;
+
+    document.body.appendChild(dialog);
+
+    const frame = dialog.querySelector("iframe");
+    const close = dialog.querySelector(".evidence-dialog-close");
+
+    // Display the dialog when a modal evidence link is selected.
+    modalLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        dialog.showModal();
+      });
+    });
+
+    // Close the dialog using its close button.
+    close.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    // Clear the previous resource when the dialog closes.
+    dialog.addEventListener("close", () => {
+      frame.src = "about:blank";
+    });
+  }
+
+  // Determine the overall outcome of a review row.
+  function outcome(row) {
+    const cells = [...row.querySelectorAll(".semantic-cell")];
+
+    if (cells.some(cell => cell.dataset.qualification === "reject")) {
+      return "reject";
+    }
+
+    if (cells.some(cell => cell.dataset.qualification === "defer")) {
+      return "defer";
+    }
+
+    return "accept";
+  }
+
+  // Update the finalisation marker for a row.
+  function paint(row) {
+    row.dataset.outcome = outcome(row);
+
+    const mark = row.querySelector(".finalise-mark");
+
+    if (row.dataset.finalised !== "true") {
+      mark.textContent = "";
+      return;
+    }
+
+    if (row.dataset.outcome === "reject") {
+      mark.textContent = "×";
+    } else if (row.dataset.outcome === "defer") {
+      mark.textContent = "○";
+    } else {
+      mark.textContent = "✓";
+    }
+  }
+
+  // Update the review summary.
+  function summary() {
+    const finalised = rows.filter(
+      row => row.dataset.finalised === "true"
+    ).length;
+
+    const deferred = document.querySelectorAll(
+      '.semantic-cell[data-qualification="defer"]'
+    ).length;
+
+    const rejected = document.querySelectorAll(
+      '.semantic-cell[data-qualification="reject"]'
+    ).length;
+
+    document.getElementById("summary").textContent =
+      `${finalised} finalised · ${deferred} deferred cells · ` +
+      `${rejected} rejected cells`;
+  }
+
+  // Apply a qualification and update the row state.
+  function qualify(cell, state) {
+    cell.dataset.qualification = state;
+    paint(cell.closest("tr"));
+    summary();
+  }
+
+  // Return an ISO 8601 UTC timestamp at one-second precision.
+  function utcTimestamp() {
+    return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
+  // Build a lookup from the initial candidate-definition pairs.
+  const definitions = new Map();
+
+  document.querySelectorAll(".semantic-cell").forEach(cell => {
+    const definition = cell.querySelector(".definition-link");
+
+    if (!definition) {
+      return;
+    }
+
+    const key =
+      `${cell.dataset.column}::${cell.dataset.candidate}`;
+
+    definitions.set(key, definition.href);
+  });
+
+  // Attach review controls to each row.
+  rows.forEach(row => {
+    row.querySelectorAll("[data-qualify]").forEach(button => {
+      button.addEventListener("click", () => {
+        const cell = button.closest(".semantic-cell");
+        const qualification = button.dataset.qualify;
+        const current = cell.dataset.qualification;
+
+        qualify(
+          cell,
+          current === qualification ? "none" : qualification
+        );
+      });
+    });
+
+    row.querySelectorAll(".candidate-select").forEach(select => {
+      const cell = select.closest(".semantic-cell");
+      const writeIn = cell.querySelector(".write-in");
+      const definition = cell.querySelector(".definition-link");
+
+      const updateSelection = () => {
+        const show = select.value === "__other__";
+
+        writeIn.style.display = show ? "block" : "none";
+
+        if (!show) {
+          writeIn.value = "";
+        }
+
+        if (show) {
+          writeIn.focus();
+        }
+
+        if (definition) {
+          const key =
+            `${cell.dataset.column}::${select.value}`;
+
+          const href = definitions.get(key);
+
+          if (href) {
+            definition.href = href;
+            definition.style.display = "";
+          } else {
+            definition.style.display = "none";
+          }
+        }
+      };
+
+      select.addEventListener("change", updateSelection);
+      updateSelection();
+    });
+
+    const check = row.querySelector(".finalise-check");
+
+    check.addEventListener("change", () => {
+      row.dataset.finalised = check.checked ? "true" : "false";
+      paint(row);
+      summary();
+    });
+
+    // Attach creation controls to every unresolved assertion.
+    row.querySelectorAll(".create-item").forEach(create => {
+      create.addEventListener("click", () => {
+        const cell = create.closest(".semantic-cell");
+        const input = cell.querySelector(".subject-input");
+
+        cell.innerHTML =
+          `<a class="entity-link" href="#">` +
+          `fuds:QNEW${row.dataset.row}</a>` +
+          `<div style="margin-top:6px;font-size:12px;color:#666">` +
+          `Prototype registration for “${input.value}”</div>` +
+          `<div class="qualify">` +
+          `<button data-qualify="defer">Defer</button>` +
+          `<button data-qualify="reject">Reject</button>` +
+          `</div>`;
+
+        // Restore qualification controls in the replaced cell.
+        cell.querySelectorAll("[data-qualify]").forEach(button => {
+          button.addEventListener("click", () => {
+            const qualification = button.dataset.qualify;
+            const current = cell.dataset.qualification;
+
+            qualify(
+              cell,
+              current === qualification ? "none" : qualification
+            );
+          });
+        });
+      });
+    });
+  });
+
+  // Initialise row presentation and review summary.
+  rows.forEach(paint);
+  summary();
+
+  const startedAt = document.getElementById("review-started-at");
+
+  if (startedAt && !startedAt.value) {
+    startedAt.value = utcTimestamp();
+  }
+
+  // Copy the live review state into the HTML to be saved.
+  function persistStateIntoClone(clone) {
+    const sourceInputs = [...document.querySelectorAll("input:not([data-provenance])")];
+    const clonedInputs = [...clone.querySelectorAll("input:not([data-provenance])")];
+
+    sourceInputs.forEach((source, index) => {
+      const target = clonedInputs[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.setAttribute("value", source.value);
+
+      if (source.type === "checkbox") {
+        if (source.checked) {
+          target.setAttribute("checked", "");
+        } else {
+          target.removeAttribute("checked");
+        }
+      }
+    });
+
+    const sourceTextareas = [...document.querySelectorAll("textarea")];
+    const clonedTextareas = [...clone.querySelectorAll("textarea")];
+
+    sourceTextareas.forEach((source, index) => {
+      if (clonedTextareas[index]) {
+        clonedTextareas[index].textContent = source.value;
+      }
+    });
+
+    const sourceSelects = [...document.querySelectorAll("select")];
+    const clonedSelects = [...clone.querySelectorAll("select")];
+
+    sourceSelects.forEach((source, index) => {
+      const target = clonedSelects[index];
+
+      if (!target) {
+        return;
+      }
+
+      [...target.options].forEach(option => {
+        if (option.value === source.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+    });
+
+    const sourceCells = [
+      ...document.querySelectorAll(".semantic-cell")
+    ];
+    const clonedCells = [
+      ...clone.querySelectorAll(".semantic-cell")
+    ];
+
+    sourceCells.forEach((source, index) => {
+      if (clonedCells[index]) {
+        clonedCells[index].dataset.qualification =
+          source.dataset.qualification;
+      }
+    });
+
+    const sourceRows = [...document.querySelectorAll("tbody tr")];
+    const clonedRows = [...clone.querySelectorAll("tbody tr")];
+
+    sourceRows.forEach((source, index) => {
+      const target = clonedRows[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.dataset.finalised =
+        source.dataset.finalised || "false";
+
+      target.dataset.outcome =
+        source.dataset.outcome || "accept";
+    });
+  }
+
+  // Save the current review as a draft or finalised HTML file.
+  function saveReview(finaliseReview) {
+    const now = utcTimestamp();
+    const sequenceInput =
+      document.getElementById("review-sequence");
+
+    const filenameStem =
+      document.getElementById("filename-stem").value.trim() ||
+      "betwixt-review";
+
+    let sequence = Number(sequenceInput.value || 0);
+
+    // The first browser save starts review sequence 1.
+    if (sequence === 0) {
+      sequence = 1;
+      sequenceInput.value = sequence;
+    }
+
+    document.getElementById("review-last-saved-at").value = now;
+
+    document.getElementById("review-status").value =
+      finaliseReview ? "finalised" : "in-progress";
+
+    if (finaliseReview) {
+      document.getElementById("review-ended-at").value = now;
+    }
+
+    // Draft and finalised files belong to the same review sequence.
+    const stem = `${filenameStem}_${sequence}`;
+    const suffix = finaliseReview ? "-finalised" : "-draft";
+    const filename = `${stem}${suffix}.html`;
+    document.getElementById("review-filename").value = filename;
+
+    // Preserve the updated state in the downloaded HTML.
+    const clone = document.documentElement.cloneNode(true);
+    persistStateIntoClone(clone);
+
+    // Exclude the temporary evidence viewer from the saved review.
+    clone.querySelector("#evidence-dialog")?.remove();
+
+    const blob = new Blob(
+      ["<!doctype html>\n" + clone.outerHTML],
+      { type: "text/html;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    document.getElementById("save-status").textContent =
+      (finaliseReview
+        ? "Finalised review saved at "
+        : "Draft saved at ") + now;
+  }
+
+  // Attach the review save actions.
+  document
+    .getElementById("save-draft")
+    .addEventListener("click", () => saveReview(false));
+
+  document
+    .getElementById("save-final")
+    .addEventListener("click", () => saveReview(true));
+})();
+</script>
+</body>
+</html>
+

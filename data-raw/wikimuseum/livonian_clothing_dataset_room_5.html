@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Livonian Ethnographic Clothing: Room 5</title>
+<style>
+* { box-sizing:border-box; }
+:root { --border:#d8d8d8; --muted:#666; --header:#f5f5f5;
+        --green:#dff2df; --yellow:#fff2b8; --red:#ffd6d6; }
+body { margin:0; background:#fff; color:#202124; font-family:Roboto,Arial,sans-serif; font-size:14px; }
+main { padding:28px 32px 40px; }
+h1 { margin:0 0 8px; font-size:24px; font-weight:500; }
+.intro { max-width:1000px; line-height:1.5; color:#444; margin-bottom:20px; }
+
+/* Browser/page is the only horizontal scrolling surface. */
+html, body { overflow:visible; }
+
+/* The page may grow to the full width required by the review table. */
+main { width:100%; min-width:0; }
+
+/* No internal horizontal scrolling. */
+.scroll-top { display:none; }
+.table-wrap { overflow:visible; width:max-content; }
+
+table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; }
+th,td { border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+        padding:10px; vertical-align:top; text-align:left; background:#fff; }
+
+/* Header row stays visible during vertical page scrolling. */
+th { background:var(--header); font-weight:500; white-space:nowrap;
+     position:sticky; top:0; z-index:2; }
+
+tr:first-child th { border-top:1px solid var(--border); }
+th:first-child,td:first-child { border-left:1px solid var(--border); }
+
+/* Exactly the first two columns are sticky horizontally. */
+th:nth-child(1), td:nth-child(1) {
+  position:sticky;
+  left:32px;
+  z-index:3;
+}
+th:nth-child(2), td:nth-child(2) {
+  position:sticky;
+  left:78px;
+  z-index:3;
+  box-shadow:2px 0 3px rgba(0,0,0,.08);
+}
+
+/* Top-left two cells are sticky in both axes. */
+th:nth-child(1), th:nth-child(2) {
+  background:var(--header);
+  z-index:5;
+}
+td:nth-child(1), td:nth-child(2) {
+  background:#fff;
+}
+
+.num { width:46px; min-width:46px; text-align:right; color:var(--muted); }
+.evidence {
+  width:190px;
+  min-width:190px; }
+.evidence img {
+  display:block;
+  max-width:165px;
+  max-height:130px;
+  object-fit:contain; }
+/* Truncate long input URLs without changing their destinations. */
+.input-url {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.label { width:230px; min-width:230px; }
+.media-id { margin-top:6px; font-size:12px; color:var(--muted); }
+.label { width:230px; min-width:230px; }
+.description { width:300px; min-width:300px; }
+.evidence-description{width:285px;min-width:285px}
+.relation{width:175px;min-width:175px}
+.subject { width:245px; min-width:245px; }
+.predicate-cell,.heritage-cell { width:230px; min-width:230px; }
+.finalise-cell,.finalise-head { width:78px; min-width:78px; text-align:center; }
+.context,.context-head { width:260px; min-width:260px; }
+.context { background:#fafafa; color:#444; line-height:1.4; }
+.context-head small { display:block; font-weight:400; color:var(--muted); margin-top:3px; }
+.text-input,.subject-input,select,.write-in,textarea {
+  width:100%; padding:7px; border:1px solid #c9c9c9; border-radius:3px;
+  background:#fff; font:inherit;
+}
+textarea { min-height:78px; resize:vertical; line-height:1.4; }
+.write-in { display:none; margin-top:7px; }
+.entity-link { display:inline-block; padding:7px 8px; border:1px solid #c9c9c9; border-radius:3px;
+               color:#174ea6; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+.create-item { margin-top:7px; padding:5px 8px; border:1px solid #999; border-radius:3px;
+               background:#fff; cursor:pointer; font:inherit; }
+.definition-link { display:inline-block; margin-top:8px; color:#3c4043; font-size:12px; }
+.definition-link::after { content:" ↗"; }
+.qualify { display:flex; gap:10px; margin-top:8px; }
+.qualify button { border:0; background:transparent; padding:0; color:#555;
+                  text-decoration:underline; cursor:pointer; font:inherit; }
+.semantic-cell[data-qualification="defer"] { background:var(--yellow); }
+.semantic-cell[data-qualification="reject"] { background:var(--red); }
+tr[data-finalised="true"] .semantic-cell[data-qualification="none"] { background:var(--green); }
+.finalise-control { position:relative; display:inline-flex; }
+.finalise-check { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.finalise-check:focus-visible + .finalise-mark { outline:2px solid #174ea6; outline-offset:2px; }
+.finalise-mark { width:28px; height:28px; border:1px solid #aaa; border-radius:4px;
+                 display:inline-flex; align-items:center; justify-content:center;
+                 background:#fff; font-size:19px; font-weight:700; cursor:pointer; }
+tr[data-finalised="true"][data-outcome="accept"] .finalise-mark {
+  background:var(--green); border-color:#6e9d6e; color:#276427;
+}
+tr[data-finalised="true"][data-outcome="defer"] .finalise-mark {
+  background:var(--yellow); border-color:#c6a33a; color:#7a6200;
+}
+tr[data-finalised="true"][data-outcome="reject"] .finalise-mark {
+  background:var(--red); border-color:#c66; color:#9a2020;
+}
+.predicate-heading { display:flex; flex-direction:column; gap:3px; }
+.predicate-heading small { font-weight:400; color:var(--muted); }
+.footer { margin-top:18px; display:flex; gap:14px; align-items:center; }
+.footer button { padding:8px 14px; border:1px solid #999; border-radius:3px; background:#fff; cursor:pointer; }
+#summary { color:var(--muted); }
+
+.review-header{max-width:920px;margin:0 0 22px}.instructions{margin:0 0 8px;line-height:1.5;color:#444}
+.review-about{margin:0;font-size:13px}.review-about a{color:#174ea6;text-underline-offset:2px}
+.review-meta{max-width:920px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.review-meta h2{margin:0 0 10px;font-size:15px;font-weight:500}.reviewer-bottom{display:flex;flex-wrap:wrap;gap:14px 20px}
+.reviewer-bottom label{display:grid;gap:4px;color:var(--muted);font-size:12px}.reviewer-bottom input{min-width:240px;padding:7px;border:1px solid var(--border);border-radius:3px;font:inherit}
+.project-id-input{min-width:120px!important;width:140px}
+.save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
+#save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:var(--muted);font-size:12px}
+.site-footer{max-width:920px;margin-top:20px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+.row-comment { width:260px; min-width:260px; }
+.review-comment { max-width:920px; }
+
+
+/* Modal evidence viewer ----------------------------------------------- */
+
+#evidence-dialog {
+  width: min(1000px, 90vw);
+  height: min(800px, 85vh);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#evidence-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+#evidence-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.evidence-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.evidence-dialog-close {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#evidence-dialog iframe {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: none;
+  background: white;
+}
+</style>
+</head>
+<body>
+<main>
+<header class="review-header">
+<h1>Livonian Ethnographic Clothing: Room 5</h1>
+<p class="instructions">Review the English and Latvian labels and descriptions of Livonian ethnographic clothing objects.</p>
+</header>
+<div class="table-wrap">
+<table id="review-table"><thead><tr><th class="num">#</th><th>Input</th><th>Label</th><th>Description</th><th>subject</th><th>fuds_qid</th><th>room_number</th><th class="finalise-head">Finalise</th><th class="row-comment">Reviewer comment</th></tr></thead><tbody><tr data-row="1" data-finalised="false" data-outcome="accept"><td class="num">1</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_SU2623_2.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_SU2623_2.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Brooch_SU2623_2.jpg" title="https://commons.wikimedia.org/wiki/File:Brooch_SU2623_2.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Brooch_SU2623_2.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="brooch (SU2623:2)" data-candidate="brooch (SU2623:2)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian brass ring-shaped brooch, collected by Emil Nestor Setälä on the Livonian coast in 1889. Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian brass ring-shaped brooch, collected by Emil Nestor Setälä on the Livonian coast in 1889. Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q631"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q631" target="_blank" rel="noopener">Q631</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q4828"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q4828" target="_blank" rel="noopener">Q4828</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="2" data-finalised="false" data-outcome="accept"><td class="num">2</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_SU4106_402.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_SU4106_402.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Brooch_SU4106_402.jpg" title="https://commons.wikimedia.org/wiki/File:Brooch_SU4106_402.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Brooch_SU4106_402.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="brooch (SU4106:402)" data-candidate="brooch (SU4106:402)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's ring-shaped brooch used to fasten a shoulder shawl, collected by A. O. Heikel in 1902 in Lielirbe (Iira). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian women's ring-shaped brooch used to fasten a shoulder shawl, collected by A. O. Heikel in 1902 in Lielirbe (Iira). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q653"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q653" target="_blank" rel="noopener">Q653</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q4926"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q4926" target="_blank" rel="noopener">Q4926</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="3" data-finalised="false" data-outcome="accept"><td class="num">3</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_(SU5134_).jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_(SU5134_).jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Brooch_(SU5134_).jpg" title="https://commons.wikimedia.org/wiki/File:Brooch_(SU5134_).jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Brooch_(SU5134_).jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="brooch (SU5134:)" data-candidate="brooch (SU5134:)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian women's ring-shaped brooch with the pin missing, collected by Lauri Kettunen in 1932 in Sīkrags (Siikrög). Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian women's ring-shaped brooch with the pin missing, collected by Lauri Kettunen in 1932 in Sīkrags (Siikrög). Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q717"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q717" target="_blank" rel="noopener">Q717</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5058"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5058" target="_blank" rel="noopener">Q5058</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="4" data-finalised="false" data-outcome="accept"><td class="num">4</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_ERM_B_18_33.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Brooch_ERM_B_18_33.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Brooch_ERM_B_18_33.jpg" title="https://commons.wikimedia.org/wiki/File:Brooch_ERM_B_18_33.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Brooch_ERM_B_18_33.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="brooch (ERM B 18:33)" data-candidate="brooch (ERM B 18:33)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian metal brooch, typically used to fasten the neck opening of a shirt. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional Livonian metal brooch, typically used to fasten the neck opening of a shirt. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q690"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q690" target="_blank" rel="noopener">Q690</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5030"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5030" target="_blank" rel="noopener">Q5030</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="5" data-finalised="false" data-outcome="accept"><td class="num">5</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Silver_ring_SU4106_409.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Silver_ring_SU4106_409.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Silver_ring_SU4106_409.jpg" title="https://commons.wikimedia.org/wiki/File:Silver_ring_SU4106_409.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Silver_ring_SU4106_409.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="silver ring (SU4106:409)" data-candidate="silver ring (SU4106:409)"></td><td class="description"><textarea data-field="description" data-candidate="Livonian silver ring collected by A. O. Heikel in 1902 in Mazirbe. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Livonian silver ring collected by A. O. Heikel in 1902 in Mazirbe. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q658"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q658" target="_blank" rel="noopener">Q658</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q4952"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q4952" target="_blank" rel="noopener">Q4952</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="6" data-finalised="false" data-outcome="accept"><td class="num">6</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_380.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_380.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_380.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_380.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_380.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (SU4106:380)" data-candidate="woven woollen ribbon (SU4106:380)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q711"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q711" target="_blank" rel="noopener">Q711</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5052"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5052" target="_blank" rel="noopener">Q5052</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="7" data-finalised="false" data-outcome="accept"><td class="num">7</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_381.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_381.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_381.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_381.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_381.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (SU4106:381)" data-candidate="woven woollen ribbon (SU4106:381)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q712"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q712" target="_blank" rel="noopener">Q712</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5053"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5053" target="_blank" rel="noopener">Q5053</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="8" data-finalised="false" data-outcome="accept"><td class="num">8</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_382.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_382.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_382.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_382.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_382.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (SU4106:382)" data-candidate="woven woollen ribbon (SU4106:382)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q713"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q713" target="_blank" rel="noopener">Q713</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5054"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5054" target="_blank" rel="noopener">Q5054</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="9" data-finalised="false" data-outcome="accept"><td class="num">9</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_398.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_398.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_398.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_398.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_398.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (SU4106:398)" data-candidate="woven woollen ribbon (SU4106:398)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q714"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q714" target="_blank" rel="noopener">Q714</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5055"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5055" target="_blank" rel="noopener">Q5055</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="10" data-finalised="false" data-outcome="accept"><td class="num">10</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_399.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_SU4106_399.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_399.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_399.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_SU4106_399.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (SU4106:399)" data-candidate="woven woollen ribbon (SU4106:399)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q715"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q715" target="_blank" rel="noopener">Q715</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5056"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5056" target="_blank" rel="noopener">Q5056</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="11" data-finalised="false" data-outcome="accept"><td class="num">11</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_16.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_16.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_16.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_16.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_16.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (ERM B 10:16)" data-candidate="woven woollen ribbon (ERM B 10:16)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q693"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q693" target="_blank" rel="noopener">Q693</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5034"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5034" target="_blank" rel="noopener">Q5034</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="12" data-finalised="false" data-outcome="accept"><td class="num">12</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_10_15.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_10_15.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_15.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_15.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_15.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven sash (ERM B 10:15)" data-candidate="woven sash (ERM B 10:15)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional woven Livonian sash with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional woven Livonian sash with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q694"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q694" target="_blank" rel="noopener">Q694</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5035"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5035" target="_blank" rel="noopener">Q5035</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="13" data-finalised="false" data-outcome="accept"><td class="num">13</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_10_14.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_10_14.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_14.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_14.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_14.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven sash (ERM B 10:14)" data-candidate="woven sash (ERM B 10:14)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional woven Livonian sash with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional woven Livonian sash with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q695"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q695" target="_blank" rel="noopener">Q695</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5036"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5036" target="_blank" rel="noopener">Q5036</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="14" data-finalised="false" data-outcome="accept"><td class="num">14</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_10_13.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_10_13.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_13.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_13.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_10_13.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven sash (ERM B 10:13)" data-candidate="woven sash (ERM B 10:13)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional woven Livonian sash with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional woven Livonian sash with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q696"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q696" target="_blank" rel="noopener">Q696</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5037"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5037" target="_blank" rel="noopener">Q5037</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="15" data-finalised="false" data-outcome="accept"><td class="num">15</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_12.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_12.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_12.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_12.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_12.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (ERM B 10:12)" data-candidate="woven woollen ribbon (ERM B 10:12)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q697"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q697" target="_blank" rel="noopener">Q697</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5038"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5038" target="_blank" rel="noopener">Q5038</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="16" data-finalised="false" data-outcome="accept"><td class="num">16</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_11.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_11.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_11.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_11.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_11.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (ERM B 10:11)" data-candidate="woven woollen ribbon (ERM B 10:11)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q698"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q698" target="_blank" rel="noopener">Q698</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5039"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5039" target="_blank" rel="noopener">Q5039</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="17" data-finalised="false" data-outcome="accept"><td class="num">17</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_10.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_10_10.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_10.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_10.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_10_10.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (ERM B 10:10)" data-candidate="woven woollen ribbon (ERM B 10:10)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q699"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q699" target="_blank" rel="noopener">Q699</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5040"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5040" target="_blank" rel="noopener">Q5040</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="18" data-finalised="false" data-outcome="accept"><td class="num">18</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_17_7-abc.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon_ERM_B_17_7-abc.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_17_7-abc.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_17_7-abc.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon_ERM_B_17_7-abc.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (ERM B 17:7/abc)" data-candidate="woven woollen ribbon (ERM B 17:7/abc)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional Livonian handwoven woollen ribbon with decorative patterns, used as a garter. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional Livonian handwoven woollen ribbon with decorative patterns, used as a garter. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q700"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q700" target="_blank" rel="noopener">Q700</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5041"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5041" target="_blank" rel="noopener">Q5041</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="19" data-finalised="false" data-outcome="accept"><td class="num">19</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Braided_sash_ERM_B_17_9-ab.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Braided_sash_ERM_B_17_9-ab.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Braided_sash_ERM_B_17_9-ab.jpg" title="https://commons.wikimedia.org/wiki/File:Braided_sash_ERM_B_17_9-ab.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Braided_sash_ERM_B_17_9-ab.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="braided sash (ERM B 17:9/ab)" data-candidate="braided sash (ERM B 17:9/ab)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional braided Livonian woollen sash. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional braided Livonian woollen sash. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q701"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q701" target="_blank" rel="noopener">Q701</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5042"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5042" target="_blank" rel="noopener">Q5042</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="20" data-finalised="false" data-outcome="accept"><td class="num">20</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_94_21.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_sash_ERM_B_94_21.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_94_21.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_94_21.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_sash_ERM_B_94_21.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven sash (ERM B 94:21)" data-candidate="woven sash (ERM B 94:21)"></td><td class="description"><textarea data-field="description" data-candidate="Traditional woven Livonian women's sash with decorative patterns. Collected by Lembit Lepp and J&amp;T Linnus on the Livonian Coast in Košrags (Koštrõgi) in 1976. Finno-Ugric Artefact Collection of the Estonian National Museum.">Traditional woven Livonian women's sash with decorative patterns. Collected by Lembit Lepp and J&amp;T Linnus on the Livonian Coast in Košrags (Koštrõgi) in 1976. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q710"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q710" target="_blank" rel="noopener">Q710</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5051"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5051" target="_blank" rel="noopener">Q5051</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="21" data-finalised="false" data-outcome="accept"><td class="num">21</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Handkerchief_ERM_B_17_11.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Handkerchief_ERM_B_17_11.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Handkerchief_ERM_B_17_11.jpg" title="https://commons.wikimedia.org/wiki/File:Handkerchief_ERM_B_17_11.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Handkerchief_ERM_B_17_11.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="handkerchief (ERM B 17:11)" data-candidate="handkerchief (ERM B 17:11)"></td><td class="description"><textarea data-field="description" data-candidate="Livonian cotton handkerchief. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Livonian cotton handkerchief. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q684"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q684" target="_blank" rel="noopener">Q684</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5022"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5022" target="_blank" rel="noopener">Q5022</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="22" data-finalised="false" data-outcome="accept"><td class="num">22</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_woollen_blanket,_fragment_SU4106_391.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fabric_of_a_woollen_blanket,_fragment_SU4106_391.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woollen_blanket,_fragment_SU4106_391.jpg" title="https://commons.wikimedia.org/wiki/File:Fabric_of_a_woollen_blanket,_fragment_SU4106_391.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fabric_of_a_woollen_blanket,_fragment_SU4106_391.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="fabric of a woollen blanket, fragment (SU4106:391)" data-candidate="fabric of a woollen blanket, fragment (SU4106:391)"></td><td class="description"><textarea data-field="description" data-candidate="Fabric of a woollen blanket, fragment. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Fabric of a woollen blanket, fragment. Collected by A. O. Heikel in 1901 in Miķeļtornis (Piza). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q642"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q642" target="_blank" rel="noopener">Q642</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q4844"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q4844" target="_blank" rel="noopener">Q4844</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="23" data-finalised="false" data-outcome="accept"><td class="num">23</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Textile_fragment_ERM_B_10_23.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Textile_fragment_ERM_B_10_23.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Textile_fragment_ERM_B_10_23.jpg" title="https://commons.wikimedia.org/wiki/File:Textile_fragment_ERM_B_10_23.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Textile_fragment_ERM_B_10_23.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="textile fragment (ERM B 10:23)" data-candidate="textile fragment (ERM B 10:23)"></td><td class="description"><textarea data-field="description" data-candidate="Fragment of a Livonian textile. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.">Fragment of a Livonian textile. Collected by Oskar Loorits on the Livonian Coast in Pitrags (Pitrõg) in 1925. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q675"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q675" target="_blank" rel="noopener">Q675</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q4996"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q4996" target="_blank" rel="noopener">Q4996</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="24" data-finalised="false" data-outcome="accept"><td class="num">24</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_ribbon_SU4920_26.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woollen_ribbon_SU4920_26.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woollen_ribbon_SU4920_26.jpg" title="https://commons.wikimedia.org/wiki/File:Woollen_ribbon_SU4920_26.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woollen_ribbon_SU4920_26.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon (SU4920:26)" data-candidate="woven woollen ribbon (SU4920:26)"></td><td class="description"><textarea data-field="description" data-candidate="Fragment of a traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lielirbe (Iira). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.">Fragment of a traditional Livonian handwoven woollen ribbon featuring a decorative pattern, collected by Emil Nestor Setälä on the Livonian coast in 1912 in Lielirbe (Iira). Antell's Collection, Finno-Ugric Collection of the National Museum of Finland.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q630"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q630" target="_blank" rel="noopener">Q630</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q4827"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q4827" target="_blank" rel="noopener">Q4827</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="25" data-finalised="false" data-outcome="accept"><td class="num">25</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon,_fragment_ERM_B_18_8.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Woven_woollen_ribbon,_fragment_ERM_B_18_8.jpg" alt="Input "></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon,_fragment_ERM_B_18_8.jpg" title="https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon,_fragment_ERM_B_18_8.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Woven_woollen_ribbon,_fragment_ERM_B_18_8.jpg</a><div class="media-id"></div></td><td class="label"><input class="text-input" data-field="label" value="woven woollen ribbon, fragment (ERM B 18:8)" data-candidate="woven woollen ribbon, fragment (ERM B 18:8)"></td><td class="description"><textarea data-field="description" data-candidate="Fragment of a traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in Miķeļtornis (Piza) in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum.">Fragment of a traditional Livonian handwoven woollen ribbon with decorative patterns. Collected by Ferdinand Linnus (Leinbock) on the Livonian Coast in Miķeļtornis (Piza) in 1928. Finno-Ugric Artefact Collection of the Estonian National Museum.</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="Q702"><a class="entity-link" href="https://reprexbase.eu/textilebase/Item:Q702" target="_blank" rel="noopener">Q702</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="fuds_qid" data-qualification="none" data-candidate="Q5043"><a class="entity-link" href="https://reprexbase.eu/fu/Item:Q5043" target="_blank" rel="noopener">Q5043</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="5"><a class="entity-link" href="https://et.wikipedia.org/wiki/Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/5" target="_blank" rel="noopener">5</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr></tbody></table><div id="candidate-provenance" hidden><input data-provenance="data_manager" value=""><input data-provenance="data_manager_iri" value=""><input data-provenance="data_manager_email" value=""><input data-provenance="table_id" value=""><input data-provenance="generated_at" value="NA"><input data-provenance="software_agent" value="Betwixt"><input data-provenance="software_version" value="0.0.8002"></div>
+</div>
+<div class="footer">
+<span id="summary"></span>
+</div>
+<section class="review-meta">
+<h2>Review metadata</h2>
+<div class="reviewer-bottom">
+<label>Reviewer<input id="reviewer-name" type="text" value="Ieva Pigozne"></label>
+<label>Reviewer email<input id="reviewer-email" type="email"></label>
+<label>Reviewer IRI (e.g. ORCID, ISNI, Wikidata)<input id="reviewer-iri" class="reviewer-iri-input" type="text" value="https://orcid.org/0000-0003-1726-0928"></label>
+<label>Project ID<input id="project-id" type="text" value="finfair" readonly></label>
+<label>Table ID<input id="table-id" type="text" value="livonian_clothing_dataset_room_5" readonly></label>
+<label>Table IRI<input id="table-iri" type="text" value="https://example.com/finfair/livonian_clothing_dataset_room_5" readonly></label>
+<label>State sequence<input id="review-sequence" type="number" value="0" readonly></label>
+<label>Original filename<input id="original-filename" type="text" value="livonian_clothing_dataset_room_5.html" readonly></label>
+<label>Filename<input id="review-filename" type="text" value="livonian_clothing_dataset_room_5.html" readonly></label>
+<label>Original created at<input id="original-created-at" type="text" value="2026-11-24T21:35:34Z" readonly></label>
+<label>Started at<input id="review-started-at" type="text" readonly></label>
+<label>Last saved at<input id="review-last-saved-at" type="text" readonly></label>
+<label>Ended at<input id="review-ended-at" type="text" readonly></label>
+<label>Status<input id="review-status" type="text" value="in-progress" readonly></label>
+</div>
+<label class="review-comment">Review comment<textarea id="review-comment" placeholder="Optional comment on review"></textarea></label>
+<input id="filename-stem" type="hidden" value="livonian_clothing_dataset_room_5">
+<div class="save-actions">
+<button id="save-draft" type="button">Save draft</button>
+<button id="save-final" type="button">Finalise review</button>
+</div>
+<div id="save-status" class="save-status"></div>
+</section>
+<div class="candidate-provenance">Project: finfair · Table: livonian_clothing_dataset_room_5 · Table IRI: https://example.com/finfair/livonian_clothing_dataset_room_5 · Betwixt 0.0.8002</div>
+<footer class="site-footer">Created with Betwixt semantic review · <a href="https://github.com/dataobservatory-eu/betwixt" target="_blank" rel="noopener">GitHub</a> · <a href="https://doi.org/10.5281/zenodo.22091535" target="_blank" rel="noopener">doi:10.5281/zenodo.22091535</a></footer>
+</main>
+<script>
+(() => {
+  const rows = [...document.querySelectorAll("tbody tr")];
+
+  // Find Input links configured to open in a modal.
+  const modalLinks = document.querySelectorAll(
+    'a[data-open="modal"]'
+  );
+
+  if (modalLinks.length > 0) {
+    const dialog = document.createElement("dialog");
+    dialog.id = "evidence-dialog";
+
+    dialog.innerHTML = `
+      <div class="evidence-dialog-header">
+        <span>Input evidence</span>
+        <button type="button" class="evidence-dialog-close"
+                aria-label="Close evidence viewer">×</button>
+      </div>
+      <iframe name="evidence-viewer"
+              title="Input evidence"></iframe>
+    `;
+
+    document.body.appendChild(dialog);
+
+    const frame = dialog.querySelector("iframe");
+    const close = dialog.querySelector(".evidence-dialog-close");
+
+    // Display the dialog when a modal evidence link is selected.
+    modalLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        dialog.showModal();
+      });
+    });
+
+    // Close the dialog using its close button.
+    close.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    // Clear the previous resource when the dialog closes.
+    dialog.addEventListener("close", () => {
+      frame.src = "about:blank";
+    });
+  }
+
+  // Determine the overall outcome of a review row.
+  function outcome(row) {
+    const cells = [...row.querySelectorAll(".semantic-cell")];
+
+    if (cells.some(cell => cell.dataset.qualification === "reject")) {
+      return "reject";
+    }
+
+    if (cells.some(cell => cell.dataset.qualification === "defer")) {
+      return "defer";
+    }
+
+    return "accept";
+  }
+
+  // Update the finalisation marker for a row.
+  function paint(row) {
+    row.dataset.outcome = outcome(row);
+
+    const mark = row.querySelector(".finalise-mark");
+
+    if (row.dataset.finalised !== "true") {
+      mark.textContent = "";
+      return;
+    }
+
+    if (row.dataset.outcome === "reject") {
+      mark.textContent = "×";
+    } else if (row.dataset.outcome === "defer") {
+      mark.textContent = "○";
+    } else {
+      mark.textContent = "✓";
+    }
+  }
+
+  // Update the review summary.
+  function summary() {
+    const finalised = rows.filter(
+      row => row.dataset.finalised === "true"
+    ).length;
+
+    const deferred = document.querySelectorAll(
+      '.semantic-cell[data-qualification="defer"]'
+    ).length;
+
+    const rejected = document.querySelectorAll(
+      '.semantic-cell[data-qualification="reject"]'
+    ).length;
+
+    document.getElementById("summary").textContent =
+      `${finalised} finalised · ${deferred} deferred cells · ` +
+      `${rejected} rejected cells`;
+  }
+
+  // Apply a qualification and update the row state.
+  function qualify(cell, state) {
+    cell.dataset.qualification = state;
+    paint(cell.closest("tr"));
+    summary();
+  }
+
+  // Return an ISO 8601 UTC timestamp at one-second precision.
+  function utcTimestamp() {
+    return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
+  // Build a lookup from the initial candidate-definition pairs.
+  const definitions = new Map();
+
+  document.querySelectorAll(".semantic-cell").forEach(cell => {
+    const definition = cell.querySelector(".definition-link");
+
+    if (!definition) {
+      return;
+    }
+
+    const key =
+      `${cell.dataset.column}::${cell.dataset.candidate}`;
+
+    definitions.set(key, definition.href);
+  });
+
+  // Attach review controls to each row.
+  rows.forEach(row => {
+    row.querySelectorAll("[data-qualify]").forEach(button => {
+      button.addEventListener("click", () => {
+        const cell = button.closest(".semantic-cell");
+        const qualification = button.dataset.qualify;
+        const current = cell.dataset.qualification;
+
+        qualify(
+          cell,
+          current === qualification ? "none" : qualification
+        );
+      });
+    });
+
+    row.querySelectorAll(".candidate-select").forEach(select => {
+      const cell = select.closest(".semantic-cell");
+      const writeIn = cell.querySelector(".write-in");
+      const definition = cell.querySelector(".definition-link");
+
+      const updateSelection = () => {
+        const show = select.value === "__other__";
+
+        writeIn.style.display = show ? "block" : "none";
+
+        if (!show) {
+          writeIn.value = "";
+        }
+
+        if (show) {
+          writeIn.focus();
+        }
+
+        if (definition) {
+          const key =
+            `${cell.dataset.column}::${select.value}`;
+
+          const href = definitions.get(key);
+
+          if (href) {
+            definition.href = href;
+            definition.style.display = "";
+          } else {
+            definition.style.display = "none";
+          }
+        }
+      };
+
+      select.addEventListener("change", updateSelection);
+      updateSelection();
+    });
+
+    const check = row.querySelector(".finalise-check");
+
+    check.addEventListener("change", () => {
+      row.dataset.finalised = check.checked ? "true" : "false";
+      paint(row);
+      summary();
+    });
+
+    // Attach creation controls to every unresolved assertion.
+    row.querySelectorAll(".create-item").forEach(create => {
+      create.addEventListener("click", () => {
+        const cell = create.closest(".semantic-cell");
+        const input = cell.querySelector(".subject-input");
+
+        cell.innerHTML =
+          `<a class="entity-link" href="#">` +
+          `fuds:QNEW${row.dataset.row}</a>` +
+          `<div style="margin-top:6px;font-size:12px;color:#666">` +
+          `Prototype registration for “${input.value}”</div>` +
+          `<div class="qualify">` +
+          `<button data-qualify="defer">Defer</button>` +
+          `<button data-qualify="reject">Reject</button>` +
+          `</div>`;
+
+        // Restore qualification controls in the replaced cell.
+        cell.querySelectorAll("[data-qualify]").forEach(button => {
+          button.addEventListener("click", () => {
+            const qualification = button.dataset.qualify;
+            const current = cell.dataset.qualification;
+
+            qualify(
+              cell,
+              current === qualification ? "none" : qualification
+            );
+          });
+        });
+      });
+    });
+  });
+
+  // Initialise row presentation and review summary.
+  rows.forEach(paint);
+  summary();
+
+  const startedAt = document.getElementById("review-started-at");
+
+  if (startedAt && !startedAt.value) {
+    startedAt.value = utcTimestamp();
+  }
+
+  // Copy the live review state into the HTML to be saved.
+  function persistStateIntoClone(clone) {
+    const sourceInputs = [...document.querySelectorAll("input:not([data-provenance])")];
+    const clonedInputs = [...clone.querySelectorAll("input:not([data-provenance])")];
+
+    sourceInputs.forEach((source, index) => {
+      const target = clonedInputs[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.setAttribute("value", source.value);
+
+      if (source.type === "checkbox") {
+        if (source.checked) {
+          target.setAttribute("checked", "");
+        } else {
+          target.removeAttribute("checked");
+        }
+      }
+    });
+
+    const sourceTextareas = [...document.querySelectorAll("textarea")];
+    const clonedTextareas = [...clone.querySelectorAll("textarea")];
+
+    sourceTextareas.forEach((source, index) => {
+      if (clonedTextareas[index]) {
+        clonedTextareas[index].textContent = source.value;
+      }
+    });
+
+    const sourceSelects = [...document.querySelectorAll("select")];
+    const clonedSelects = [...clone.querySelectorAll("select")];
+
+    sourceSelects.forEach((source, index) => {
+      const target = clonedSelects[index];
+
+      if (!target) {
+        return;
+      }
+
+      [...target.options].forEach(option => {
+        if (option.value === source.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+    });
+
+    const sourceCells = [
+      ...document.querySelectorAll(".semantic-cell")
+    ];
+    const clonedCells = [
+      ...clone.querySelectorAll(".semantic-cell")
+    ];
+
+    sourceCells.forEach((source, index) => {
+      if (clonedCells[index]) {
+        clonedCells[index].dataset.qualification =
+          source.dataset.qualification;
+      }
+    });
+
+    const sourceRows = [...document.querySelectorAll("tbody tr")];
+    const clonedRows = [...clone.querySelectorAll("tbody tr")];
+
+    sourceRows.forEach((source, index) => {
+      const target = clonedRows[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.dataset.finalised =
+        source.dataset.finalised || "false";
+
+      target.dataset.outcome =
+        source.dataset.outcome || "accept";
+    });
+  }
+
+  // Save the current review as a draft or finalised HTML file.
+  function saveReview(finaliseReview) {
+    const now = utcTimestamp();
+    const sequenceInput =
+      document.getElementById("review-sequence");
+
+    const filenameStem =
+      document.getElementById("filename-stem").value.trim() ||
+      "betwixt-review";
+
+    let sequence = Number(sequenceInput.value || 0);
+
+    // The first browser save starts review sequence 1.
+    if (sequence === 0) {
+      sequence = 1;
+      sequenceInput.value = sequence;
+    }
+
+    document.getElementById("review-last-saved-at").value = now;
+
+    document.getElementById("review-status").value =
+      finaliseReview ? "finalised" : "in-progress";
+
+    if (finaliseReview) {
+      document.getElementById("review-ended-at").value = now;
+    }
+
+    // Draft and finalised files belong to the same review sequence.
+    const stem = `${filenameStem}_${sequence}`;
+    const suffix = finaliseReview ? "-finalised" : "-draft";
+    const filename = `${stem}${suffix}.html`;
+    document.getElementById("review-filename").value = filename;
+
+    // Preserve the updated state in the downloaded HTML.
+    const clone = document.documentElement.cloneNode(true);
+    persistStateIntoClone(clone);
+
+    // Exclude the temporary evidence viewer from the saved review.
+    clone.querySelector("#evidence-dialog")?.remove();
+
+    const blob = new Blob(
+      ["<!doctype html>\n" + clone.outerHTML],
+      { type: "text/html;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    document.getElementById("save-status").textContent =
+      (finaliseReview
+        ? "Finalised review saved at "
+        : "Draft saved at ") + now;
+  }
+
+  // Attach the review save actions.
+  document
+    .getElementById("save-draft")
+    .addEventListener("click", () => saveReview(false));
+
+  document
+    .getElementById("save-final")
+    .addEventListener("click", () => saveReview(true));
+})();
+</script>
+</body>
+</html>
+

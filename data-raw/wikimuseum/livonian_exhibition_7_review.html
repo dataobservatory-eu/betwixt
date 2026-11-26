@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traditional Livonian Clothing: Room 7</title>
+<style>
+* { box-sizing:border-box; }
+:root { --border:#d8d8d8; --muted:#666; --header:#f5f5f5;
+        --green:#dff2df; --yellow:#fff2b8; --red:#ffd6d6; }
+body { margin:0; background:#fff; color:#202124; font-family:Roboto,Arial,sans-serif; font-size:14px; }
+main { padding:28px 32px 40px; }
+h1 { margin:0 0 8px; font-size:24px; font-weight:500; }
+.intro { max-width:1000px; line-height:1.5; color:#444; margin-bottom:20px; }
+
+/* Browser/page is the only horizontal scrolling surface. */
+html, body { overflow:visible; }
+
+/* The page may grow to the full width required by the review table. */
+main { width:100%; min-width:0; }
+
+/* No internal horizontal scrolling. */
+.scroll-top { display:none; }
+.table-wrap { overflow:visible; width:max-content; }
+
+table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; }
+th,td { border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+        padding:10px; vertical-align:top; text-align:left; background:#fff; }
+
+/* Header row stays visible during vertical page scrolling. */
+th { background:var(--header); font-weight:500; white-space:nowrap;
+     position:sticky; top:0; z-index:2; }
+
+tr:first-child th { border-top:1px solid var(--border); }
+th:first-child,td:first-child { border-left:1px solid var(--border); }
+
+/* Exactly the first two columns are sticky horizontally. */
+th:nth-child(1), td:nth-child(1) {
+  position:sticky;
+  left:32px;
+  z-index:3;
+}
+th:nth-child(2), td:nth-child(2) {
+  position:sticky;
+  left:78px;
+  z-index:3;
+  box-shadow:2px 0 3px rgba(0,0,0,.08);
+}
+
+/* Top-left two cells are sticky in both axes. */
+th:nth-child(1), th:nth-child(2) {
+  background:var(--header);
+  z-index:5;
+}
+td:nth-child(1), td:nth-child(2) {
+  background:#fff;
+}
+
+.num { width:46px; min-width:46px; text-align:right; color:var(--muted); }
+.evidence {
+  width:190px;
+  min-width:190px; }
+.evidence img {
+  display:block;
+  max-width:165px;
+  max-height:130px;
+  object-fit:contain; }
+/* Truncate long input URLs without changing their destinations. */
+.input-url {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.label { width:230px; min-width:230px; }
+.media-id { margin-top:6px; font-size:12px; color:var(--muted); }
+.label { width:230px; min-width:230px; }
+.description { width:300px; min-width:300px; }
+.evidence-description{width:285px;min-width:285px}
+.relation{width:175px;min-width:175px}
+.subject { width:245px; min-width:245px; }
+.predicate-cell,.heritage-cell { width:230px; min-width:230px; }
+.finalise-cell,.finalise-head { width:78px; min-width:78px; text-align:center; }
+.context,.context-head { width:260px; min-width:260px; }
+.context { background:#fafafa; color:#444; line-height:1.4; }
+.context-head small { display:block; font-weight:400; color:var(--muted); margin-top:3px; }
+.text-input,.subject-input,select,.write-in,textarea {
+  width:100%; padding:7px; border:1px solid #c9c9c9; border-radius:3px;
+  background:#fff; font:inherit;
+}
+textarea { min-height:78px; resize:vertical; line-height:1.4; }
+.write-in { display:none; margin-top:7px; }
+.entity-link { display:inline-block; padding:7px 8px; border:1px solid #c9c9c9; border-radius:3px;
+               color:#174ea6; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+.create-item { margin-top:7px; padding:5px 8px; border:1px solid #999; border-radius:3px;
+               background:#fff; cursor:pointer; font:inherit; }
+.definition-link { display:inline-block; margin-top:8px; color:#3c4043; font-size:12px; }
+.definition-link::after { content:" ↗"; }
+.qualify { display:flex; gap:10px; margin-top:8px; }
+.qualify button { border:0; background:transparent; padding:0; color:#555;
+                  text-decoration:underline; cursor:pointer; font:inherit; }
+.semantic-cell[data-qualification="defer"] { background:var(--yellow); }
+.semantic-cell[data-qualification="reject"] { background:var(--red); }
+tr[data-finalised="true"] .semantic-cell[data-qualification="none"] { background:var(--green); }
+.finalise-control { position:relative; display:inline-flex; }
+.finalise-check { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
+.finalise-check:focus-visible + .finalise-mark { outline:2px solid #174ea6; outline-offset:2px; }
+.finalise-mark { width:28px; height:28px; border:1px solid #aaa; border-radius:4px;
+                 display:inline-flex; align-items:center; justify-content:center;
+                 background:#fff; font-size:19px; font-weight:700; cursor:pointer; }
+tr[data-finalised="true"][data-outcome="accept"] .finalise-mark {
+  background:var(--green); border-color:#6e9d6e; color:#276427;
+}
+tr[data-finalised="true"][data-outcome="defer"] .finalise-mark {
+  background:var(--yellow); border-color:#c6a33a; color:#7a6200;
+}
+tr[data-finalised="true"][data-outcome="reject"] .finalise-mark {
+  background:var(--red); border-color:#c66; color:#9a2020;
+}
+.predicate-heading { display:flex; flex-direction:column; gap:3px; }
+.predicate-heading small { font-weight:400; color:var(--muted); }
+.footer { margin-top:18px; display:flex; gap:14px; align-items:center; }
+.footer button { padding:8px 14px; border:1px solid #999; border-radius:3px; background:#fff; cursor:pointer; }
+#summary { color:var(--muted); }
+
+.review-header{max-width:920px;margin:0 0 22px}.instructions{margin:0 0 8px;line-height:1.5;color:#444}
+.review-about{margin:0;font-size:13px}.review-about a{color:#174ea6;text-underline-offset:2px}
+.review-meta{max-width:920px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.review-meta h2{margin:0 0 10px;font-size:15px;font-weight:500}.reviewer-bottom{display:flex;flex-wrap:wrap;gap:14px 20px}
+.reviewer-bottom label{display:grid;gap:4px;color:var(--muted);font-size:12px}.reviewer-bottom input{min-width:240px;padding:7px;border:1px solid var(--border);border-radius:3px;font:inherit}
+.project-id-input{min-width:120px!important;width:140px}
+.save-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.save-actions button{padding:8px 14px;border:1px solid #888;border-radius:3px;background:#fff;cursor:pointer;font:inherit}
+#save-final{font-weight:600;border-color:#555}.save-status{margin-top:9px;min-height:18px;color:var(--muted);font-size:12px}
+.site-footer{max-width:920px;margin-top:20px;padding-top:12px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+.row-comment { width:260px; min-width:260px; }
+.review-comment { max-width:920px; }
+
+
+/* Modal evidence viewer ----------------------------------------------- */
+
+#evidence-dialog {
+  width: min(1000px, 90vw);
+  height: min(800px, 85vh);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#evidence-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+#evidence-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.evidence-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.evidence-dialog-close {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#evidence-dialog iframe {
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: none;
+  background: white;
+}
+</style>
+</head>
+<body>
+<main>
+<header class="review-header">
+<h1>Traditional Livonian Clothing: Room 7</h1>
+<p class="instructions">Review the descriptions and metadata of photographs documenting traditional Livonian clothing. Verify museum accession numbers, institutions, and exhibition classifications.</p>
+</header>
+<div class="table-wrap">
+<table id="review-table"><thead><tr><th class="num">#</th><th>Input</th><th>Label</th><th>Description</th><th>Alternative description</th><th>subject</th><th>accession_number</th><th>institution</th><th>room_number</th><th class="finalise-head">Finalise</th><th class="row-comment">Reviewer comment</th></tr></thead><tbody><tr data-row="1" data-finalised="false" data-outcome="accept"><td class="num">1</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Knitted_woollen_socks_SUK126_54.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Knitted_woollen_socks_SUK126_54.jpg" alt="Input Knitted woollen socks. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kirjoneulottuja villasukkia. SUK126:54."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Knitted_woollen_socks_SUK126_54.jpg" title="https://commons.wikimedia.org/wiki/File:Knitted_woollen_socks_SUK126_54.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Knitted_woollen_socks_SUK126_54.jpg</a><div class="media-id">Knitted woollen socks. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kirjoneulottuja villasukkia. SUK126:54.</div></td><td class="label"><input class="text-input" data-field="label" value="Knitted woollen socks" data-candidate="Knitted woollen socks"></td><td class="description"><textarea data-field="description" data-candidate="Knitted woollen socks. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kirjoneulottuja villasukkia. SUK126:54.">Knitted woollen socks. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kirjoneulottuja villasukkia. SUK126:54.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Knitted_woollen_socks_SUK126_54.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Knitted_woollen_socks_SUK126_54.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Knitted_woollen_socks_SUK126_54.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:54"><input class="subject-input" type="text" value="SUK126:54"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="2" data-finalised="false" data-outcome="accept"><td class="num">2</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg" alt="Input Līž Valt wearing an old wedding dress. A photograph by Vilho Setälä taken in Jaunciems (Uuškila), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Val't vanhassa morsiuspuvussa. SUK126:82."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg" title="https://commons.wikimedia.org/wiki/File:Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg</a><div class="media-id">Līž Valt wearing an old wedding dress. A photograph by Vilho Setälä taken in Jaunciems (Uuškila), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Val't vanhassa morsiuspuvussa. SUK126:82.</div></td><td class="label"><input class="text-input" data-field="label" value="Līž Valt wearing an old wedding dress" data-candidate="Līž Valt wearing an old wedding dress"></td><td class="description"><textarea data-field="description" data-candidate="Līž Valt wearing an old wedding dress. A photograph by Vilho Setälä taken in Jaunciems (Uuškila), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Val't vanhassa morsiuspuvussa. SUK126:82.">Līž Valt wearing an old wedding dress. A photograph by Vilho Setälä taken in Jaunciems (Uuškila), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Val't vanhassa morsiuspuvussa. SUK126:82.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Līž_Valt_wearing_an_old_wedding_dress_SUK126_82.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:82"><input class="subject-input" type="text" value="SUK126:82"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="3" data-finalised="false" data-outcome="accept"><td class="num">3</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg" alt="Input Trīn Freiberg wearing her old wedding dress. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan. SUK126:93."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg" title="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg</a><div class="media-id">Trīn Freiberg wearing her old wedding dress. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan. SUK126:93.</div></td><td class="label"><input class="text-input" data-field="label" value="Trīn Freiberg wearing her old wedding dress" data-candidate="Trīn Freiberg wearing her old wedding dress"></td><td class="description"><textarea data-field="description" data-candidate="Trīn Freiberg wearing her old wedding dress. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan. SUK126:93.">Trīn Freiberg wearing her old wedding dress. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan. SUK126:93.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_wearing_her_old_wedding_dress_SUK126_93.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:93"><input class="subject-input" type="text" value="SUK126:93"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="4" data-finalised="false" data-outcome="accept"><td class="num">4</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg" alt="Input Trīn Freiberg in her old wedding dress, photographed from behind. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan takaapäin kuvattuna. SUK126:94."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg" title="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg</a><div class="media-id">Trīn Freiberg in her old wedding dress, photographed from behind. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan takaapäin kuvattuna. SUK126:94.</div></td><td class="label"><input class="text-input" data-field="label" value="Trīn Freiberg in her old wedding dress, photographed from behind" data-candidate="Trīn Freiberg in her old wedding dress, photographed from behind"></td><td class="description"><textarea data-field="description" data-candidate="Trīn Freiberg in her old wedding dress, photographed from behind. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan takaapäin kuvattuna. SUK126:94.">Trīn Freiberg in her old wedding dress, photographed from behind. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Trīn Freiberg vanhassa morsiuspuvussaan takaapäin kuvattuna. SUK126:94.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Trīn_Freiberg_in_her_old_wedding_dress,_photographed_from_behind_SUK126_94.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:94"><input class="subject-input" type="text" value="SUK126:94"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="5" data-finalised="false" data-outcome="accept"><td class="num">5</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Three_patterned_woven_blankets_SUK126_101.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Three_patterned_woven_blankets_SUK126_101.jpg" alt="Input Three patterned woven blankets. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kolme kuvioitua kudottua peittoa. SUK126:101."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Three_patterned_woven_blankets_SUK126_101.jpg" title="https://commons.wikimedia.org/wiki/File:Three_patterned_woven_blankets_SUK126_101.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Three_patterned_woven_blankets_SUK126_101.jpg</a><div class="media-id">Three patterned woven blankets. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kolme kuvioitua kudottua peittoa. SUK126:101.</div></td><td class="label"><input class="text-input" data-field="label" value="Three patterned woven blankets" data-candidate="Three patterned woven blankets"></td><td class="description"><textarea data-field="description" data-candidate="Three patterned woven blankets. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kolme kuvioitua kudottua peittoa. SUK126:101.">Three patterned woven blankets. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. kolme kuvioitua kudottua peittoa. SUK126:101.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Three_patterned_woven_blankets_SUK126_101.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Three_patterned_woven_blankets_SUK126_101.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Three_patterned_woven_blankets_SUK126_101.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:101"><input class="subject-input" type="text" value="SUK126:101"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="6" data-finalised="false" data-outcome="accept"><td class="num">6</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg" alt="Input Annõ Rottenberg with children peeking through the doorway. A photograph by Vilho Setälä taken in Saunags (Säänag), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Annõ Rottenberg ja oviaukosta kurkkivia lapsia. SUK126:123."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg" title="https://commons.wikimedia.org/wiki/File:Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg</a><div class="media-id">Annõ Rottenberg with children peeking through the doorway. A photograph by Vilho Setälä taken in Saunags (Säänag), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Annõ Rottenberg ja oviaukosta kurkkivia lapsia. SUK126:123.</div></td><td class="label"><input class="text-input" data-field="label" value="Annõ Rottenberg with children peeking through the doorway" data-candidate="Annõ Rottenberg with children peeking through the doorway"></td><td class="description"><textarea data-field="description" data-candidate="Annõ Rottenberg with children peeking through the doorway. A photograph by Vilho Setälä taken in Saunags (Säänag), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Annõ Rottenberg ja oviaukosta kurkkivia lapsia. SUK126:123.">Annõ Rottenberg with children peeking through the doorway. A photograph by Vilho Setälä taken in Saunags (Säänag), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Annõ Rottenberg ja oviaukosta kurkkivia lapsia. SUK126:123.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Annõ_Rottenberg_with_children_peeking_through_the_doorway_SUK126_123.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:123"><input class="subject-input" type="text" value="SUK126:123"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="7" data-finalised="false" data-outcome="accept"><td class="num">7</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_woman_1912.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_woman_1912.jpg" alt="Input Līž Dišlor dressed in an old bridal outfit. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Dišlor pukeutuneena vanhaan morsiamen asuun. SUK126:140."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Livonian_woman_1912.jpg" title="https://commons.wikimedia.org/wiki/File:Livonian_woman_1912.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_woman_1912.jpg</a><div class="media-id">Līž Dišlor dressed in an old bridal outfit. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Dišlor pukeutuneena vanhaan morsiamen asuun. SUK126:140.</div></td><td class="label"><input class="text-input" data-field="label" value="Līž Dišlor dressed in an old bridal outfit" data-candidate="Līž Dišlor dressed in an old bridal outfit"></td><td class="description"><textarea data-field="description" data-candidate="Līž Dišlor dressed in an old bridal outfit. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Dišlor pukeutuneena vanhaan morsiamen asuun. SUK126:140.">Līž Dišlor dressed in an old bridal outfit. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Līž Dišlor pukeutuneena vanhaan morsiamen asuun. SUK126:140.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Livonian_woman_1912.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Livonian_woman_1912.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_woman_1912.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:140"><input class="subject-input" type="text" value="SUK126:140"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="8" data-finalised="false" data-outcome="accept"><td class="num">8</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_Livonian_bride_SUK15_85.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_Livonian_bride_SUK15_85.jpg" alt="Input A Livonian bride. A photograph by A. O. Heikel taken in Lielirbe (Suur-Irben), the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen morsian. SUK15:85."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:A_Livonian_bride_SUK15_85.jpg" title="https://commons.wikimedia.org/wiki/File:A_Livonian_bride_SUK15_85.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_Livonian_bride_SUK15_85.jpg</a><div class="media-id">A Livonian bride. A photograph by A. O. Heikel taken in Lielirbe (Suur-Irben), the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen morsian. SUK15:85.</div></td><td class="label"><input class="text-input" data-field="label" value="A Livonian bride" data-candidate="A Livonian bride"></td><td class="description"><textarea data-field="description" data-candidate="A Livonian bride. A photograph by A. O. Heikel taken in Lielirbe (Suur-Irben), the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen morsian. SUK15:85.">A Livonian bride. A photograph by A. O. Heikel taken in Lielirbe (Suur-Irben), the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen morsian. SUK15:85.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:A_Livonian_bride_SUK15_85.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:A_Livonian_bride_SUK15_85.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_Livonian_bride_SUK15_85.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK15:85"><input class="subject-input" type="text" value="SUK15:85"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="9" data-finalised="false" data-outcome="accept"><td class="num">9</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_family_1912.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Livonian_family_1912.jpg" alt="Input The Belt family: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Diš. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Beltin perhe: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Ditš. SUK126:25."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Livonian_family_1912.jpg" title="https://commons.wikimedia.org/wiki/File:Livonian_family_1912.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_family_1912.jpg</a><div class="media-id">The Belt family: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Diš. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Beltin perhe: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Ditš. SUK126:25.</div></td><td class="label"><input class="text-input" data-field="label" value="The Belt family: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Diš" data-candidate="The Belt family: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Diš"></td><td class="description"><textarea data-field="description" data-candidate="The Belt family: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Diš. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Beltin perhe: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Ditš. SUK126:25.">The Belt family: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Diš. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Beltin perhe: Alfrid, Milda, Līna, Eduard, Eliz, Otó, Jain, Ditš. SUK126:25.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Livonian_family_1912.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Livonian_family_1912.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Livonian_family_1912.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:25"><input class="subject-input" type="text" value="SUK126:25"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="10" data-finalised="false" data-outcome="accept"><td class="num">10</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_man_wearing_an_embroidered_shirt_SUK126_42.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_man_wearing_an_embroidered_shirt_SUK126_42.jpg" alt="Input A man wearing an embroidered shirt. A photograph by Vilho Setälä taken in Lūžņa (Luuž), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. mies kirjottu paita päällään. SUK126:42."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:A_man_wearing_an_embroidered_shirt_SUK126_42.jpg" title="https://commons.wikimedia.org/wiki/File:A_man_wearing_an_embroidered_shirt_SUK126_42.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_man_wearing_an_embroidered_shirt_SUK126_42.jpg</a><div class="media-id">A man wearing an embroidered shirt. A photograph by Vilho Setälä taken in Lūžņa (Luuž), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. mies kirjottu paita päällään. SUK126:42.</div></td><td class="label"><input class="text-input" data-field="label" value="A man wearing an embroidered shirt" data-candidate="A man wearing an embroidered shirt"></td><td class="description"><textarea data-field="description" data-candidate="A man wearing an embroidered shirt. A photograph by Vilho Setälä taken in Lūžņa (Luuž), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. mies kirjottu paita päällään. SUK126:42.">A man wearing an embroidered shirt. A photograph by Vilho Setälä taken in Lūžņa (Luuž), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. mies kirjottu paita päällään. SUK126:42.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:A_man_wearing_an_embroidered_shirt_SUK126_42.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:A_man_wearing_an_embroidered_shirt_SUK126_42.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_man_wearing_an_embroidered_shirt_SUK126_42.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:42"><input class="subject-input" type="text" value="SUK126:42"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="11" data-finalised="false" data-outcome="accept"><td class="num">11</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg" alt="Input Ditš Belts with the ditch plower. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Ditš Belts hankoauran kurjessa. SUK126:43."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg" title="https://commons.wikimedia.org/wiki/File:Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg</a><div class="media-id">Ditš Belts with the ditch plower. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Ditš Belts hankoauran kurjessa. SUK126:43.</div></td><td class="label"><input class="text-input" data-field="label" value="Ditš Belts with the ditch plower" data-candidate="Ditš Belts with the ditch plower"></td><td class="description"><textarea data-field="description" data-candidate="Ditš Belts with the ditch plower. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Ditš Belts hankoauran kurjessa. SUK126:43.">Ditš Belts with the ditch plower. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Ditš Belts hankoauran kurjessa. SUK126:43.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Ditš_Belts_with_the_ditch_plower_SUK126_43.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:43"><input class="subject-input" type="text" value="SUK126:43"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="12" data-finalised="false" data-outcome="accept"><td class="num">12</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg" alt="Input Kērsts Andzina and Trīn Ruupenberg's at the doorstep of their house. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Kērsts Andzinan ja Trīn Ruupenberg talon ovensuussa. SUK126:91."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg" title="https://commons.wikimedia.org/wiki/File:Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg</a><div class="media-id">Kērsts Andzina and Trīn Ruupenberg's at the doorstep of their house. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Kērsts Andzinan ja Trīn Ruupenberg talon ovensuussa. SUK126:91.</div></td><td class="label"><input class="text-input" data-field="label" value="Kērsts Andzina and Trīn Ruupenberg's at the doorstep of their house" data-candidate="Kērsts Andzina and Trīn Ruupenberg's at the doorstep of their house"></td><td class="description"><textarea data-field="description" data-candidate="Kērsts Andzina and Trīn Ruupenberg's at the doorstep of their house. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Kērsts Andzinan ja Trīn Ruupenberg talon ovensuussa. SUK126:91.">Kērsts Andzina and Trīn Ruupenberg's at the doorstep of their house. A photograph by Vilho Setälä taken in Sīkrags (Siikrog), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Kērsts Andzinan ja Trīn Ruupenberg talon ovensuussa. SUK126:91.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Kērsts_Andzina_and_Trīn_Ruupenberg's_at_the_doorstep_of_their_house_SUK126_91.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:91"><input class="subject-input" type="text" value="SUK126:91"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="13" data-finalised="false" data-outcome="accept"><td class="num">13</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg" alt="Input Fritz Kleiberg in a fisherman's suit. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Fritz Kleiberg kalastajanpuvussa. SUK126:96."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg" title="https://commons.wikimedia.org/wiki/File:Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg</a><div class="media-id">Fritz Kleiberg in a fisherman's suit. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Fritz Kleiberg kalastajanpuvussa. SUK126:96.</div></td><td class="label"><input class="text-input" data-field="label" value="Fritz Kleiberg in a fisherman's suit" data-candidate="Fritz Kleiberg in a fisherman's suit"></td><td class="description"><textarea data-field="description" data-candidate="Fritz Kleiberg in a fisherman's suit. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Fritz Kleiberg kalastajanpuvussa. SUK126:96.">Fritz Kleiberg in a fisherman's suit. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Fritz Kleiberg kalastajanpuvussa. SUK126:96.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Fritz_Kleiberg_in_a_fisherman's_suit_SUK126_96.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:96"><input class="subject-input" type="text" value="SUK126:96"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="14" data-finalised="false" data-outcome="accept"><td class="num">14</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg" alt="Input Andrei Ermanbrik, Kristina and Artur on the steps of the house. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Andrei Ermanbrik, Kristina ja Artur talon portailla. SUK126:103."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg" title="https://commons.wikimedia.org/wiki/File:Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg</a><div class="media-id">Andrei Ermanbrik, Kristina and Artur on the steps of the house. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Andrei Ermanbrik, Kristina ja Artur talon portailla. SUK126:103.</div></td><td class="label"><input class="text-input" data-field="label" value="Andrei Ermanbrik, Kristina and Artur on the steps of the house" data-candidate="Andrei Ermanbrik, Kristina and Artur on the steps of the house"></td><td class="description"><textarea data-field="description" data-candidate="Andrei Ermanbrik, Kristina and Artur on the steps of the house. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Andrei Ermanbrik, Kristina ja Artur talon portailla. SUK126:103.">Andrei Ermanbrik, Kristina and Artur on the steps of the house. A photograph by Vilho Setälä taken in Mazirbe (Ire), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Andrei Ermanbrik, Kristina ja Artur talon portailla. SUK126:103.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Andrei_Ermanbrik,_Kristina_and_Artur_on_the_steps_of_the_house_SUK126_103.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:103"><input class="subject-input" type="text" value="SUK126:103"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="15" data-finalised="false" data-outcome="accept"><td class="num">15</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Klouz_Tišlei_and_his_family_SUK126_126.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Klouz_Tišlei_and_his_family_SUK126_126.jpg" alt="Input Klouz Tišlei and his family. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Klouz Tišlei perheineen. SUK126:126."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Klouz_Tišlei_and_his_family_SUK126_126.jpg" title="https://commons.wikimedia.org/wiki/File:Klouz_Tišlei_and_his_family_SUK126_126.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Klouz_Tišlei_and_his_family_SUK126_126.jpg</a><div class="media-id">Klouz Tišlei and his family. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Klouz Tišlei perheineen. SUK126:126.</div></td><td class="label"><input class="text-input" data-field="label" value="Klouz Tišlei and his family" data-candidate="Klouz Tišlei and his family"></td><td class="description"><textarea data-field="description" data-candidate="Klouz Tišlei and his family. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Klouz Tišlei perheineen. SUK126:126.">Klouz Tišlei and his family. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Klouz Tišlei perheineen. SUK126:126.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Klouz_Tišlei_and_his_family_SUK126_126.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Klouz_Tišlei_and_his_family_SUK126_126.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Klouz_Tišlei_and_his_family_SUK126_126.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:126"><input class="subject-input" type="text" value="SUK126:126"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="16" data-finalised="false" data-outcome="accept"><td class="num">16</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Children_playing_on_a_toy_sailboat_SUK126_130.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Children_playing_on_a_toy_sailboat_SUK126_130.jpg" alt="Input Children playing on a toy sailboat. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. lapsia leikkimässä leikkipurjeveneellä. SUK126:130."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Children_playing_on_a_toy_sailboat_SUK126_130.jpg" title="https://commons.wikimedia.org/wiki/File:Children_playing_on_a_toy_sailboat_SUK126_130.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Children_playing_on_a_toy_sailboat_SUK126_130.jpg</a><div class="media-id">Children playing on a toy sailboat. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. lapsia leikkimässä leikkipurjeveneellä. SUK126:130.</div></td><td class="label"><input class="text-input" data-field="label" value="Children playing on a toy sailboat" data-candidate="Children playing on a toy sailboat"></td><td class="description"><textarea data-field="description" data-candidate="Children playing on a toy sailboat. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. lapsia leikkimässä leikkipurjeveneellä. SUK126:130.">Children playing on a toy sailboat. A photograph by Vilho Setälä taken in Vaide (Vaid), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. lapsia leikkimässä leikkipurjeveneellä. SUK126:130.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Children_playing_on_a_toy_sailboat_SUK126_130.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Children_playing_on_a_toy_sailboat_SUK126_130.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Children_playing_on_a_toy_sailboat_SUK126_130.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:130"><input class="subject-input" type="text" value="SUK126:130"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="17" data-finalised="false" data-outcome="accept"><td class="num">17</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/89-year-old_Andrõks_Hausman_SUK126_132.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/89-year-old_Andrõks_Hausman_SUK126_132.jpg" alt="Input 89-year-old Andrõks Hausman. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. 89-vuotias Andrõks Hausman. SUK126:132."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:89-year-old_Andrõks_Hausman_SUK126_132.jpg" title="https://commons.wikimedia.org/wiki/File:89-year-old_Andrõks_Hausman_SUK126_132.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:89-year-old_Andrõks_Hausman_SUK126_132.jpg</a><div class="media-id">89-year-old Andrõks Hausman. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. 89-vuotias Andrõks Hausman. SUK126:132.</div></td><td class="label"><input class="text-input" data-field="label" value="89-year-old Andrõks Hausman" data-candidate="89-year-old Andrõks Hausman"></td><td class="description"><textarea data-field="description" data-candidate="89-year-old Andrõks Hausman. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. 89-vuotias Andrõks Hausman. SUK126:132.">89-year-old Andrõks Hausman. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. 89-vuotias Andrõks Hausman. SUK126:132.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:89-year-old_Andrõks_Hausman_SUK126_132.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:89-year-old_Andrõks_Hausman_SUK126_132.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:89-year-old_Andrõks_Hausman_SUK126_132.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:132"><input class="subject-input" type="text" value="SUK126:132"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="18" data-finalised="false" data-outcome="accept"><td class="num">18</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg" alt="Input Stakler family: A woman with three children. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Staklerin perhe: Nainen kolmen lapsen kanssa. SUK126:160."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg" title="https://commons.wikimedia.org/wiki/File:Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg</a><div class="media-id">Stakler family: A woman with three children. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Staklerin perhe: Nainen kolmen lapsen kanssa. SUK126:160.</div></td><td class="label"><input class="text-input" data-field="label" value="Stakler family: A woman with three children" data-candidate="Stakler family: A woman with three children"></td><td class="description"><textarea data-field="description" data-candidate="Stakler family: A woman with three children. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Staklerin perhe: Nainen kolmen lapsen kanssa. SUK126:160.">Stakler family: A woman with three children. A photograph by Vilho Setälä taken in Kolka (Kuolka), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. Staklerin perhe: Nainen kolmen lapsen kanssa. SUK126:160.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Stakler_family_-_A_woman_with_three_children_SUK126_160.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:160"><input class="subject-input" type="text" value="SUK126:160"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="19" data-finalised="false" data-outcome="accept"><td class="num">19</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_house_for_dwelling_SUK126_17.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_house_for_dwelling_SUK126_17.jpg" alt="Input A house for dwelling. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. asuinrakennus. SUK126:17."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:A_house_for_dwelling_SUK126_17.jpg" title="https://commons.wikimedia.org/wiki/File:A_house_for_dwelling_SUK126_17.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_house_for_dwelling_SUK126_17.jpg</a><div class="media-id">A house for dwelling. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. asuinrakennus. SUK126:17.</div></td><td class="label"><input class="text-input" data-field="label" value="A house for dwelling" data-candidate="A house for dwelling"></td><td class="description"><textarea data-field="description" data-candidate="A house for dwelling. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. asuinrakennus. SUK126:17.">A house for dwelling. A photograph by Vilho Setälä taken in Miķeļtornis (Piza), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. asuinrakennus. SUK126:17.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:A_house_for_dwelling_SUK126_17.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:A_house_for_dwelling_SUK126_17.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_house_for_dwelling_SUK126_17.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:17"><input class="subject-input" type="text" value="SUK126:17"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="20" data-finalised="false" data-outcome="accept"><td class="num">20</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg" alt="Input Marshy wetland in between sand dunes. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. soinen kosteikko hiekkadyynien välissä. SUK126:55."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg" title="https://commons.wikimedia.org/wiki/File:Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg</a><div class="media-id">Marshy wetland in between sand dunes. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. soinen kosteikko hiekkadyynien välissä. SUK126:55.</div></td><td class="label"><input class="text-input" data-field="label" value="Marshy wetland in between sand dunes" data-candidate="Marshy wetland in between sand dunes"></td><td class="description"><textarea data-field="description" data-candidate="Marshy wetland in between sand dunes. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. soinen kosteikko hiekkadyynien välissä. SUK126:55.">Marshy wetland in between sand dunes. A photograph by Vilho Setälä taken in Lielirbe (Iira), the Livonian coast, in 1912. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Setälä, V. soinen kosteikko hiekkadyynien välissä. SUK126:55.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:Marshy_wetland_in_between_sand_dunes_SUK126_55.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK126:55"><input class="subject-input" type="text" value="SUK126:55"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr>
+<tr data-row="21" data-finalised="false" data-outcome="accept"><td class="num">21</td><td class="evidence"><a class="evidence-media-link" href="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_Livonian_house_SUK15_90.jpg" target="_blank" rel="noopener"><img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/A_Livonian_house_SUK15_90.jpg" alt="Input A Livonian house. A photograph by A. O. Heikel taken in Jaunandin kylä, the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen talo. SUK15:90."></a><a class="evidence-link input-url" href="https://commons.wikimedia.org/wiki/File:A_Livonian_house_SUK15_90.jpg" title="https://commons.wikimedia.org/wiki/File:A_Livonian_house_SUK15_90.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_Livonian_house_SUK15_90.jpg</a><div class="media-id">A Livonian house. A photograph by A. O. Heikel taken in Jaunandin kylä, the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen talo. SUK15:90.</div></td><td class="label"><input class="text-input" data-field="label" value="A Livonian house" data-candidate="A Livonian house"></td><td class="description"><textarea data-field="description" data-candidate="A Livonian house. A photograph by A. O. Heikel taken in Jaunandin kylä, the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen talo. SUK15:90.">A Livonian house. A photograph by A. O. Heikel taken in Jaunandin kylä, the Livonian coast, in 1902. Antell's Collection, Finno-Ugric Collection of the National Museum of Finland. Original artefact: Heikel, A. O. liiviläinen talo. SUK15:90.</textarea></td><td class="description"><textarea data-field="alternative_description" data-candidate="[Add Latvian translation]">[Add Latvian translation]</textarea></td><td class="semantic-cell" data-column="subject" data-qualification="none" data-candidate="https://commons.wikimedia.org/wiki/File:A_Livonian_house_SUK15_90.jpg"><a class="entity-link" href="https://commons.wikimedia.org/wiki/File:A_Livonian_house_SUK15_90.jpg" target="_blank" rel="noopener">https://commons.wikimedia.org/wiki/File:A_Livonian_house_SUK15_90.jpg</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="accession_number" data-qualification="none" data-candidate="SUK15:90"><input class="subject-input" type="text" value="SUK15:90"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="institution" data-qualification="none" data-candidate="National Museum of Finland"><input class="subject-input" type="text" value="National Museum of Finland"><button type="button" class="create-item">Create new item</button><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="semantic-cell" data-column="room_number" data-qualification="none" data-candidate="7"><select class="candidate-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option></select><input class="write-in" placeholder="Enter another value"><a class="definition-link" href="https://et.wikipedia.org/w/index.php?title=Vikipeedia:GLAM/Traditional_Livonian_Clothing/en/7" target="_blank" rel="noopener">Definition</a><div class="qualify"><button data-qualify="defer">Defer</button><button data-qualify="reject">Reject</button></div></td><td class="finalise-cell"><label class="finalise-control"><input type="checkbox" class="finalise-check"><span class="finalise-mark"></span></label></td><td class="row-comment"><textarea placeholder="Optional comment on row"></textarea></td></tr></tbody></table><div id="candidate-provenance" hidden><input data-provenance="data_manager" value=""><input data-provenance="data_manager_iri" value=""><input data-provenance="data_manager_email" value=""><input data-provenance="table_id" value=""><input data-provenance="generated_at" value="NA"><input data-provenance="software_agent" value="Betwixt"><input data-provenance="software_version" value="0.0.8002"></div>
+</div>
+<div class="footer">
+<span id="summary"></span>
+</div>
+<section class="review-meta">
+<h2>Review metadata</h2>
+<div class="reviewer-bottom">
+<label>Reviewer<input id="reviewer-name" type="text" value="Ieva Pigozne"></label>
+<label>Reviewer email<input id="reviewer-email" type="email"></label>
+<label>Reviewer IRI (e.g. ORCID, ISNI, Wikidata)<input id="reviewer-iri" class="reviewer-iri-input" type="text" value="https://orcid.org/0000-0003-1726-0928"></label>
+<label>Project ID<input id="project-id" type="text" value="finfair" readonly></label>
+<label>Table ID<input id="table-id" type="text" value="livonian_exhibition_7" readonly></label>
+<label>Table IRI<input id="table-iri" type="text" value="https://example.com/finfair/livonian_exhibition_7" readonly></label>
+<label>State sequence<input id="review-sequence" type="number" value="0" readonly></label>
+<label>Original filename<input id="original-filename" type="text" value="livonian_exhibition_7_review.html" readonly></label>
+<label>Filename<input id="review-filename" type="text" value="livonian_exhibition_7_review.html" readonly></label>
+<label>Original created at<input id="original-created-at" type="text" value="2026-11-22T21:00:30Z" readonly></label>
+<label>Started at<input id="review-started-at" type="text" readonly></label>
+<label>Last saved at<input id="review-last-saved-at" type="text" readonly></label>
+<label>Ended at<input id="review-ended-at" type="text" readonly></label>
+<label>Status<input id="review-status" type="text" value="in-progress" readonly></label>
+</div>
+<label class="review-comment">Review comment<textarea id="review-comment" placeholder="Optional comment on review"></textarea></label>
+<input id="filename-stem" type="hidden" value="livonian_exhibition_7_review">
+<div class="save-actions">
+<button id="save-draft" type="button">Save draft</button>
+<button id="save-final" type="button">Finalise review</button>
+</div>
+<div id="save-status" class="save-status"></div>
+</section>
+<div class="candidate-provenance">Project: finfair · Table: livonian_exhibition_7 · Table IRI: https://example.com/finfair/livonian_exhibition_7 · Betwixt 0.0.8002</div>
+<footer class="site-footer">Created with Betwixt semantic review · <a href="https://github.com/dataobservatory-eu/betwixt" target="_blank" rel="noopener">GitHub</a> · <a href="https://doi.org/10.5281/zenodo.22091535" target="_blank" rel="noopener">doi:10.5281/zenodo.22091535</a></footer>
+</main>
+<script>
+(() => {
+  const rows = [...document.querySelectorAll("tbody tr")];
+
+  // Find Input links configured to open in a modal.
+  const modalLinks = document.querySelectorAll(
+    'a[data-open="modal"]'
+  );
+
+  if (modalLinks.length > 0) {
+    const dialog = document.createElement("dialog");
+    dialog.id = "evidence-dialog";
+
+    dialog.innerHTML = `
+      <div class="evidence-dialog-header">
+        <span>Input evidence</span>
+        <button type="button" class="evidence-dialog-close"
+                aria-label="Close evidence viewer">×</button>
+      </div>
+      <iframe name="evidence-viewer"
+              title="Input evidence"></iframe>
+    `;
+
+    document.body.appendChild(dialog);
+
+    const frame = dialog.querySelector("iframe");
+    const close = dialog.querySelector(".evidence-dialog-close");
+
+    // Display the dialog when a modal evidence link is selected.
+    modalLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        dialog.showModal();
+      });
+    });
+
+    // Close the dialog using its close button.
+    close.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    // Clear the previous resource when the dialog closes.
+    dialog.addEventListener("close", () => {
+      frame.src = "about:blank";
+    });
+  }
+
+  // Determine the overall outcome of a review row.
+  function outcome(row) {
+    const cells = [...row.querySelectorAll(".semantic-cell")];
+
+    if (cells.some(cell => cell.dataset.qualification === "reject")) {
+      return "reject";
+    }
+
+    if (cells.some(cell => cell.dataset.qualification === "defer")) {
+      return "defer";
+    }
+
+    return "accept";
+  }
+
+  // Update the finalisation marker for a row.
+  function paint(row) {
+    row.dataset.outcome = outcome(row);
+
+    const mark = row.querySelector(".finalise-mark");
+
+    if (row.dataset.finalised !== "true") {
+      mark.textContent = "";
+      return;
+    }
+
+    if (row.dataset.outcome === "reject") {
+      mark.textContent = "×";
+    } else if (row.dataset.outcome === "defer") {
+      mark.textContent = "○";
+    } else {
+      mark.textContent = "✓";
+    }
+  }
+
+  // Update the review summary.
+  function summary() {
+    const finalised = rows.filter(
+      row => row.dataset.finalised === "true"
+    ).length;
+
+    const deferred = document.querySelectorAll(
+      '.semantic-cell[data-qualification="defer"]'
+    ).length;
+
+    const rejected = document.querySelectorAll(
+      '.semantic-cell[data-qualification="reject"]'
+    ).length;
+
+    document.getElementById("summary").textContent =
+      `${finalised} finalised · ${deferred} deferred cells · ` +
+      `${rejected} rejected cells`;
+  }
+
+  // Apply a qualification and update the row state.
+  function qualify(cell, state) {
+    cell.dataset.qualification = state;
+    paint(cell.closest("tr"));
+    summary();
+  }
+
+  // Return an ISO 8601 UTC timestamp at one-second precision.
+  function utcTimestamp() {
+    return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
+  // Build a lookup from the initial candidate-definition pairs.
+  const definitions = new Map();
+
+  document.querySelectorAll(".semantic-cell").forEach(cell => {
+    const definition = cell.querySelector(".definition-link");
+
+    if (!definition) {
+      return;
+    }
+
+    const key =
+      `${cell.dataset.column}::${cell.dataset.candidate}`;
+
+    definitions.set(key, definition.href);
+  });
+
+  // Attach review controls to each row.
+  rows.forEach(row => {
+    row.querySelectorAll("[data-qualify]").forEach(button => {
+      button.addEventListener("click", () => {
+        const cell = button.closest(".semantic-cell");
+        const qualification = button.dataset.qualify;
+        const current = cell.dataset.qualification;
+
+        qualify(
+          cell,
+          current === qualification ? "none" : qualification
+        );
+      });
+    });
+
+    row.querySelectorAll(".candidate-select").forEach(select => {
+      const cell = select.closest(".semantic-cell");
+      const writeIn = cell.querySelector(".write-in");
+      const definition = cell.querySelector(".definition-link");
+
+      const updateSelection = () => {
+        const show = select.value === "__other__";
+
+        writeIn.style.display = show ? "block" : "none";
+
+        if (!show) {
+          writeIn.value = "";
+        }
+
+        if (show) {
+          writeIn.focus();
+        }
+
+        if (definition) {
+          const key =
+            `${cell.dataset.column}::${select.value}`;
+
+          const href = definitions.get(key);
+
+          if (href) {
+            definition.href = href;
+            definition.style.display = "";
+          } else {
+            definition.style.display = "none";
+          }
+        }
+      };
+
+      select.addEventListener("change", updateSelection);
+      updateSelection();
+    });
+
+    const check = row.querySelector(".finalise-check");
+
+    check.addEventListener("change", () => {
+      row.dataset.finalised = check.checked ? "true" : "false";
+      paint(row);
+      summary();
+    });
+
+    // Attach creation controls to every unresolved assertion.
+    row.querySelectorAll(".create-item").forEach(create => {
+      create.addEventListener("click", () => {
+        const cell = create.closest(".semantic-cell");
+        const input = cell.querySelector(".subject-input");
+
+        cell.innerHTML =
+          `<a class="entity-link" href="#">` +
+          `fuds:QNEW${row.dataset.row}</a>` +
+          `<div style="margin-top:6px;font-size:12px;color:#666">` +
+          `Prototype registration for “${input.value}”</div>` +
+          `<div class="qualify">` +
+          `<button data-qualify="defer">Defer</button>` +
+          `<button data-qualify="reject">Reject</button>` +
+          `</div>`;
+
+        // Restore qualification controls in the replaced cell.
+        cell.querySelectorAll("[data-qualify]").forEach(button => {
+          button.addEventListener("click", () => {
+            const qualification = button.dataset.qualify;
+            const current = cell.dataset.qualification;
+
+            qualify(
+              cell,
+              current === qualification ? "none" : qualification
+            );
+          });
+        });
+      });
+    });
+  });
+
+  // Initialise row presentation and review summary.
+  rows.forEach(paint);
+  summary();
+
+  const startedAt = document.getElementById("review-started-at");
+
+  if (startedAt && !startedAt.value) {
+    startedAt.value = utcTimestamp();
+  }
+
+  // Copy the live review state into the HTML to be saved.
+  function persistStateIntoClone(clone) {
+    const sourceInputs = [...document.querySelectorAll("input:not([data-provenance])")];
+    const clonedInputs = [...clone.querySelectorAll("input:not([data-provenance])")];
+
+    sourceInputs.forEach((source, index) => {
+      const target = clonedInputs[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.setAttribute("value", source.value);
+
+      if (source.type === "checkbox") {
+        if (source.checked) {
+          target.setAttribute("checked", "");
+        } else {
+          target.removeAttribute("checked");
+        }
+      }
+    });
+
+    const sourceTextareas = [...document.querySelectorAll("textarea")];
+    const clonedTextareas = [...clone.querySelectorAll("textarea")];
+
+    sourceTextareas.forEach((source, index) => {
+      if (clonedTextareas[index]) {
+        clonedTextareas[index].textContent = source.value;
+      }
+    });
+
+    const sourceSelects = [...document.querySelectorAll("select")];
+    const clonedSelects = [...clone.querySelectorAll("select")];
+
+    sourceSelects.forEach((source, index) => {
+      const target = clonedSelects[index];
+
+      if (!target) {
+        return;
+      }
+
+      [...target.options].forEach(option => {
+        if (option.value === source.value) {
+          option.setAttribute("selected", "");
+        } else {
+          option.removeAttribute("selected");
+        }
+      });
+    });
+
+    const sourceCells = [
+      ...document.querySelectorAll(".semantic-cell")
+    ];
+    const clonedCells = [
+      ...clone.querySelectorAll(".semantic-cell")
+    ];
+
+    sourceCells.forEach((source, index) => {
+      if (clonedCells[index]) {
+        clonedCells[index].dataset.qualification =
+          source.dataset.qualification;
+      }
+    });
+
+    const sourceRows = [...document.querySelectorAll("tbody tr")];
+    const clonedRows = [...clone.querySelectorAll("tbody tr")];
+
+    sourceRows.forEach((source, index) => {
+      const target = clonedRows[index];
+
+      if (!target) {
+        return;
+      }
+
+      target.dataset.finalised =
+        source.dataset.finalised || "false";
+
+      target.dataset.outcome =
+        source.dataset.outcome || "accept";
+    });
+  }
+
+  // Save the current review as a draft or finalised HTML file.
+  function saveReview(finaliseReview) {
+    const now = utcTimestamp();
+    const sequenceInput =
+      document.getElementById("review-sequence");
+
+    const filenameStem =
+      document.getElementById("filename-stem").value.trim() ||
+      "betwixt-review";
+
+    let sequence = Number(sequenceInput.value || 0);
+
+    // The first browser save starts review sequence 1.
+    if (sequence === 0) {
+      sequence = 1;
+      sequenceInput.value = sequence;
+    }
+
+    document.getElementById("review-last-saved-at").value = now;
+
+    document.getElementById("review-status").value =
+      finaliseReview ? "finalised" : "in-progress";
+
+    if (finaliseReview) {
+      document.getElementById("review-ended-at").value = now;
+    }
+
+    // Draft and finalised files belong to the same review sequence.
+    const stem = `${filenameStem}_${sequence}`;
+    const suffix = finaliseReview ? "-finalised" : "-draft";
+    const filename = `${stem}${suffix}.html`;
+    document.getElementById("review-filename").value = filename;
+
+    // Preserve the updated state in the downloaded HTML.
+    const clone = document.documentElement.cloneNode(true);
+    persistStateIntoClone(clone);
+
+    // Exclude the temporary evidence viewer from the saved review.
+    clone.querySelector("#evidence-dialog")?.remove();
+
+    const blob = new Blob(
+      ["<!doctype html>\n" + clone.outerHTML],
+      { type: "text/html;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    document.getElementById("save-status").textContent =
+      (finaliseReview
+        ? "Finalised review saved at "
+        : "Draft saved at ") + now;
+  }
+
+  // Attach the review save actions.
+  document
+    .getElementById("save-draft")
+    .addEventListener("click", () => saveReview(false));
+
+  document
+    .getElementById("save-final")
+    .addEventListener("click", () => saveReview(true));
+})();
+</script>
+</body>
+</html>
+
